@@ -1,0 +1,18 @@
+language: 'english'
+mysql:
+  status: 'false'
+  host: '127.0.0.1'
+  port: 3306
+  databaseName: 'mydatabase'
+  sslEnabled: 'false'
+  autoReconnect: 'true'
+  verifyServerCertificate: 'false'
+  user: 'admin'
+  password: 'not_0123456789'
+  tableNameI: 'afkrecordPlayerData'
+  tableNameII: 'afkrecordDateList'
+general:
+  softsaveinseconds: '60'
+  mysqlsaveinseconds: '600'
+  afkcheckerinseconds: '300'
+  afkafterinseconds: '900'

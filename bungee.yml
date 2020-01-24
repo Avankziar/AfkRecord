@@ -1,0 +1,4 @@
+name: AfkRecord
+main: main.java.de.avankziar.afkrecord.bungee.AfkRecord
+version: 1
+author: Avankziar
