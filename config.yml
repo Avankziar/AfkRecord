@@ -16,3 +16,4 @@ general:
   mysqlsaveinseconds: '600'
   afkcheckerinseconds: '300'
   afkafterinseconds: '900'
+  toplistrefresh: '60'

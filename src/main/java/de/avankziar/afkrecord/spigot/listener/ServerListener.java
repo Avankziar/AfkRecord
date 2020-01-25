@@ -3,11 +3,13 @@ package main.java.de.avankziar.afkrecord.spigot.listener;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.interfaces.User;
 
 public class ServerListener  implements PluginMessageListener
 {
@@ -19,7 +21,7 @@ public class ServerListener  implements PluginMessageListener
 	}
 	public void onPluginMessageReceived(String channel, Player p, byte[] bytes) 
 	{
-		if(channel.equals("afkrecord:afkrecord")) 
+		if(channel.equals("afkrecord:afkrecordout")) 
 		{
         	ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
             DataInputStream in = new DataInputStream(stream);
@@ -29,11 +31,15 @@ public class ServerListener  implements PluginMessageListener
             	String PlayerUUID = s[1];
             	if(Category.equals("softsave"))
             	{
-            		if(plugin.getServer().getPlayer(PlayerUUID)==null)
+            		if(plugin.getServer().getPlayer(UUID.fromString(PlayerUUID))==null)
             		{
             			return;
             		}
-            		Player player = plugin.getServer().getPlayer(PlayerUUID);
+            		Player player = plugin.getServer().getPlayer(UUID.fromString(PlayerUUID));
+            		if(User.getUser(player)==null)
+            		{
+            			
+            		}
             		plugin.getUtility().softSave(player, true, true, false);
             	}
             } catch (IOException e) 

@@ -35,8 +35,8 @@ german:
     time:
       msg01: '&e=====&fAfkRecord &5%player%&e====='
       msg02: '&bAktive Spielzeit: &f%ontime% &f| &aPlatz &5%onplace%'
-      msg03: '&bAfkzeit: &f%afktime% &f| &aPlatz &5%afkplace%'
-      msg04: '&bGesamte Zeit: &f%alltime% &f| &aPlatz &5%allplace%'
+      msg03: '&bAfkzeit:           &f%afktime% &f| &aPlatz &5%afkplace%'
+      msg04: '&bGesamte Zeit:    &f%alltime% &f| &aPlatz &5%allplace%'
       msg05: '&bLetzte Aktivität: &f%time%'
     top:
       msg01: '&e=====&fTopListe Aktive Spielzeit&e====='
@@ -50,8 +50,8 @@ german:
     counttime:
       msg01: '&e=====&fSpielzeiten von &5%player% &fder letzten %days% &fTage&e====='
       msg02: '&bAktive Spielzeit: &f%ontime%'
-      msg03: '&bAfkzeit: &f%afktime%'
-      msg04: '&bGesamte Zeit: &f%alltime%'
+      msg03: '&bAfkzeit:           &f%afktime%'
+      msg04: '&bGesamte Zeit:    &f%alltime%'
       msg05: '&bLetzte Aktivität: &f%time%'
     convertolddata:
       msg01: '&eAlte Daten werden konvertiert, dies kann etwas dauern.'

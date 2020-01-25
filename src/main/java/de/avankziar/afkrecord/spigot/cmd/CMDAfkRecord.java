@@ -224,7 +224,7 @@ public class CMDAfkRecord implements CommandExecutor
 				}
 				OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
 				User u = User.getUser(target.getPlayer());
-				ArrayList<TopList> ac = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("activitytime"));
+				ArrayList<TopList> ac = plugin.getBackgroundTask().ac;
 				int acplace = 0;
 				for(TopList tl : ac)
 				{
@@ -234,7 +234,7 @@ public class CMDAfkRecord implements CommandExecutor
 						break;
 					}
 				}
-				ArrayList<TopList> afk = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("afktime"));
+				ArrayList<TopList> afk = plugin.getBackgroundTask().afk;
 				int afkplace = 0;
 				for(TopList tl : afk)
 				{
@@ -244,7 +244,7 @@ public class CMDAfkRecord implements CommandExecutor
 						break;
 					}
 				}
-				ArrayList<TopList> all = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("alltime"));
+				ArrayList<TopList> all = plugin.getBackgroundTask().all;
 				int allplace = 0;
 				for(TopList tl : all)
 				{
@@ -376,7 +376,7 @@ public class CMDAfkRecord implements CommandExecutor
 						player.spigot().sendMessage(plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg01")));
 						return false;
 					}
-					ArrayList<TopList> ac = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("activitytime"));
+					ArrayList<TopList> ac = plugin.getBackgroundTask().ac;
 					int size = ac.size()-1;
 					int page = 0;
 					int start = 0;
@@ -477,7 +477,7 @@ public class CMDAfkRecord implements CommandExecutor
 						player.spigot().sendMessage(plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg01")));
 						return false;
 					}
-					ArrayList<TopList> all = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("alltime"));
+					ArrayList<TopList> all = plugin.getBackgroundTask().all;
 					int size = all.size()-1;
 					int page = 0;
 					int start = 0;
@@ -578,7 +578,7 @@ public class CMDAfkRecord implements CommandExecutor
 						player.spigot().sendMessage(plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg01")));
 						return false;
 					}
-					ArrayList<TopList> afk = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("afktime"));
+					ArrayList<TopList> afk = plugin.getBackgroundTask().afk;
 					int size = afk.size()-1;
 					int page = 0;
 					int start = 0;
@@ -596,7 +596,6 @@ public class CMDAfkRecord implements CommandExecutor
 								start = 0;
 							}
 						}
-						player.sendMessage("size:"+size+" | start:"+start+" | stop:"+stop);//TODO
 						player.spigot().sendMessage(plugin.getUtility().tcl(
 								plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg03")));
 						while(start<=stop)

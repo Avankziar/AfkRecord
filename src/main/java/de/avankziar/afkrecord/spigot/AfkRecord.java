@@ -104,7 +104,7 @@ public class AfkRecord extends JavaPlugin
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new EVENTAkfCheck(this), this);
 		pm.registerEvents(new EVENTJoinLeave(this), this);
-		this.getServer().getMessenger().registerIncomingPluginChannel(this, "afkrecord:afkrecord", new ServerListener(this));
+		this.getServer().getMessenger().registerIncomingPluginChannel(this, "afkrecord:afkrecordout", new ServerListener(this));
 	}
 	
 	public static AfkRecord getPlugin()

@@ -15,6 +15,10 @@ public class EVENTAfkCheck implements Listener
 	@EventHandler
 	public void onChat(ChatEvent event)
 	{
+		if(event.getMessage().startsWith("/"))
+		{
+			return;
+		}
 		ProxiedPlayer p = (ProxiedPlayer) event.getSender();
 		ServerInfo server = p.getServer().getInfo();
 		String µ = "µ";
@@ -27,7 +31,7 @@ public class EVENTAfkCheck implements Listener
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	    server.sendData("afkrecord:afkrecord", streamout.toByteArray());
+	    server.sendData("afkrecord:afkrecordout", streamout.toByteArray());
 	    return;
 	}
 }

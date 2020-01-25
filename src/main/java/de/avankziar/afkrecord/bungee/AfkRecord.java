@@ -29,8 +29,11 @@ public class AfkRecord extends Plugin
 		{
 			mysqlinterface = new MysqlInterface(this);
 			databaseHandler = new MysqlSetup(this);
+		} else
+		{
+			log.severe("MySQL is not enabled! "+pluginName+" wont work correctly!");
 		}
-		getProxy().registerChannel("afkrecord:afkrecord");
+		getProxy().registerChannel("afkrecord:afkrecordout");
 		getProxy().getPluginManager().registerListener(this, new EVENTAfkCheck());
 	}
 	

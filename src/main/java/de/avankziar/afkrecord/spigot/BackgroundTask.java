@@ -1,11 +1,18 @@
 package main.java.de.avankziar.afkrecord.spigot;
 
+import java.util.ArrayList;
+
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import main.java.de.avankziar.afkrecord.spigot.interfaces.TopList;
 
 public class BackgroundTask 
 {
 	private AfkRecord plugin;
+	public ArrayList<TopList> all;
+	public ArrayList<TopList> ac;
+	public ArrayList<TopList> afk;
 	
 	public BackgroundTask(AfkRecord plugin)
 	{
@@ -18,6 +25,7 @@ public class BackgroundTask
 		runSave();
 		runDataSave();
 		runAfkTrackerTask();
+		runTopList();
 	}
 	
 	public void runSave() //Interne Abspeicherung
@@ -69,6 +77,22 @@ public class BackgroundTask
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
 				Long.parseLong(plugin.getYamlHandler().get().getString("general.afkcheckerinseconds"))*20L);
+	}
+	
+	public void runTopList()
+	{
+		new BukkitRunnable() 
+		{
+			
+			@Override
+			public void run() 
+			{
+				ac = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("activitytime"));
+				afk = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("afktime"));
+				all = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("alltime"));
+			}
+		}.runTaskTimerAsynchronously(plugin, 0L, 
+				Long.parseLong(plugin.getYamlHandler().get().getString("general.toplistrefresh"))*20L);
 	}
 	
 	public void onShutDownDataSave()

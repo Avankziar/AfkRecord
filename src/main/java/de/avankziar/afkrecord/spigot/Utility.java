@@ -84,6 +84,7 @@ public class Utility
 				if(newactivity==true)
 				{
 					u.setLastactivity(now);
+					plugin.getMysqlInterface().updateDataI(player, now, "lastactivity");
 				}
 			} else if(setactiv == true && newactivity == true && u.isIsafk()) //Wenn man afk war, und nun sich bewegt etc.
 			{
@@ -101,6 +102,7 @@ public class Utility
 				if(newactivity==true)
 				{
 					u.setLastactivity(now);
+					plugin.getMysqlInterface().updateDataI(player, now, "lastactivity");
 				}
 			} else if(setafk == true && u.isIsafk() == false) //wenn man /afk nutzt
 			{
@@ -118,6 +120,7 @@ public class Utility
 				if(newactivity==true)
 				{
 					u.setLastactivity(now);
+					plugin.getMysqlInterface().updateDataI(player, now, "lastactivity");
 				}
 			}
 		}
