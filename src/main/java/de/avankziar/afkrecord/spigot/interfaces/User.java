@@ -56,6 +56,11 @@ public class User
 		allUser.remove(u);
 	}
 	
+	public static ArrayList<User> getUsers()
+	{
+		return allUser;
+	}
+	
 	public Player getPlayer() 
 	{
 		return player;
@@ -96,27 +101,33 @@ public class User
 		this.alltime = alltime;
 	}
 
-	public long getLasttimecheck() {
+	public long getLasttimecheck() 
+	{
 		return lasttimecheck;
 	}
 
-	public void setLasttimecheck(long lasttimecheck) {
+	public void setLasttimecheck(long lasttimecheck) 
+	{
 		this.lasttimecheck = lasttimecheck;
 	}
 
-	public boolean isIsafk() {
+	public boolean isIsafk() 
+	{
 		return isafk;
 	}
 
-	public void setIsafk(boolean isafk) {
+	public void setIsafk(boolean isafk) 
+	{
 		this.isafk = isafk;
 	}
 
-	public long getLastactivity() {
+	public long getLastactivity() 
+	{
 		return lastactivity;
 	}
 
-	public void setLastactivity(long lastactivity) {
+	public void setLastactivity(long lastactivity) 
+	{
 		this.lastactivity = lastactivity;
 	}
 }

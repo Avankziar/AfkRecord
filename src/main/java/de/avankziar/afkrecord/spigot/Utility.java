@@ -239,6 +239,11 @@ public class Utility
 	    String HH = plugin.getYamlHandler().getL().getString(language+".time.hours");
 	    String dd = plugin.getYamlHandler().getL().getString(language+".time.days");
 	    String msg = "";
+	    if(t<=0)
+	    {
+	    	msg += 0+ss;
+	    	return msg;
+	    }
 	    long days = t/(1000*60*60*24);
 	    if(days>=1) 
 	    {
@@ -272,7 +277,11 @@ public class Utility
 		{
 			color = plugin.getYamlHandler().getL().getString(language+".placement.top0001")+place;
 			return color;
-		} else if(place>1 && place<=3)
+		} else if(place==2)
+		{
+			color = plugin.getYamlHandler().getL().getString(language+".placement.top0002")+place;
+			return color;
+		} else if(place==3)
 		{
 			color = plugin.getYamlHandler().getL().getString(language+".placement.top0003")+place;
 			return color;
@@ -334,7 +343,7 @@ public class Utility
         int i = 1;
         while(b.size()!=0)
         {
-        	TopList t = new TopList(i, "", 0);
+        	TopList t = new TopList(1, "", -1);
         	for(TopList tl : b)
         	{
         		if(tl.getTime()>t.getTime())
@@ -342,10 +351,34 @@ public class Utility
         			t = tl;
         		}
         	}
-        	b.remove(t);
         	t.setPlace(i);
-        	c.add(t);
         	i++;
+        	b.remove(t);
+        	c.add(t);
+        }
+        return c;
+	}
+	
+	public ArrayList<User> sortAfkList(ArrayList<User> a)
+	{
+		ArrayList<User> b = new ArrayList<>(a);
+        ArrayList<User> c = new ArrayList<>();
+        while(b.size()!=0)
+        {
+        	User u = null;
+        	for(User us : b)
+        	{
+        		if(u == null)
+        		{
+        			u = us;
+        		}
+        		if(us.getActivitytime()<u.getLastactivity())
+        		{
+        			u = us;
+        		}
+        	}
+        	b.remove(u);
+        	c.add(u);
         }
         return c;
 	}

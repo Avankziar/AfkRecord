@@ -528,7 +528,7 @@ public class MysqlInterface
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + tableNameI + "` ORDER BY `" + toplist + "` DESC";
+				String sql = "SELECT * FROM `" + tableNameI + "`";
 		        preparedUpdateStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedUpdateStatement.executeQuery();
@@ -624,7 +624,7 @@ public class MysqlInterface
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + tableNameII + "` WHERE `player_uuid` = ? ORDER BY `datum` DESC";
+				String sql = "SELECT * FROM `" + tableNameII + "` WHERE `player_uuid` = ?";
 		        preparedUpdateStatement = conn.prepareStatement(sql);
 		        preparedUpdateStatement.setString(1, player);
 		        
@@ -632,16 +632,15 @@ public class MysqlInterface
 		        PlayerInfo pi = new PlayerInfo(olddates, 0, 0, 0);
 		        while (result.next()) 
 		        {
-		        	long ac = Long.parseLong(result.getString("activitytime")) + pi.getActivitytime();
-		        	pi.setActivitytime(ac);
-		        	long afk = Long.parseLong(result.getString("afktime")) + pi.getAfktime();
-		        	pi.setAfktime(afk);
-		        	long all = Long.parseLong(result.getString("alltime")) + pi.getAlltime();
-		        	pi.setAlltime(all);
 		        	long current = plugin.getUtility().getDateInLong(result.getString("datum"));
-		        	if(olddate>current)
+		        	if(olddate<=current)
 		        	{
-		        		break;
+		        		long ac = Long.parseLong(result.getString("activitytime")) + pi.getActivitytime();
+			        	pi.setActivitytime(ac);
+			        	long afk = Long.parseLong(result.getString("afktime")) + pi.getAfktime();
+			        	pi.setAfktime(afk);
+			        	long all = Long.parseLong(result.getString("alltime")) + pi.getAlltime();
+			        	pi.setAlltime(all);
 		        	}
 		        }
 		        return pi;

@@ -1,6 +1,7 @@
 package main.java.de.avankziar.afkrecord.spigot.cmd;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -13,6 +14,7 @@ import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.interfaces.PlayerInfo;
 import main.java.de.avankziar.afkrecord.spigot.interfaces.TopList;
 import main.java.de.avankziar.afkrecord.spigot.interfaces.User;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -60,6 +62,9 @@ public class CMDAfkRecord implements CommandExecutor
 			TextComponent msg6 = plugin.getUtility().tc(plugin.getUtility().tl(
 					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.info.msg07")));
 			msg6.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord counttime "));
+			TextComponent msg7 = plugin.getUtility().tc(plugin.getUtility().tl(
+					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.info.msg08")));
+			msg7.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord counttime "));
 			player.spigot().sendMessage(plugin.getUtility().tcl(
 					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.info.msg01")));
 			player.spigot().sendMessage(msg1);
@@ -67,6 +72,7 @@ public class CMDAfkRecord implements CommandExecutor
 			player.spigot().sendMessage(msg3);
 			player.spigot().sendMessage(msg4);
 			player.spigot().sendMessage(msg6);
+			player.spigot().sendMessage(msg7);
 			player.spigot().sendMessage(msg5);
 			return true;
 		} else if("time".equalsIgnoreCase(args[0]))
@@ -739,6 +745,7 @@ public class CMDAfkRecord implements CommandExecutor
 					{
 						player.spigot().sendMessage(plugin.getUtility().tcl(
 								plugin.getYamlHandler().getL().getString(language+".msg03")));
+						return false;
 					}
 					page = Integer.parseInt(args[1]);
 					int start = page*10;
@@ -794,6 +801,7 @@ public class CMDAfkRecord implements CommandExecutor
 					{
 						player.spigot().sendMessage(plugin.getUtility().tcl(
 								plugin.getYamlHandler().getL().getString(language+".msg03")));
+						return false;
 					}
 					page = Integer.parseInt(args[1]);
 					int start = page*10;
@@ -812,7 +820,7 @@ public class CMDAfkRecord implements CommandExecutor
 					player.spigot().sendMessage(plugin.getUtility().tcl(
 							plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.gettime.msg01")
 							.replaceAll("%player%", target.getName())));
-					while(start<stop)
+					while(start<=stop)
 					{
 						player.spigot().sendMessage(plugin.getUtility().tcl(
 								plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.gettime.msg02")
@@ -913,18 +921,27 @@ public class CMDAfkRecord implements CommandExecutor
 						.replaceAll("%days%", args[1])));
 				player.sendMessage(plugin.getUtility().tl(
 						plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.counttime.msg02")
-						.replaceAll("%time%", plugin.getUtility().timetl(pi.getActivitytime()))));
+						.replaceAll("%ontime%", plugin.getUtility().timetl(pi.getActivitytime()))
+						.replaceAll("%afktime%", plugin.getUtility().timetl(pi.getAfktime()))
+						.replaceAll("%alltime%", plugin.getUtility().timetl(pi.getAlltime()))));
 				player.sendMessage(plugin.getUtility().tl(
 						plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.counttime.msg03")
-						.replaceAll("%time%", plugin.getUtility().timetl(pi.getAfktime()))));
+						.replaceAll("%ontime%", plugin.getUtility().timetl(pi.getActivitytime()))
+						.replaceAll("%afktime%", plugin.getUtility().timetl(pi.getAfktime()))
+						.replaceAll("%alltime%", plugin.getUtility().timetl(pi.getAlltime()))));
 				player.sendMessage(plugin.getUtility().tl(
 						plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.counttime.msg04")
-						.replaceAll("%time%", plugin.getUtility().timetl(pi.getAlltime()))));
-				player.sendMessage(plugin.getUtility().tl(
-						plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.counttime.msg05")
-						.replaceAll("%time%", plugin.getUtility().getDateExact(
-								Long.parseLong((String) plugin.getMysqlInterface().getDataI(
-								target.getUniqueId().toString(), "lastactivity", "player_uuid"))))));
+						.replaceAll("%ontime%", plugin.getUtility().timetl(pi.getActivitytime()))
+						.replaceAll("%afktime%", plugin.getUtility().timetl(pi.getAfktime()))
+						.replaceAll("%alltime%", plugin.getUtility().timetl(pi.getAlltime()))));
+				if(player.hasPermission("afkrecord.cmd.afkrecord.counttime.lastactivity"))
+				{
+					player.sendMessage(plugin.getUtility().tl(
+							plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.counttime.msg05")
+							.replaceAll("%time%", plugin.getUtility().getDateExact(
+									Long.parseLong((String) plugin.getMysqlInterface().getDataI(
+									player.getUniqueId().toString(), "lastactivity", "player_uuid"))))));
+				}
 				return true;
 			} else 
 			{
@@ -934,6 +951,108 @@ public class CMDAfkRecord implements CommandExecutor
 				player.spigot().sendMessage(msg);
 				return false;
 			}
+		} else if("getafk".equalsIgnoreCase(args[0]))
+		{
+			if(!player.hasPermission("afkrecord.cmd.afkrecord.getafk"))
+			{
+				player.spigot().sendMessage(plugin.getUtility().tcl(
+						plugin.getYamlHandler().getL().getString(language+".msg01")));
+				return false;
+			}
+			if(args.length!=1)
+			{
+				TextComponent msg = plugin.getUtility().tc(
+						plugin.getUtility().tl(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.msg01")));
+				msg.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord"));
+				player.spigot().sendMessage(msg);
+				return false;
+			}
+			ArrayList<User> user = plugin.getUtility().sortAfkList(User.getUsers());
+			boolean check = false;
+			TextComponent playerlist = plugin.getUtility().tc("");
+			long now = System.currentTimeMillis();
+			TextComponent MSG = plugin.getUtility().tcl(
+					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.getafk.msg02"));
+			List<BaseComponent> list = new ArrayList<>();
+			for(User u : user)
+			{
+				if(u.isIsafk())
+				{
+					long t = now-u.getLastactivity();
+					long time = t/(1000*60);
+					if(time<15)
+					{
+						String pc = plugin.getYamlHandler().getL()
+								.getString(language+".CMDAfkRecord.getafk.playercolor.under15min");
+						playerlist = plugin.getUtility().tcl(pc+u.getPlayer().getName()
+								+"&f|"+plugin.getUtility().timetl(t)+" ");
+						playerlist.setClickEvent(new ClickEvent(
+								ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getPlayer().getName()));
+					} else if(time>=15 && time<30)
+					{
+						String pc = plugin.getYamlHandler().getL()
+								.getString(language+".CMDAfkRecord.getafk.playercolor.15min");
+						playerlist = plugin.getUtility().tcl(pc+u.getPlayer().getName()
+								+"&f|"+plugin.getUtility().timetl(t)+" ");
+						playerlist.setClickEvent(new ClickEvent(
+								ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getPlayer().getName()));
+					} else if(time>=30 && time<45)
+					{
+						String pc = plugin.getYamlHandler().getL()
+								.getString(language+".CMDAfkRecord.getafk.playercolor.30min");
+						playerlist = plugin.getUtility().tcl(pc+u.getPlayer().getName()
+								+"&f|"+plugin.getUtility().timetl(t)+" ");
+						playerlist.setClickEvent(new ClickEvent(
+								ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getPlayer().getName()));
+					} else if(time>=45 && time<60)
+					{
+						String pc = plugin.getYamlHandler().getL()
+								.getString(language+".CMDAfkRecord.getafk.playercolor.45min");
+						playerlist = plugin.getUtility().tcl(pc+u.getPlayer().getName()
+								+"&f|"+plugin.getUtility().timetl(t)+" ");
+						playerlist.setClickEvent(new ClickEvent(
+								ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getPlayer().getName()));
+					} else if(time>=60 && time<90)
+					{
+						String pc = plugin.getYamlHandler().getL()
+								.getString(language+".CMDAfkRecord.getafk.playercolor.60min");
+						playerlist = plugin.getUtility().tcl(pc+u.getPlayer().getName()
+								+"&f|"+plugin.getUtility().timetl(t)+" ");
+						playerlist.setClickEvent(new ClickEvent(
+								ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getPlayer().getName()));
+					} else if(time>=90 && time<120)
+					{
+						String pc = plugin.getYamlHandler().getL()
+								.getString(language+".CMDAfkRecord.getafk.playercolor.90min");
+						playerlist = plugin.getUtility().tcl(pc+u.getPlayer().getName()
+								+"&f|"+plugin.getUtility().timetl(t)+" ");
+						playerlist.setClickEvent(new ClickEvent(
+								ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getPlayer().getName()));
+					} else if(time>=120)
+					{
+						String pc = plugin.getYamlHandler().getL()
+								.getString(language+".CMDAfkRecord.getafk.playercolor.120min");
+						playerlist = plugin.getUtility().tcl(pc+u.getPlayer().getName()
+								+"&f|"+plugin.getUtility().timetl(t)+" ");
+						playerlist.setClickEvent(new ClickEvent(
+								ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getPlayer().getName()));
+					}
+					list.add(playerlist);
+					if(check==false)
+					{
+						check = true;
+					}
+				}
+			}
+			if(check==false)
+			{
+				player.sendMessage(plugin.getUtility().tl(
+						plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.getafk.msg01")));
+				return false;
+			}
+			MSG.setExtra(list);
+			player.spigot().sendMessage(MSG);
+			return true;
 		} else if("convertolddata".equalsIgnoreCase(args[0])) 
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.convertolddata"))
@@ -942,7 +1061,7 @@ public class CMDAfkRecord implements CommandExecutor
 						plugin.getYamlHandler().getL().getString(language+".msg01")));
 				return false;
 			}
-			if(args.length!=4)
+			if(args.length!=5)
 			{
 				TextComponent msg = plugin.getUtility().tc(
 						plugin.getUtility().tl(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.msg01")));
@@ -955,6 +1074,7 @@ public class CMDAfkRecord implements CommandExecutor
 			String tableName = args[1];
 			String playercolumn = args[2];
 			String olddatacolumn = args[3];
+			Boolean deletedata = Boolean.parseBoolean(args[4]);
 			ArrayList<TopList> a = plugin.getMysqlInterface().getOldToConvertData(tableName, playercolumn, olddatacolumn);
 			for(TopList tl : a)
 			{
@@ -963,6 +1083,11 @@ public class CMDAfkRecord implements CommandExecutor
 					long thisdata = Long.parseLong((String) plugin.getMysqlInterface().getDataI(tl.getName(), "alltime", "player_uuid"))
 							+ tl.getTime();
 					plugin.getMysqlInterface().updateDataI(player, thisdata, "alltime");
+					if(deletedata==true)
+					{
+						plugin.getMysqlInterface().deleteData(
+								player.getUniqueId().toString(), playercolumn, tableName);
+					}
 				}
 			}
 			player.spigot().sendMessage(plugin.getUtility().tcl(

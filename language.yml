@@ -9,6 +9,7 @@ german:
     days: '&4Tage &f'
   placement:
     top0001: '&4'
+    top0002: '&4'
     top0003: '&6'
     top0005: '&5'
     top0010: '&d'
@@ -27,11 +28,12 @@ german:
     info:
       msg01: '&e==========&fAfkRecord&e=========='
       msg02: '&c/afkr time [Spieler] &f| Zeigt die Gesamtwerte des Spielers an.'
-      msg03: '&c/afkr top <spielzeit|gesamtzeit|afkzeit> [Zahl] &f| Zeigt die Topliste an, 10 Plätze pro Seite.'
+      msg03: '&c/afkr top <spielzeit|gesamtzeit|afkzeit> [Zahl] <löschenalterDaten> &f| Zeigt die Topliste an, 10 Plätze pro Seite.'
       msg04: '&c/afkr gettime [Zahl] [Spieler] &f| Zeigt die letzten Tage die Zeiten an.'
-      msg05: '&c/afkr convertolddata <tableName> <playerspalte> <zeitspalte> &f| Konvertiert alte GesamtZeit in die neue Mysql Tabelle'
+      msg05: '&c/afkr convertolddata <tableName> <playerspalte> <zeitspalte> <deleteolddata> &f| Konvertiert alte GesamtZeit in die neue Mysql Tabelle'
       msg06: '&c/afk &f| Setzt den Spieler in Afk-Zustand'
       msg07: '&c/afkr counttime <Tage> [Spieler] &f| Zählt alle Zeiten in einem Zeitraum.'
+      msg08: '&c/afkr getafk &f| Zeigt alle afk Spieler auf dem Spigot Server an'
     time:
       msg01: '&e=====&fAfkRecord &5%player%&e====='
       msg02: '&bAktive Spielzeit: &f%ontime% &f| &aPlatz &5%onplace%'
@@ -53,6 +55,17 @@ german:
       msg03: '&bAfkzeit:           &f%afktime%'
       msg04: '&bGesamte Zeit:    &f%alltime%'
       msg05: '&bLetzte Aktivität: &f%time%'
+    getafk:
+      msg01: '&eKein Spieler ist afk!'
+      msg02: '&eAfk Spieler: '
+      playercolor:
+        under15min: '&8'
+        15min: '&7'
+        30min: '&f'
+        45min: '&e'
+        60min: '&6'
+        90min: '&c'
+        120min: '&4'
     convertolddata:
       msg01: '&eAlte Daten werden konvertiert, dies kann etwas dauern.'
       msg02: '&aKonvertierung abgeschlossen!'
@@ -94,6 +107,7 @@ english:
       msg05: '&c/afkr convertolddata <tableName> <playerspalte> <zeitspalte> &f| Converts the old total time into the new mysql table'
       msg06: '&c/afk &f| Set the player in afk condition'
       msg07: '&c/afkr counttime <Tage> [Spieler] &f| Counts all times in a period.'
+      msg08: '&c/afkr getafk &f| Show all afk player on the spigot server'
     time:
       msg01: '&e=====&fAfkRecord &5%player%&e====='
       msg02: '&bActivetime: &f%ontime% &f| &aPlace &5%onplace%'
@@ -111,10 +125,21 @@ english:
       msg02: '&f%date%&7: &6Totaltime &f%alltime% | &aActive &f%ontime% | &cAfk &f%afktime%'
     counttime:
       msg01: '&e=====&fPlaytime from &5%player% &fthe past few %days% &fdays&e====='
-      msg02: '&bActivetime: &f%ontime% &f| &aPlace &5%onplace%'
-      msg03: '&bAfktime: &f%afktime% &f| &aPlatz &5%afkplace%'
-      msg04: '&bTotal time: &f%alltime% &f| &aPlatz &5%allplace%'
+      msg02: '&bActivetime: &f%ontime%'
+      msg03: '&bAfktime: &f%afktime%'
+      msg04: '&bTotal time: &f%alltime%'
       msg05: '&Last activity: &f%time%'
+    getafk:
+      msg01: '&eNo player is afk!'
+      msg02: '&eAfk Player: '
+      playercolor:
+        under15min: '&8'
+        15min: '&7'
+        30min: '&f'
+        45min: '&e'
+        60min: '&6'
+        90min: '&c'
+        120min: '&4'
     convertolddata:
       msg01: '&eOld data will be converted, this may take some time.'
       msg02: '&aConversion completed!'

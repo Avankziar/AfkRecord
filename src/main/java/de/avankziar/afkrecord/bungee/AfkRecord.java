@@ -23,8 +23,8 @@ public class AfkRecord extends Plugin
 	{
 		plugin = this;
 		log = getLogger();
-		utility = new Utility();
 		yamlHandler = new YamlHandler(this);
+		utility = new Utility();
 		if(yamlHandler.get().getString("mysql.status").equalsIgnoreCase("true"))
 		{
 			mysqlinterface = new MysqlInterface(this);

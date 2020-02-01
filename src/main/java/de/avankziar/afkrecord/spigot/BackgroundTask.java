@@ -88,11 +88,33 @@ public class BackgroundTask
 			public void run() 
 			{
 				ac = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("activitytime"));
-				afk = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("afktime"));
+			}
+		}.runTaskTimerAsynchronously(plugin, 5*20L, 
+				Long.parseLong(plugin.getYamlHandler().get().getString("general.toplistrefresh"))*20L);
+		
+		new BukkitRunnable() 
+		{
+			
+			@Override
+			public void run() 
+			{
 				all = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("alltime"));
 			}
-		}.runTaskTimerAsynchronously(plugin, 0L, 
+		}.runTaskTimerAsynchronously(plugin, 10*20L, 
 				Long.parseLong(plugin.getYamlHandler().get().getString("general.toplistrefresh"))*20L);
+		
+		new BukkitRunnable() 
+		{
+			
+			@Override
+			public void run() 
+			{
+				afk = plugin.getUtility().sortTopList(plugin.getMysqlInterface().getTop("afktime"));
+			}
+		}.runTaskTimerAsynchronously(plugin, 15*20L, 
+				Long.parseLong(plugin.getYamlHandler().get().getString("general.toplistrefresh"))*20L);
+		
+		
 	}
 	
 	public void onShutDownDataSave()
