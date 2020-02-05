@@ -121,10 +121,10 @@ public class CMDAfkRecord implements CommandExecutor
 							u.getAfktime()
 							+Long.parseLong((String) plugin.getMysqlInterface().getDataI(player, "afktime", "player_uuid")));
 					String ontime = plugin.getUtility().timetl(
-							u.getAfktime()
+							u.getActivitytime()
 							+Long.parseLong((String) plugin.getMysqlInterface().getDataI(player, "activitytime", "player_uuid")));
 					String alltime = plugin.getUtility().timetl(
-							u.getAfktime()
+							u.getAlltime()
 							+Long.parseLong((String) plugin.getMysqlInterface().getDataI(player, "alltime", "player_uuid")));
 					String lastactivity = plugin.getUtility().getDateExact(u.getLastactivity());
 					player.spigot().sendMessage(plugin.getUtility().tcl(
@@ -234,7 +234,7 @@ public class CMDAfkRecord implements CommandExecutor
 				int acplace = 0;
 				for(TopList tl : ac)
 				{
-					if(tl.getName().equals(player.getName()))
+					if(tl.getName().equals(target.getName()))
 					{
 						acplace = tl.getPlace();
 						break;
@@ -244,7 +244,7 @@ public class CMDAfkRecord implements CommandExecutor
 				int afkplace = 0;
 				for(TopList tl : afk)
 				{
-					if(tl.getName().equals(player.getName()))
+					if(tl.getName().equals(target.getName()))
 					{
 						afkplace = tl.getPlace();
 						break;
@@ -254,7 +254,7 @@ public class CMDAfkRecord implements CommandExecutor
 				int allplace = 0;
 				for(TopList tl : all)
 				{
-					if(tl.getName().equals(player.getName()))
+					if(tl.getName().equals(target.getName()))
 					{
 						allplace = tl.getPlace();
 						break;
@@ -1053,7 +1053,7 @@ public class CMDAfkRecord implements CommandExecutor
 			MSG.setExtra(list);
 			player.spigot().sendMessage(MSG);
 			return true;
-		} else if("convertolddata".equalsIgnoreCase(args[0])) 
+		}/* else if("convertolddata".equalsIgnoreCase(args[0])) 
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.convertolddata"))
 			{
@@ -1093,7 +1093,7 @@ public class CMDAfkRecord implements CommandExecutor
 			player.spigot().sendMessage(plugin.getUtility().tcl(
 					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.convertolddata.msg02")));
 			return true;
-		} else
+		}*/ else
 		{
 			TextComponent msg = plugin.getUtility().tc(
 					plugin.getUtility().tl(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.msg01")));

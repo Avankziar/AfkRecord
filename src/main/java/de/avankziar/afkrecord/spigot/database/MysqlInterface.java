@@ -536,9 +536,12 @@ public class MysqlInterface
 		        int i = 1;
 		        while (result.next()) 
 		        {
-		        	TopList tl = new TopList(i, result.getString("player_name"), Long.parseLong(result.getString(toplist)));
-		        	a.add(tl);
-		        	i++;
+		        	if(result.getString("player_name")!=null && result.getString(toplist)!=null)
+		        	{
+		        		TopList tl = new TopList(i, result.getString("player_name"), Long.parseLong(result.getString(toplist)));
+			        	a.add(tl);
+			        	i++;
+		        	}
 		        }
 		        return a;
 		    } catch (SQLException e) 
@@ -635,11 +638,26 @@ public class MysqlInterface
 		        	long current = plugin.getUtility().getDateInLong(result.getString("datum"));
 		        	if(olddate<=current)
 		        	{
-		        		long ac = Long.parseLong(result.getString("activitytime")) + pi.getActivitytime();
+		        		long acc = 0;
+		        		long afkk = 0;
+		        		long alll = 0;
+		        		if(result.getString("activitytime")!=null)
+			        	{
+			        		acc = Long.parseLong(result.getString("activitytime"));
+			        	}
+		        		if(result.getString("afktime")!=null)
+			        	{
+			        		afkk = Long.parseLong(result.getString("afktime"));
+			        	}
+		        		if(result.getString("alltime")!=null)
+			        	{
+			        		alll = Long.parseLong(result.getString("alltime"));
+			        	}
+		        		long ac = acc + pi.getActivitytime();
 			        	pi.setActivitytime(ac);
-			        	long afk = Long.parseLong(result.getString("afktime")) + pi.getAfktime();
+			        	long afk = afkk + pi.getAfktime();
 			        	pi.setAfktime(afk);
-			        	long all = Long.parseLong(result.getString("alltime")) + pi.getAlltime();
+			        	long all = alll + pi.getAlltime();
 			        	pi.setAlltime(all);
 		        	}
 		        }
@@ -685,8 +703,26 @@ public class MysqlInterface
 		        int i = 0;
 		        while (result.next()) 
 		        {
-		        	TopList tl = new TopList(i, result.getString(playercolumn), result.getLong(olddatacolumn));
-		        	a.add(tl);
+		        	long olddata = 0;
+		        	boolean check = true;
+		        	try 
+		        	{
+		        		olddata = Long.parseLong(result.getString(olddatacolumn));
+		        	} catch(NumberFormatException e)
+		        	{
+		        		try
+		        		{
+		        			olddata = (long) result.getObject(olddatacolumn);
+		        		} catch(NumberFormatException e1)
+			        	{
+		        			check = false;
+			        	}
+		        	}
+		        	if(check==true)
+		        	{
+		        		TopList tl = new TopList(i, result.getString(playercolumn), olddata);
+			        	a.add(tl);
+		        	}
 		        	i++;
 		        }
 		        return a;

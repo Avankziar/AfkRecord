@@ -1,2 +1,4 @@
-- /afkr getafk, zeigt alle Afk spieler afktime desc an. Klickbarer name mit befehl /afkr time <Spieler>
-- /convertdata mit einen letzten args machen, true false, um alte werte zu löschen
+- +/afkr getafk, zeigt alle Afk spieler afktime desc an. Klickbarer name mit befehl /afkr time <Spieler>
+- +/convertdata mit einen letzten args machen, true false, um alte werte zu löschen
+- bei top liste unten die "nächste Seite" zusätzlich auch vorherige Seite angeben und klickbar machen.
+   Und dazu den befehl sofort ausführen.

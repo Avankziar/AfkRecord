@@ -37,7 +37,6 @@ public class TABCompleter implements TabCompleter
 		firstargs.add("time");
 		firstargs.add("top");
 		firstargs.add("gettime");
-		firstargs.add("convertolddata");
 		firstargs.add("counttime");
 		firstargs.add("getafk");
 		Collections.sort(firstargs, String.CASE_INSENSITIVE_ORDER);
