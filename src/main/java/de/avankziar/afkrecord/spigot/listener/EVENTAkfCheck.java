@@ -3,6 +3,7 @@ package main.java.de.avankziar.afkrecord.spigot.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -45,6 +46,12 @@ public class EVENTAkfCheck implements Listener
 	
 	@EventHandler
 	public void onFish(PlayerFishEvent event)
+	{
+		plugin.getUtility().softSave(event.getPlayer(), true, true, false);
+	}
+	
+	@EventHandler
+	public void onCommand(PlayerCommandPreprocessEvent event)
 	{
 		plugin.getUtility().softSave(event.getPlayer(), true, true, false);
 	}
