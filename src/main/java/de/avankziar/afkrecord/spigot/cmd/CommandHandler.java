@@ -221,7 +221,7 @@ public class CommandHandler
 		TextComponent MSG = plugin.getUtility().tcl("");
 		List<BaseComponent> list = new ArrayList<BaseComponent>();
 		TextComponent msg2 = plugin.getUtility().tc(plugin.getUtility().tl(
-				plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg06")));
+				plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg06")+"|"));
 		msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+end));
 		list.add(msg2);
 		TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
