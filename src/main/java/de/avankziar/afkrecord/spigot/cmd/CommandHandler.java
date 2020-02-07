@@ -12,6 +12,8 @@ import main.java.de.avankziar.afkrecord.spigot.interfaces.TopList;
 import main.java.de.avankziar.afkrecord.spigot.interfaces.User;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class CommandHandler
@@ -112,14 +114,23 @@ public class CommandHandler
 				language+".CMDAfkRecord.time.msg02").contains("%ontime%"))
 		{
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top onlinetime"));
+			msg1.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg06"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CMDAfkRecord.time.msg02").contains("%afktime%"))
 		{
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top afktime"));
+			msg1.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg07"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CMDAfkRecord.time.msg02").contains("%alltime%"))
 		{
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top alltime"));
+			msg1.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg08"))).create()));
 		}
 		TextComponent msg2 = plugin.getUtility().tcl(
 				plugin.getYamlHandler().getL().getString(
@@ -134,14 +145,23 @@ public class CommandHandler
 				language+".CMDAfkRecord.time.msg03").contains("%ontime%"))
 		{
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top onlinetime"));
+			msg2.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg06"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CMDAfkRecord.time.msg03").contains("%afktime%"))
 		{
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top afktime"));
+			msg2.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg07"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CMDAfkRecord.time.msg03").contains("%alltime%"))
 		{
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top alltime"));
+			msg2.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg08"))).create()));
 		}
 		TextComponent msg3 = plugin.getUtility().tcl(
 				plugin.getYamlHandler().getL().getString(
@@ -156,14 +176,23 @@ public class CommandHandler
 				language+".CMDAfkRecord.time.msg04").contains("%ontime%"))
 		{
 			msg3.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top onlinetime"));
+			msg3.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg06"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CMDAfkRecord.time.msg04").contains("%afktime%"))
 		{
 			msg3.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top afktime"));
+			msg3.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg07"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CMDAfkRecord.time.msg04").contains("%alltime%"))
 		{
 			msg3.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top alltime"));
+			msg3.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+					new ComponentBuilder(plugin.getUtility().tl
+					(plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.time.msg08"))).create()));
 		}
 		player.spigot().sendMessage(msg1);
 		player.spigot().sendMessage(msg2);
@@ -220,16 +249,27 @@ public class CommandHandler
 		int i = page+1;
 		TextComponent MSG = plugin.getUtility().tcl("");
 		List<BaseComponent> list = new ArrayList<BaseComponent>();
-		TextComponent msg2 = plugin.getUtility().tc(plugin.getUtility().tl(
-				plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg06")+"|"));
-		msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+end));
-		list.add(msg2);
-		TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
-				plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg05")));
-		msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+i));
-		list.add(msg1);
-		MSG.setExtra(list);
-		player.spigot().sendMessage(MSG);
+		if(end>=2 && page==0)
+		{
+			TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
+					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg05").substring(1)));
+			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+i));
+			list.add(msg1);
+			MSG.setExtra(list);	
+			player.spigot().sendMessage(MSG);
+		} else if(end>=2 && page!=0)
+		{
+			TextComponent msg2 = plugin.getUtility().tc(plugin.getUtility().tl(
+					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg06")+"|"));
+			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+end));
+			list.add(msg2);
+			TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
+					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg05")));
+			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+i));
+			list.add(msg1);
+			MSG.setExtra(list);	
+			player.spigot().sendMessage(MSG);
+		}
 	}
 	
 	public void gettime(Player player, OfflinePlayer target, String language, int page)

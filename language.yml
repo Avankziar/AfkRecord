@@ -40,12 +40,15 @@ german:
       msg03: '&bAfkzeit:           &f%afktime% &f| &aPlatz &5%afkplace%'
       msg04: '&bGesamte Zeit:    &f%alltime% &f| &aPlatz &5%allplace%'
       msg05: '&bLetzte Aktivität: &f%time%'
+      msg06: '&eKlicke hier für die Topliste der Aktivenzeit'
+      msg07: '&eKlicke hier für die Topliste der Afkzeit'
+      msg08: '&eKlicke hier für die Topliste der Gesamtzeit'
     top:
       msg01: '&e=====&fTopListe Aktive Spielzeit&e====='
       msg02: '&e=====&fTopListe Gesamtzeit&e====='
       msg03: '&e=====&fTopListe Afkzeit&e====='
       msg04: '&ePlatz &c%place%&f: &6%player% &f| &eZeit: &f%time%'
-      msg05: '&e nächste Seite ==>'
+      msg05: ' &enächste Seite ==>'
       msg06: '&e<== vorherige Seite '
     gettime:
       msg01: '&e=====&fSpielzeiten &5%player%&e====='  
@@ -115,6 +118,9 @@ english:
       msg03: '&bAfktime: &f%afktime% &f| &aPlace &5%afkplace%'
       msg04: '&bTotal time: &f%alltime% &f| &aPlace &5%allplace%'
       msg05: '&Last activity: &f%time%'
+      msg06: '&eClick here for the top list of active time'
+      msg07: '&eClick here for the top list of the Afk time'
+      msg08: '&eClick here for the top list of total time'
     top:
       msg01: '&e=====&fTopListe Active Playtime&e====='
       msg02: '&e=====&fTopListe Total Time&e====='

@@ -64,7 +64,7 @@ public class CMDAfkRecord implements CommandExecutor
 					player.spigot().sendMessage(plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg02")));
 					return false;
 				}
-				if(Bukkit.getOfflinePlayer(args[1])==null)
+				if(!plugin.getMysqlInterface().hasAccount(Bukkit.getOfflinePlayer(args[1]).getUniqueId().toString()))
 				{
 					player.spigot().sendMessage(plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg02")));
 					return false;
@@ -220,7 +220,7 @@ public class CMDAfkRecord implements CommandExecutor
 								plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg02")));
 						return false;
 					}
-					if(Bukkit.getOfflinePlayer(args[2])==null)
+					if(!plugin.getMysqlInterface().hasAccount(Bukkit.getOfflinePlayer(args[2]).getUniqueId().toString()))
 					{
 						player.spigot().sendMessage(plugin.getUtility().tcl(
 								plugin.getYamlHandler().getL().getString(language+".msg02")));
@@ -284,7 +284,7 @@ public class CMDAfkRecord implements CommandExecutor
 							plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg02")));
 					return false;
 				}
-				if(Bukkit.getOfflinePlayer(args[2])==null)
+				if(!plugin.getMysqlInterface().hasAccount(Bukkit.getOfflinePlayer(args[2]).getUniqueId().toString()))
 				{
 					player.spigot().sendMessage(plugin.getUtility().tcl(
 							plugin.getYamlHandler().getL().getString(language+".msg02")));
