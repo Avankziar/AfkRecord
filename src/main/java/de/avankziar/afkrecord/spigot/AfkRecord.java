@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import main.java.de.avankziar.afkrecord.spigot.cmd.CMDAfk;
 import main.java.de.avankziar.afkrecord.spigot.cmd.CMDAfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.cmd.CommandHandler;
 import main.java.de.avankziar.afkrecord.spigot.cmd.TABCompleter;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlInterface;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlSetup;
@@ -28,6 +29,7 @@ public class AfkRecord extends JavaPlugin
 	private static MysqlInterface mysqlinterface;
 	private static BackgroundTask backgroundtask;
 	private static Utility utility;
+	private static CommandHandler commandHandler;
 	private static AfkRecord plugin;
 	
 	public void onEnable()
@@ -36,6 +38,7 @@ public class AfkRecord extends JavaPlugin
 		log = getLogger();
 		yamlHandler = new YamlHandler(this);
 		utility = new Utility(this);
+		commandHandler = new CommandHandler(this);
 		backgroundtask = new BackgroundTask(this);
 		if(yamlHandler.get().getString("mysql.status").equalsIgnoreCase("true"))
 		{
@@ -85,6 +88,11 @@ public class AfkRecord extends JavaPlugin
 	public BackgroundTask getBackgroundTask()
 	{
 		return backgroundtask;
+	}
+	
+	public CommandHandler getCommandHandler()
+	{
+		return commandHandler;
 	}
 	
 	public Utility getUtility()

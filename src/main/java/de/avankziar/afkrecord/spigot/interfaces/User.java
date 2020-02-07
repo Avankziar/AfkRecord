@@ -2,6 +2,7 @@ package main.java.de.avankziar.afkrecord.spigot.interfaces;
 
 import java.util.ArrayList;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class User 
@@ -26,7 +27,7 @@ public class User
 		setIsafk(isafk);
 	}
 	
-	public static User getUser(Player player)
+	public static User getUser(OfflinePlayer player)
 	{
 		User u = null;
 		for(User us : allUser)
@@ -35,10 +36,13 @@ public class User
 			{
 				if(us.getPlayer() != null)
 				{
-					if(us.getPlayer().getName().equals(player.getName()))
+					if(player!=null)
 					{
-						u = us;
-						break;
+						if(us.getPlayer().getName().equals(player.getName()))
+						{
+							u = us;
+							break;
+						}
 					}
 				}
 			}

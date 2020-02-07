@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.interfaces.TopList;
@@ -381,5 +382,19 @@ public class Utility
         	c.add(u);
         }
         return c;
+	}
+	
+	public int getPlace(OfflinePlayer player, ArrayList<TopList> array)
+	{
+		int place = 0;
+		for(TopList tl : array)
+		{
+			if(tl.getName().equals(player.getName()))
+			{
+				place = tl.getPlace();
+				break;
+			}
+		}
+		return place;
 	}
 }

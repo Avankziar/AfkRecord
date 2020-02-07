@@ -45,7 +45,8 @@ german:
       msg02: '&e=====&fTopListe Gesamtzeit&e====='
       msg03: '&e=====&fTopListe Afkzeit&e====='
       msg04: '&ePlatz &c%place%&f: &6%player% &f| &eZeit: &f%time%'
-      msg05: '&cKlicken &efür die nächste Seite ==>'
+      msg05: '&e nächste Seite ==>'
+      msg06: '&e<== vorherige Seite '
     gettime:
       msg01: '&e=====&fSpielzeiten &5%player%&e====='  
       msg02: '&f%date%&7: &6Gesamt &f%alltime% | &aAktive &f%ontime% | &cAfk &f%afktime%'
@@ -119,7 +120,8 @@ english:
       msg02: '&e=====&fTopListe Total Time&e====='
       msg03: '&e=====&fTopListe Afktime&e====='
       msg04: '&ePlace &c%place%&f: &6%player% &f| &eTime: &f%time%'
-      msg05: '&cClick &efor the next page==>'
+      msg05: '&e next page ==>'
+      msg06: '&e<== past page '
     gettime:
       msg01: '&e=====&fPlaytime &5%player%&e====='  
       msg02: '&f%date%&7: &6Totaltime &f%alltime% | &aActive &f%ontime% | &cAfk &f%afktime%'
