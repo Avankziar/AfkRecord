@@ -36,9 +36,6 @@ public class CommandHandler
 		TextComponent msg3 = plugin.getUtility().tc(plugin.getUtility().tl(
 				plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.info.msg04")));
 		msg3.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord gettime"));
-		TextComponent msg4 = plugin.getUtility().tc(plugin.getUtility().tl(
-				plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.info.msg05")));
-		msg4.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord convertolddata "));
 		TextComponent msg5 = plugin.getUtility().tc(plugin.getUtility().tl(
 				plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.info.msg06")));
 		msg5.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afk"));
@@ -53,7 +50,6 @@ public class CommandHandler
 		player.spigot().sendMessage(msg1);
 		player.spigot().sendMessage(msg2);
 		player.spigot().sendMessage(msg3);
-		player.spigot().sendMessage(msg4);
 		player.spigot().sendMessage(msg6);
 		player.spigot().sendMessage(msg7);
 		player.spigot().sendMessage(msg5);
@@ -247,6 +243,11 @@ public class CommandHandler
 			start++;
 		}
 		int i = page+1;
+		int j = page-1;
+		if(i==end)
+		{
+			i = 0;
+		}
 		TextComponent MSG = plugin.getUtility().tcl("");
 		List<BaseComponent> list = new ArrayList<BaseComponent>();
 		if(end>=2 && page==0)
@@ -261,7 +262,7 @@ public class CommandHandler
 		{
 			TextComponent msg2 = plugin.getUtility().tc(plugin.getUtility().tl(
 					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg06")+"|"));
-			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+end));
+			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+j));
 			list.add(msg2);
 			TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
 					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg05")));

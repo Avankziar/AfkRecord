@@ -59,11 +59,6 @@ public class CMDAfkRecord implements CommandExecutor
 					player.spigot().sendMessage(plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg01")));
 					return false;
 				}
-				if(args[1].matches("[0-9]+"))
-				{
-					player.spigot().sendMessage(plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg02")));
-					return false;
-				}
 				if(!plugin.getMysqlInterface().hasAccount(Bukkit.getOfflinePlayer(args[1]).getUniqueId().toString()))
 				{
 					player.spigot().sendMessage(plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg02")));
@@ -214,12 +209,6 @@ public class CMDAfkRecord implements CommandExecutor
 								plugin.getYamlHandler().getL().getString(language+".msg01")));
 						return false;
 					}
-					if(args[2].matches("[0-9]+"))
-					{
-						player.spigot().sendMessage(
-								plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg02")));
-						return false;
-					}
 					if(!plugin.getMysqlInterface().hasAccount(Bukkit.getOfflinePlayer(args[2]).getUniqueId().toString()))
 					{
 						player.spigot().sendMessage(plugin.getUtility().tcl(
@@ -276,12 +265,6 @@ public class CMDAfkRecord implements CommandExecutor
 				{
 					player.spigot().sendMessage(
 							plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg03")));
-					return false;
-				}
-				if(args[2].matches("[0-9]+"))
-				{
-					player.spigot().sendMessage(
-							plugin.getUtility().tcl(plugin.getYamlHandler().getL().getString(language+".msg02")));
 					return false;
 				}
 				if(!plugin.getMysqlInterface().hasAccount(Bukkit.getOfflinePlayer(args[2]).getUniqueId().toString()))

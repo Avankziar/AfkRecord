@@ -1,6 +1,6 @@
 name: AfkRecord
 main: main.java.de.avankziar.afkrecord.spigot.AfkRecord
-version: 4
+version: 5
 author: Avankziar
 website: https://www.spigotmc.org/resources/authors/avankziar.332028/
 load: STARTUP
@@ -14,40 +14,37 @@ commands:
 permissions:
   afkrecord.cmd.afk:
     description: Give acess to use /afk.
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.info:
     description: Give acess to use /afkr.
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.time.self:
     description: Give acess to use /afkr time.
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.time.other:
     description: Give acess to use /afkr time <player>.
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.top.onlinetime:
     description: Give acess to use /afkr top onlinetime [page].
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.top.alltime:
     description: Give acess to use /afkr top alltime [page].
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.top.afktime:
     description: Give acess to use /afkr top afktime [page].
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.gettime.self:
     description: Give acess to use /afkr gettime [page].
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.gettime.other:
     description: Give acess to use /afkr gettime <page> <player>.
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.counttime.self:
     description: Give acess to use /afkr counttime [days].
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.counttime.other:
     description: Give acess to use /afkr counttime <days> <player>.
-    default: true
+    default: false
   afkrecord.cmd.afkrecord.getafk:
     description: Give acess to use /afkr getafk.
-    default: true
-  afkrecord.cmd.afkrecord.convertolddata:
-    description: Give acess to use /afkr convertolddata <tablename> <playercolumn> <timecolumn> <deleteolddata(boolean)>.
-    default: true
+    default: false
