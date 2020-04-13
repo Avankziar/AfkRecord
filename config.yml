@@ -1,4 +1,5 @@
 language: 'english'
+bungee: 'false'
 mysql:
   status: 'false'
   host: '127.0.0.1'

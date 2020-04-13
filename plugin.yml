@@ -1,6 +1,6 @@
 name: AfkRecord
 main: main.java.de.avankziar.afkrecord.spigot.AfkRecord
-version: 5
+version: 6
 author: Avankziar
 website: https://www.spigotmc.org/resources/authors/avankziar.332028/
 load: STARTUP

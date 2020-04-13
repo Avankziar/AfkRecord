@@ -54,7 +54,7 @@ public class Utility
 		{
 			if(now>=u.getLasttimecheck()) //normaler Check
 			{
-				long difference = now - u.getLasttimecheck()+1000L*15;
+				long difference = now - u.getLasttimecheck();
 				if(u.isIsafk())
 				{
 					long afktime = u.getAfktime()+difference;
@@ -80,7 +80,22 @@ public class Utility
 				}
 				long alltime = u.getAlltime()+difference;
 				u.setAlltime(alltime);
-				long newlasttimecheck = System.currentTimeMillis()+1000L*15;
+				long newlasttimecheck = now+1000L*15;
+				u.setLasttimecheck(newlasttimecheck);
+				if(newactivity==true)
+				{
+					u.setLastactivity(now);
+					plugin.getMysqlInterface().updateDataI(player, now, "lastactivity");
+				}
+			} else if(setactiv == true && newactivity == true && setafk == false && u.isIsafk() == false) 
+				//wenn man nicht afk war aber durch externe Anfragen auf den softsave zugegriffen wird.
+			{
+				long difference = now - u.getLasttimecheck();
+				long activitytime = u.getActivitytime()+difference;
+				u.setActivitytime(activitytime);
+				long alltime = u.getAlltime()+difference;
+				u.setAlltime(alltime);
+				long newlasttimecheck = now+1000L*15;
 				u.setLasttimecheck(newlasttimecheck);
 				if(newactivity==true)
 				{
@@ -89,7 +104,7 @@ public class Utility
 				}
 			} else if(setactiv == true && newactivity == true && u.isIsafk()) //Wenn man afk war, und nun sich bewegt etc.
 			{
-				long difference = now - u.getLasttimecheck()+1000L*15;
+				long difference = now - u.getLasttimecheck();
 				long afktime = u.getAfktime()+difference;
 				u.setAfktime(afktime);
 				u.setIsafk(false);
@@ -98,7 +113,7 @@ public class Utility
 						plugin.getYamlHandler().getL().getString(language+".CMDAfk.msg03")));
 				long alltime = u.getAlltime()+difference;
 				u.setAlltime(alltime);
-				long newlasttimecheck = System.currentTimeMillis()+1000L*15;
+				long newlasttimecheck = now+1000L*15;
 				u.setLasttimecheck(newlasttimecheck);
 				if(newactivity==true)
 				{
@@ -107,7 +122,7 @@ public class Utility
 				}
 			} else if(setafk == true && u.isIsafk() == false) //wenn man /afk nutzt
 			{
-				long difference = now - u.getLasttimecheck()+1000L*15;
+				long difference = now - u.getLasttimecheck();
 				long activitytime = u.getActivitytime()+difference;
 				u.setActivitytime(activitytime);
 				u.setIsafk(true);
@@ -116,7 +131,7 @@ public class Utility
 						plugin.getYamlHandler().getL().getString(language+".CMDAfk.msg01")));
 				long alltime = u.getAlltime()+difference;
 				u.setAlltime(alltime);
-				long newlasttimecheck = System.currentTimeMillis()+1000L*15;
+				long newlasttimecheck = now+1000L*15;
 				u.setLasttimecheck(newlasttimecheck);
 				if(newactivity==true)
 				{

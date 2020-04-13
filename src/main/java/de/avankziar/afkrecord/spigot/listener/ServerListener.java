@@ -38,7 +38,7 @@ public class ServerListener  implements PluginMessageListener
             		Player player = plugin.getServer().getPlayer(UUID.fromString(PlayerUUID));
             		if(User.getUser(player)==null)
             		{
-            			
+            			return;
             		}
             		plugin.getUtility().softSave(player, true, true, false);
             	}

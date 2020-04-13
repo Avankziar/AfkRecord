@@ -47,8 +47,8 @@ german:
       msg02: '&e=====&fTopListe Gesamtzeit&e====='
       msg03: '&e=====&fTopListe Afkzeit&e====='
       msg04: '&ePlatz &c%place%&f: &6%player% &f| &eZeit: &f%time%'
-      msg05: ' &enächste Seite ==>'
-      msg06: '&e<== vorherige Seite '
+      msg05: '&enächste Seite ==>'
+      msg06: '&e<== vorherige Seite'
     gettime:
       msg01: '&e=====&fSpielzeiten &5%player%&e====='  
       msg02: '&f%date%&7: &6Gesamt &f%alltime% | &aAktive &f%ontime% | &cAfk &f%afktime%'

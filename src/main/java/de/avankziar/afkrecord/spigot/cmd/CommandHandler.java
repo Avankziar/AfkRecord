@@ -207,14 +207,15 @@ public class CommandHandler
 		int size = ar.size()-1;
 		int start = 0;
 		int stop = 0;
-		int end = 0;
 		start = page*10;
-		stop = page*10+10;
-		end = (int) Math.ceil(size/10);
+		stop = page*10+9;
+		boolean lastpage = false;
+		//end = (int) Math.ceil(size/10);
 		if(stop>size)
 		{
 			stop = size;
-			start = size-10;
+			start = size-9;
+			lastpage = true;
 			if(start<0)
 			{
 				start = 0;
@@ -244,33 +245,28 @@ public class CommandHandler
 		}
 		int i = page+1;
 		int j = page-1;
-		if(i==end)
-		{
-			i = 0;
-		}
 		TextComponent MSG = plugin.getUtility().tcl("");
 		List<BaseComponent> list = new ArrayList<BaseComponent>();
-		if(end>=2 && page==0)
-		{
-			TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
-					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg05").substring(1)));
-			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+i));
-			list.add(msg1);
-			MSG.setExtra(list);	
-			player.spigot().sendMessage(MSG);
-		} else if(end>=2 && page!=0)
+		if(page!=0)
 		{
 			TextComponent msg2 = plugin.getUtility().tc(plugin.getUtility().tl(
-					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg06")+"|"));
+					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg06")));
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+j));
 			list.add(msg2);
+		}
+		if(!lastpage)
+		{
 			TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
 					plugin.getYamlHandler().getL().getString(language+".CMDAfkRecord.top.msg05")));
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkrecord top "+subcmd+" "+i));
+			if(list.size()==1)
+			{
+				list.add(plugin.getUtility().tc(" | "));
+			}
 			list.add(msg1);
-			MSG.setExtra(list);	
-			player.spigot().sendMessage(MSG);
 		}
+		MSG.setExtra(list);	
+		player.spigot().sendMessage(MSG);
 	}
 	
 	public void gettime(Player player, OfflinePlayer target, String language, int page)

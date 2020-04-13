@@ -129,4 +129,9 @@ public class AfkRecord extends JavaPlugin
 		}
 		return false;
 	}
+	
+	public void softSave(Player player)
+	{
+		plugin.getUtility().softSave(player, true, true, false);
+	}
 }

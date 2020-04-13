@@ -1,6 +1,15 @@
+Build 6
+- +softSave methode für die Api hinzugefügt
+- +kleine Fehler verbessert
+
+Build 5
+- +in config.yml bungee: 'false' hinzugefügt
+
+Build 4
 - +afkr time player anzeige fehler fix
 - +nun ist wird man auch entafkt wenn man command eingibt.
 
+Build 3
 - +/afkr getafk, zeigt alle Afk spieler afktime desc an. Klickbarer name mit befehl /afkr time <Spieler>
 - +/convertdata mit einen letzten args machen, true false, um alte werte zu löschen
 - bei top liste unten die "nächste Seite" zusätzlich auch vorherige Seite angeben und klickbar machen.

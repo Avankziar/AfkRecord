@@ -1,11 +1,16 @@
 package main.java.de.avankziar.afkrecord.bungee;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import main.java.de.avankziar.afkrecord.bungee.database.MysqlInterface;
 import main.java.de.avankziar.afkrecord.bungee.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlHandler;
 import main.java.de.avankziar.afkrecord.bungee.listener.EVENTAfkCheck;
+import main.java.de.avankziar.afkrecord.bungee.listener.ServerListener;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -35,6 +40,7 @@ public class AfkRecord extends Plugin
 		}
 		getProxy().registerChannel("afkrecord:afkrecordout");
 		getProxy().getPluginManager().registerListener(this, new EVENTAfkCheck());
+		getProxy().getPluginManager().registerListener(this, new ServerListener(this));
 	}
 	
 	public void onDisable()
@@ -85,5 +91,22 @@ public class AfkRecord extends Plugin
 			return false;
 		}
 		return (boolean) mysqlinterface.getDataI(player, "isafk", "player_uuid");
+	}
+	
+	public void softSave(ProxiedPlayer player)
+	{
+		ServerInfo server = player.getServer().getInfo();
+		String µ = "µ";
+		String message = "softsave"+µ+player.getUniqueId().toString();
+		ByteArrayOutputStream streamout = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(streamout);
+        String msg = message;
+        try {
+			out.writeUTF(msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    server.sendData("afkrecord:afkrecordout", streamout.toByteArray());
+	    return;
 	}
 }
