@@ -15,12 +15,26 @@ public class YamlHandler
 	private YamlConfiguration cfg = new YamlConfiguration();
 	private File language = null;
 	private YamlConfiguration lgg = new YamlConfiguration();
+	private String languages;
 	
 	public YamlHandler(AfkRecord plugin) 
 	{
 		this.plugin = plugin;
-		mkdir();
-		loadYamls();
+		loadYamlHandler();
+	}
+	
+	public boolean loadYamlHandler()
+	{
+		if(!mkdir())
+		{
+			return false;
+		}
+		if(!loadYamls())
+		{
+			return false;
+		}
+		languages = cfg.getString("Language", "English");
+		return true;
 	}
 	
 	public YamlConfiguration get()
@@ -33,7 +47,7 @@ public class YamlHandler
 		return lgg;
 	}
 	
-	private void mkdir() 
+	private boolean mkdir() 
 	{
 		config = new File(plugin.getDataFolder(), "config.yml");
 		if(!config.exists()) 
@@ -47,6 +61,7 @@ public class YamlHandler
 			AfkRecord.log.info("Create language.yml...");
 			plugin.saveResource("language.yml", false);
 		}
+		return true;
 	}
 	
 	public void saveConfig() 
@@ -75,21 +90,32 @@ public class YamlHandler
 	    }
 	}
 	
-	public void loadYamls() 
+	public boolean loadYamls() 
 	{
 		try 
 		{
 			AfkRecord.log.info("Load config.yml...");
 			cfg.load(config);
-		} catch (IOException | InvalidConfigurationException e) {
+		} catch (IOException | InvalidConfigurationException e) 
+		{
 			AfkRecord.log.severe("Could not load the config file! You need to regenerate the config! Error: " + e.getMessage());
 			e.printStackTrace();
+			return false;
 		}
 		try 
 		{
 			lgg.load(language);
-		} catch (IOException | InvalidConfigurationException e) {
-			throw new RuntimeException(e);
+		} catch (IOException | InvalidConfigurationException e) 
+		{
+			AfkRecord.log.severe("Could not load the language file! You need to regenerate the language! Error: " + e.getMessage());
+			e.printStackTrace();
+			return false;
 		}
+		return true;
+	}
+
+	public String getLanguages()
+	{
+		return languages;
 	}
 }

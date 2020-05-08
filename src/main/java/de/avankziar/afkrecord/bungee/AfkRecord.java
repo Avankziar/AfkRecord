@@ -3,13 +3,16 @@ package main.java.de.avankziar.afkrecord.bungee;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import main.java.de.avankziar.afkrecord.bungee.database.MysqlInterface;
+import main.java.de.avankziar.afkrecord.bungee.database.MysqlHandler;
 import main.java.de.avankziar.afkrecord.bungee.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlHandler;
-import main.java.de.avankziar.afkrecord.bungee.listener.EVENTAfkCheck;
+import main.java.de.avankziar.afkrecord.bungee.listener.EventAfkCheck;
 import main.java.de.avankziar.afkrecord.bungee.listener.ServerListener;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -19,8 +22,8 @@ public class AfkRecord extends Plugin
 	public static Logger log;
 	public static String pluginName = "AfkRecord";
 	private static YamlHandler yamlHandler;
-	private static MysqlSetup databaseHandler;
-	private static MysqlInterface mysqlinterface;
+	private static MysqlSetup mysqlSetup;
+	private static MysqlHandler mysqlHandler;
 	private static Utility utility;
 	private static AfkRecord plugin;
 	
@@ -29,17 +32,19 @@ public class AfkRecord extends Plugin
 		plugin = this;
 		log = getLogger();
 		yamlHandler = new YamlHandler(this);
-		utility = new Utility();
-		if(yamlHandler.get().getString("mysql.status").equalsIgnoreCase("true"))
+		utility = new Utility(this);
+		if(yamlHandler.get().getBoolean("Mysql.Status", false))
 		{
-			mysqlinterface = new MysqlInterface(this);
-			databaseHandler = new MysqlSetup(this);
+			mysqlHandler = new MysqlHandler(this);
+			mysqlSetup = new MysqlSetup(this);
 		} else
 		{
-			log.severe("MySQL is not enabled! "+pluginName+" wont work correctly!");
+			disablePlugin();
+			log.severe("MySQL is not enabled! "+pluginName+" is disabled!");
 		}
 		getProxy().registerChannel("afkrecord:afkrecordout");
-		getProxy().getPluginManager().registerListener(this, new EVENTAfkCheck());
+		getProxy().registerChannel("afkrecord:afkrecordin");
+		getProxy().getPluginManager().registerListener(this, new EventAfkCheck(this));
 		getProxy().getPluginManager().registerListener(this, new ServerListener(this));
 	}
 	
@@ -47,12 +52,12 @@ public class AfkRecord extends Plugin
 	{
 		getProxy().getScheduler().cancel(this);
 		//HandlerList.unregisterAll();
-		if(yamlHandler.get().getString("mysql.status").equalsIgnoreCase("true"))
+		if(yamlHandler.get().getBoolean("Mysql.Status", false))
 		{
-			if (databaseHandler.getConnection() != null) 
+			if (mysqlSetup.getConnection() != null) 
 			{
 				//backgroundtask.onShutDownDataSave();
-				databaseHandler.closeConnection();
+				mysqlSetup.closeConnection();
 			}
 		}
 		
@@ -64,14 +69,14 @@ public class AfkRecord extends Plugin
 		return yamlHandler;
 	}
 	
-	public MysqlSetup getDatabaseHandler() 
+	public MysqlSetup getMysqlSetup() 
 	{
-		return databaseHandler;
+		return mysqlSetup;
 	}
 	
-	public MysqlInterface getMysqlInterface()
+	public MysqlHandler getMysqlHandler()
 	{
-		return mysqlinterface;
+		return mysqlHandler;
 	}
 	
 	public Utility getUtility()
@@ -84,13 +89,63 @@ public class AfkRecord extends Plugin
 		return plugin;
 	}
 	
-	public boolean isAfk(ProxiedPlayer player)
+	public boolean reload()
 	{
-		if(!mysqlinterface.hasAccount(player))
+		if(!yamlHandler.loadYamlHandler())
 		{
 			return false;
 		}
-		return (boolean) mysqlinterface.getDataI(player, "isafk", "player_uuid");
+		if(!utility.loadUtility())
+		{
+			return false;
+		}
+		if(yamlHandler.get().getBoolean("Mysql.Status", false))
+		{
+			mysqlSetup.closeConnection();
+			if(!mysqlHandler.loadMysqlHandler())
+			{
+				return false;
+			}
+			if(!mysqlSetup.loadMysqlSetup())
+			{
+				return false;
+			}
+		} else 
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void disablePlugin()
+	{
+		Plugin plugin = (Plugin) ProxyServer.getInstance().getPluginManager().getPlugin(pluginName);
+	       
+		try
+		{
+			plugin.onDisable();
+			for (Handler handler : plugin.getLogger().getHandlers())
+			{
+				handler.close();
+			}
+		}
+		catch (Throwable t) {
+			getLogger().log(Level.SEVERE, "Exception disabling plugin " + plugin.getDescription().getName(), t);
+		}
+		ProxyServer.getInstance().getPluginManager().unregisterCommands(plugin);
+		ProxyServer.getInstance().getPluginManager().unregisterListeners(plugin);
+		ProxyServer.getInstance().getScheduler().cancel(plugin);
+		plugin.getExecutorService().shutdownNow();
+	}
+	
+	public boolean isAfk(ProxiedPlayer player)
+	{
+		if(!mysqlHandler.hasAccount(player))
+		{
+			return false;
+		}
+		return (boolean) mysqlHandler.getDataI(player, "isafk", "player_uuid");
 	}
 	
 	public void softSave(ProxiedPlayer player)

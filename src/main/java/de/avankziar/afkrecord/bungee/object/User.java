@@ -1,13 +1,13 @@
-package main.java.de.avankziar.afkrecord.spigot.interfaces;
+package main.java.de.avankziar.afkrecord.bungee.object;
 
 import java.util.ArrayList;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class User 
 {
-	private Player player;
+	private ProxiedPlayer player;
+	private String name;
 	private long lasttimecheck; //Letzte Interaction des Spielers
 	private long activitytime; //insgesamte Activitätszeit
 	private long afktime; //insgesamte Afkzeit
@@ -16,9 +16,12 @@ public class User
 	private boolean isafk;
 	private static ArrayList<User> allUser = new ArrayList<User>();
 	
-	public User(Player player, long lasttimecheck, long activitytime, long afktime, long alltime, long lastactivity, boolean isafk)
+	public User(ProxiedPlayer player, String name,
+			long lasttimecheck, long activitytime, long afktime, long alltime,
+			long lastactivity, boolean isafk)
 	{
 		setPlayer(player);
+		setName(name);
 		setLasttimecheck(lasttimecheck);
 		setActivitytime(activitytime);
 		setAfktime(afktime);
@@ -27,7 +30,7 @@ public class User
 		setIsafk(isafk);
 	}
 	
-	public static User getUser(OfflinePlayer player)
+	public static User getUser(ProxiedPlayer player)
 	{
 		User u = null;
 		for(User us : allUser)
@@ -65,14 +68,24 @@ public class User
 		return allUser;
 	}
 	
-	public Player getPlayer() 
+	public ProxiedPlayer getPlayer() 
 	{
 		return player;
 	}
 
-	public void setPlayer(Player player) 
+	public void setPlayer(ProxiedPlayer player) 
 	{
 		this.player = player;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	public long getActivitytime() 

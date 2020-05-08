@@ -16,53 +16,84 @@ public class MysqlSetup
 	public MysqlSetup(AfkRecord plugin) 
 	{
 		this.plugin = plugin;
-		connectToDatabase();
-		setupDatabaseI();
-		setupDatabaseII();
+		loadMysqlSetup();
 	}
 	
-	public void connectToDatabase() 
+	public boolean loadMysqlSetup()
+	{
+		if(!connectToDatabase())
+		{
+			return false;
+		}
+		if(!setupDatabaseI())
+		{
+			return false;
+		}
+		if(!setupDatabaseII())
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean connectToDatabase() 
 	{
 		AfkRecord.log.info("Connecting to the database...");
-		try {
+		try 
+		{
        	 	//Load Drivers
             Class.forName("com.mysql.jdbc.Driver");
             Properties properties = new Properties();
-            properties.setProperty("user", plugin.getYamlHandler().get().getString("mysql.user"));
-            properties.setProperty("password", plugin.getYamlHandler().get().getString("mysql.password"));
-            properties.setProperty("autoReconnect", plugin.getYamlHandler().get().getString("mysql.autoReconnect"));
-            properties.setProperty("verifyServerCertificate", plugin.getYamlHandler().get().getString("mysql.verifyServerCertificate"));
-            properties.setProperty("useSSL", plugin.getYamlHandler().get().getString("mysql.sslEnabled"));
-            properties.setProperty("requireSSL", plugin.getYamlHandler().get().getString("mysql.sslEnabled"));
+            properties.setProperty("user", plugin.getYamlHandler().get().getString("Mysql.User"));
+            properties.setProperty("password", plugin.getYamlHandler().get().getString("Mysql.Password"));
+            properties.setProperty("autoReconnect", 
+            		plugin.getYamlHandler().get().getBoolean("Mysql.AutoReconnect", true) + "");
+            properties.setProperty("verifyServerCertificate", 
+            		plugin.getYamlHandler().get().getBoolean("Mysql.VerifyServerCertificate", false) + "");
+            properties.setProperty("useSSL", 
+            		plugin.getYamlHandler().get().getBoolean("Mysql.SSLEnabled", false) + "");
+            properties.setProperty("requireSSL", 
+            		plugin.getYamlHandler().get().getBoolean("Mysql.SSLEnabled", false) + "");
             //Connect to database
-            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().get().getString("mysql.host") 
-            		+ ":" + plugin.getYamlHandler().get().getString("mysql.port") + "/" + plugin.getYamlHandler().get().getString("mysql.databaseName"), properties);
+            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().get().getString("Mysql.Host") 
+            		+ ":" + plugin.getYamlHandler().get().getInt("Mysql.Port", 3306) + "/" 
+            		+ plugin.getYamlHandler().get().getString("Mysql.DatabaseName"), properties);
            
-          } catch (ClassNotFoundException e) {
+          } catch (ClassNotFoundException e) 
+		{
         	  AfkRecord.log.severe("Could not locate drivers for mysql! Error: " + e.getMessage());
-            return;
-          } catch (SQLException e) {
+            return false;
+          } catch (SQLException e) 
+		{
         	  AfkRecord.log.severe("Could not connect to mysql database! Error: " + e.getMessage());
-            return;
+            return false;
           }
 		AfkRecord.log.info("Database connection successful!");
+		return true;
 	}
 	
-	public void setupDatabaseI() 
+	public boolean setupDatabaseI() 
 	{
 		if (conn != null) 
 		{
 			PreparedStatement query = null;
 		      try 
 		      {	        
-		    	  String data = "CREATE TABLE IF NOT EXISTS `" + plugin.getMysqlInterface().tableNameI
-			        		+ "` (id int AUTO_INCREMENT PRIMARY KEY, player_uuid char(36) NOT NULL UNIQUE, player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
-			        		+ " alltime long, activitytime long, afktime long, lastactivity long, isafk boolean);";
+		    	  String data = "CREATE TABLE IF NOT EXISTS `" + plugin.getMysqlHandler().tableNameI
+			        		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+			        		+ " player_uuid char(36) NOT NULL UNIQUE,"
+			        		+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
+			        		+ " alltime long,"
+			        		+ " activitytime BIGINT NULL DEFAULT '0',"
+			        		+ " afktime BIGINT NULL DEFAULT '0',"
+			        		+ " lastactivity BIGINT NULL DEFAULT '0',"
+			        		+ " isafk boolean);";
 		        query = conn.prepareStatement(data);
 		        query.execute();
 		      } catch (SQLException e) {
 		        e.printStackTrace();
 		        AfkRecord.log.severe("Error creating tables! Error: " + e.getMessage());
+		        return false;
 		      } finally {
 		    	  try {
 		    		  if (query != null) {
@@ -70,26 +101,34 @@ public class MysqlSetup
 		    		  }
 		    	  } catch (Exception e) {
 		    		  e.printStackTrace();
+		    		  return false;
 		    	  }
 		      }
 		}
+		return true;
 	}
 	
-	public void setupDatabaseII() 
+	public boolean setupDatabaseII() 
 	{
 		if (conn != null) 
 		{
 			PreparedStatement query = null;
 		      try 
 		      {	        
-		    	  String data = "CREATE TABLE IF NOT EXISTS `" + plugin.getMysqlInterface().tableNameII
-			        		+ "` (id int AUTO_INCREMENT PRIMARY KEY, player_uuid char(36) NOT NULL, player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
-			        		+ " datum text, alltime long, activitytime long, afktime long);";
+		    	  String data = "CREATE TABLE IF NOT EXISTS `" + plugin.getMysqlHandler().tableNameII
+			        		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+			        		+ " player_uuid char(36) NOT NULL,"
+			        		+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
+			        		+ " datum text,"
+			        		+ " alltime BIGINT NULL DEFAULT '0',"
+			        		+ " activitytime BIGINT NULL DEFAULT '0',"
+			        		+ " afktime BIGINT NULL DEFAULT '0');";
 		        query = conn.prepareStatement(data);
 		        query.execute();
 		      } catch (SQLException e) {
 		        e.printStackTrace();
 		        AfkRecord.log.severe("Error creating tables! Error: " + e.getMessage());
+		        return false;
 		      } finally {
 		    	  try {
 		    		  if (query != null) {
@@ -97,9 +136,11 @@ public class MysqlSetup
 		    		  }
 		    	  } catch (Exception e) {
 		    		  e.printStackTrace();
+		    		  return false;
 		    	  }
 		      }
 		}
+		return true;
 	}
 	
 	public Connection getConnection() {
@@ -126,8 +167,10 @@ public class MysqlSetup
 		}
 	}
 	
-	public boolean reConnect() {
-		try {            
+	public boolean reConnect() 
+	{
+		try 
+		{            
             long start = 0;
 			long end = 0;
 			
@@ -135,23 +178,26 @@ public class MysqlSetup
 		    AfkRecord.log.info("Attempting to establish a connection to the MySQL server!");
             Class.forName("com.mysql.jdbc.Driver");
             Properties properties = new Properties();
-            properties.setProperty("user", plugin.getYamlHandler().get().getString("mysql.user"));
-            properties.setProperty("password", plugin.getYamlHandler().get().getString("mysql.password"));
-            properties.setProperty("autoReconnect", "true");
-            properties.setProperty("verifyServerCertificate", "false");
-            properties.setProperty("useSSL", plugin.getYamlHandler().get().getString("mysql.sslEnabled"));
-            properties.setProperty("requireSSL", plugin.getYamlHandler().get().getString("mysql.sslEnabled"));
-            //properties.setProperty("useUnicode", "true");
-            //properties.setProperty("characterEncoding", "utf8");
-            //properties.setProperty("characterSetResults", "utf8");
-            //properties.setProperty("connectionCollation", "utf8mb4_unicode_ci");
-            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().get().getString("mysql.host") + ":" 
-            		+ plugin.getYamlHandler().get().getString("mysql.port") + "/" + plugin.getYamlHandler().get().getString("mysql.databaseName"), properties);
+            properties.setProperty("user", plugin.getYamlHandler().get().getString("Mysql.User"));
+            properties.setProperty("password", plugin.getYamlHandler().get().getString("Mysql.Password"));
+            properties.setProperty("autoReconnect", 
+            		plugin.getYamlHandler().get().getBoolean("Mysql.AutoReconnect", true) + "");
+            properties.setProperty("verifyServerCertificate", 
+            		plugin.getYamlHandler().get().getBoolean("Mysql.VerifyServerCertificate", false) + "");
+            properties.setProperty("useSSL", 
+            		plugin.getYamlHandler().get().getBoolean("Mysql.SSLEnabled", false) + "");
+            properties.setProperty("requireSSL", 
+            		plugin.getYamlHandler().get().getBoolean("Mysql.SSLEnabled", false) + "");
+            //Connect to database
+            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().get().getString("Mysql.Host") 
+            		+ ":" + plugin.getYamlHandler().get().getInt("Mysql.Port", 3306) + "/" 
+            		+ plugin.getYamlHandler().get().getString("Mysql.DatabaseName"), properties);
 		    end = System.currentTimeMillis();
 		    AfkRecord.log.info("Connection to MySQL server established!");
 		    AfkRecord.log.info("Connection took " + ((end - start)) + "ms!");
             return true;
-		} catch (Exception e) {
+		} catch (Exception e) 
+		{
 			AfkRecord.log.severe("Error re-connecting to the database! Error: " + e.getMessage());
 			return false;
 		}

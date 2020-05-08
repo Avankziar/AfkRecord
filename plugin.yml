@@ -8,9 +8,8 @@ description: Afk Tracker Plugin
 commands:
   afk:
     description: A Afk Command
-  afkrecord:
-    description: A Afkrecord
-    aliases: [afkr]
+  afkr:
+    description: A AfkRecord Command
 permissions:
   afkrecord.cmd.afk:
     description: Give acess to use /afk.

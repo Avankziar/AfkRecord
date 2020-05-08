@@ -1,35 +1,45 @@
-package main.java.de.avankziar.afkrecord.spigot.database;
+package main.java.de.avankziar.afkrecord.bungee.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import org.bukkit.entity.Player;
+import main.java.de.avankziar.afkrecord.bungee.AfkRecord;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
-import main.java.de.avankziar.afkrecord.spigot.interfaces.PlayerInfo;
-import main.java.de.avankziar.afkrecord.spigot.interfaces.TopList;
-
-public class MysqlInterface 
+public class MysqlHandler 
 {
 	private AfkRecord plugin;
 	public String tableNameI;
 	public String tableNameII;
 	
-	public MysqlInterface(AfkRecord plugin) 
+	public MysqlHandler(AfkRecord plugin) 
 	{
 		this.plugin = plugin;
-		this.tableNameI = plugin.getYamlHandler().get().getString("mysql.tableNameI");
-		this.tableNameII = plugin.getYamlHandler().get().getString("mysql.tableNameII");
+		loadMysqlHandler();
 	}
 	
-	public boolean hasAccount(Player player) 
+	public boolean loadMysqlHandler()
+	{
+		tableNameI = plugin.getYamlHandler().get().getString("Mysql.TableNameI");
+		if(tableNameI == null)
+		{
+			return false;
+		}
+		tableNameII = plugin.getYamlHandler().get().getString("Mysql.TableNameII");
+		if(tableNameII == null)
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean hasAccount(ProxiedPlayer player) 
 	{
 		PreparedStatement preparedUpdateStatement = null;
 		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
@@ -71,12 +81,12 @@ public class MysqlInterface
 	{
 		PreparedStatement preparedUpdateStatement = null;
 		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
 			{			
-				String sql = "SELECT `player_uuid` FROM `" + tableNameI + "` WHERE `player_uuid` = ? LIMIT 1";
+				String sql = "SELECT `player_uuid` FROM `" + tableNameI + "` WHERE `player_name` = ? LIMIT 1";
 		        preparedUpdateStatement = conn.prepareStatement(sql);
 		        preparedUpdateStatement.setString(1, player);
 		        
@@ -109,11 +119,11 @@ public class MysqlInterface
 		return false;
 	}
 	
-	public boolean existDate(Player player, String date) 
+	public boolean existDate(ProxiedPlayer player, String date) 
 	{
 		PreparedStatement preparedUpdateStatement = null;
 		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
@@ -152,10 +162,10 @@ public class MysqlInterface
 		return false;
 	}
 	
-	public boolean createAccount(Player player) 
+	public boolean createAccount(ProxiedPlayer player) 
 	{
 		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) {
 			try 
 			{
@@ -194,10 +204,10 @@ public class MysqlInterface
 		return false;
 	}
 	
-	public boolean createDate(Player player) 
+	public boolean createDate(ProxiedPlayer player) 
 	{
 		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) {
 			try 
 			{
@@ -235,14 +245,14 @@ public class MysqlInterface
 		return false;
 	}
 	
-	public boolean updateDataI(Player player, Object object, String selectcolumn) 
+	public boolean updateDataI(ProxiedPlayer player, Object object, String selectcolumn) 
 	{
 		if (!hasAccount(player)) 
 		{
 			createAccount(player);
 		}
 		PreparedStatement preparedUpdateStatement = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
@@ -271,46 +281,14 @@ public class MysqlInterface
         return false;
 	}
 	
-	public boolean updateDataI(String player, Object object, String selectcolumn) 
-	{
-		PreparedStatement preparedUpdateStatement = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{
-				String data = "UPDATE `" + tableNameI
-						+ "` " + "SET `" + selectcolumn + "` = ?" + " WHERE `player_uuid` = ?";
-				preparedUpdateStatement = conn.prepareStatement(data);
-				preparedUpdateStatement.setObject(1, object);
-				preparedUpdateStatement.setString(2, player);
-				
-				preparedUpdateStatement.executeUpdate();
-				return true;
-			} catch (SQLException e) {
-				AfkRecord.log.warning("Error: " + e.getMessage());
-				e.printStackTrace();
-			} finally {
-				try {
-					if (preparedUpdateStatement != null) {
-						preparedUpdateStatement.close();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-        return false;
-	}
-	
-	public boolean updateDataII(Player player, Object object, String selectcolumn, String date) 
+	public boolean updateDataII(ProxiedPlayer player, Object object, String selectcolumn, String date) 
 	{
 		if (!existDate(player, date)) 
 		{
 			createDate(player);
 		}
 		PreparedStatement preparedUpdateStatement = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
@@ -340,7 +318,7 @@ public class MysqlInterface
         return false;
 	}
 	
-	public Object getDataI(Player player, String selectcolumn, String wherecolumn)
+	public Object getDataI(ProxiedPlayer player, String selectcolumn, String wherecolumn)
 	{
 		if (!hasAccount(player)) 
 		{
@@ -348,7 +326,7 @@ public class MysqlInterface
 		}
 		PreparedStatement preparedUpdateStatement = null;
 		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
@@ -386,7 +364,7 @@ public class MysqlInterface
 		return null;
 	}
 	
-	public Object getDataII(Player player, String selectcolumn, String date)
+	public Object getDataII(ProxiedPlayer player, String selectcolumn, String date)
 	{
 		if (!existDate(player, date)) 
 		{
@@ -394,7 +372,7 @@ public class MysqlInterface
 		}
 		PreparedStatement preparedUpdateStatement = null;
 		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
@@ -433,11 +411,12 @@ public class MysqlInterface
 		}
 		return null;
 	}
+	
 	public Object getDataI(String player, String selectcolumn, String wherecolumn)
 	{
 		PreparedStatement preparedUpdateStatement = null;
 		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
@@ -451,217 +430,6 @@ public class MysqlInterface
 		        {
 		        	return result.getObject(selectcolumn);
 		        }
-		    } catch (SQLException e) 
-			{
-				  AfkRecord.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedUpdateStatement != null) 
-		    		  {
-		    			  preparedUpdateStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return null;
-	}
-	
-	public Object getDataII(String player, String selectcolumn, String date)
-	{
-		PreparedStatement preparedUpdateStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `" + selectcolumn + "` FROM `" + tableNameII +
-						"` WHERE `player_uuid` = ? AND `datum` = ? LIMIT 1";
-		        preparedUpdateStatement = conn.prepareStatement(sql);
-		        preparedUpdateStatement.setString(1, player);
-		        preparedUpdateStatement.setString(2, date);
-		        
-		        result = preparedUpdateStatement.executeQuery();
-		        while (result.next()) 
-		        {
-		        	return result.getObject(selectcolumn);
-		        }
-		    } catch (SQLException e) 
-			{
-				  AfkRecord.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedUpdateStatement != null) 
-		    		  {
-		    			  preparedUpdateStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return null;
-	}
-	
-	public ArrayList<TopList> getTop(String toplist)
-	{
-		PreparedStatement preparedUpdateStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT * FROM `" + tableNameI + "`";
-		        preparedUpdateStatement = conn.prepareStatement(sql);
-		        
-		        result = preparedUpdateStatement.executeQuery();
-		        ArrayList<TopList> a = new ArrayList<>();
-		        int i = 1;
-		        while (result.next()) 
-		        {
-		        	if(result.getString("player_name")!=null && result.getString(toplist)!=null)
-		        	{
-		        		TopList tl = new TopList(i, result.getString("player_name"), Long.parseLong(result.getString(toplist)));
-			        	a.add(tl);
-			        	i++;
-		        	}
-		        }
-		        return a;
-		    } catch (SQLException e) 
-			{
-				  AfkRecord.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedUpdateStatement != null) 
-		    		  {
-		    			  preparedUpdateStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return null;
-	}
-	
-	public ArrayList<PlayerInfo> getListII(String player)
-	{
-		PreparedStatement preparedUpdateStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT * FROM `" + tableNameII + "` WHERE `player_uuid` = ? ORDER BY `datum` DESC";
-		        preparedUpdateStatement = conn.prepareStatement(sql);
-		        preparedUpdateStatement.setString(1, player);
-		        
-		        result = preparedUpdateStatement.executeQuery();
-		        ArrayList<PlayerInfo> a = new ArrayList<>();
-		        while (result.next()) 
-		        {
-		        	a.add(new PlayerInfo(result.getString("datum"),
-		        			Long.parseLong(result.getString("activitytime")),
-		        			Long.parseLong(result.getString("afktime")), 
-		        			Long.parseLong(result.getString("alltime"))));
-		        }
-		        return a;
-		    } catch (SQLException e) 
-			{
-				  AfkRecord.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedUpdateStatement != null) 
-		    		  {
-		    			  preparedUpdateStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return null;
-	}
-	
-	public PlayerInfo getCountTime(String player, int days)
-	{
-		String nowdates = plugin.getUtility().getDate();
-		String olddates = plugin.getUtility().addingDaysToDate(nowdates, -days);
-		long olddate = plugin.getUtility().getDateInLong(olddates);
-		PreparedStatement preparedUpdateStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT * FROM `" + tableNameII + "` WHERE `player_uuid` = ?";
-		        preparedUpdateStatement = conn.prepareStatement(sql);
-		        preparedUpdateStatement.setString(1, player);
-		        
-		        result = preparedUpdateStatement.executeQuery();
-		        PlayerInfo pi = new PlayerInfo(olddates, 0, 0, 0);
-		        while (result.next()) 
-		        {
-		        	long current = plugin.getUtility().getDateInLong(result.getString("datum"));
-		        	if(olddate<=current)
-		        	{
-		        		long acc = 0;
-		        		long afkk = 0;
-		        		long alll = 0;
-		        		if(result.getString("activitytime")!=null)
-			        	{
-			        		acc = Long.parseLong(result.getString("activitytime"));
-			        	}
-		        		if(result.getString("afktime")!=null)
-			        	{
-			        		afkk = Long.parseLong(result.getString("afktime"));
-			        	}
-		        		if(result.getString("alltime")!=null)
-			        	{
-			        		alll = Long.parseLong(result.getString("alltime"));
-			        	}
-		        		long ac = acc + pi.getActivitytime();
-			        	pi.setActivitytime(ac);
-			        	long afk = afkk + pi.getAfktime();
-			        	pi.setAfktime(afk);
-			        	long all = alll + pi.getAlltime();
-			        	pi.setAlltime(all);
-		        	}
-		        }
-		        return pi;
 		    } catch (SQLException e) 
 			{
 				  AfkRecord.log.warning("Error: " + e.getMessage());
@@ -689,7 +457,7 @@ public class MysqlInterface
 	public void deleteData(Object object, String wherecolumn, String tableName)
 	{
 		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getDatabaseHandler().getConnection();
+		Connection conn = plugin.getMysqlSetup().getConnection();
 		try 
 		{
 			String sql = "DELETE FROM `" + tableName + "` WHERE `" + wherecolumn + "` = ?";

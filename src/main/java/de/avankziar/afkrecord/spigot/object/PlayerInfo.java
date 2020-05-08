@@ -1,4 +1,5 @@
-package main.java.de.avankziar.afkrecord.spigot.interfaces;
+package main.java.de.avankziar.afkrecord.spigot.object;
+
 
 public class PlayerInfo 
 {

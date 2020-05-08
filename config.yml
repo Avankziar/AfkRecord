@@ -1,20 +1,21 @@
-language: 'english'
-bungee: 'false'
-mysql:
-  status: 'false'
-  host: '127.0.0.1'
-  port: '3306'
-  databaseName: 'mydatabase'
-  sslEnabled: 'false'
-  autoReconnect: 'true'
-  verifyServerCertificate: 'false'
-  user: 'admin'
-  password: 'not_0123456789'
-  tableNameI: 'afkrecordPlayerData'
-  tableNameII: 'afkrecordDateList'
-general:
-  softsaveinseconds: '60'
-  mysqlsaveinseconds: '600'
-  afkcheckerinseconds: '300'
-  afkafterinseconds: '900'
-  toplistrefresh: '60'
+Language: 'English'
+Bungee: false
+SccIsActive: false
+Mysql:
+  Status: false
+  Host: '127.0.0.1'
+  Port: 3306
+  DatabaseName: 'mydatabase'
+  SSLEnabled: false
+  AutoReconnect: true
+  VerifyServerCertificate: false
+  User: 'admin'
+  Password: 'not_0123456789'
+  TableNameI: 'afkrecordPlayerData'
+  TableNameII: 'afkrecordDateList'
+General:
+  SoftSaveInSeconds: 60
+  MysqlSaveInSeconds: 600
+  AfkCheckerInSeconds: 300
+  AfkAfterInSeconds: 900
+  TopListRefresh: 60

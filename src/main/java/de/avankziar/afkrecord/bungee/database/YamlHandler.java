@@ -15,28 +15,47 @@ public class YamlHandler
 	private AfkRecord plugin;
 	public Configuration cfg;
 	public Configuration lgg;
+	private String languages;
 	
 	public YamlHandler(AfkRecord plugin)
 	{
 		this.plugin= plugin;
-		mkdir();
-		loadYaml();
+		loadYamlHandler();
 	}
 	
-	public void loadYaml()
+	public boolean loadYamlHandler()
+	{
+		if(!mkdir())
+		{
+			return false;
+		}
+		if(!loadYaml())
+		{
+			return false;
+		}
+		languages = cfg.getString("Language", "English");
+		return true;
+	}
+	
+	public boolean loadYaml()
 	 {
 		 try 
 		 {
 			 cfg = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "config.yml"));
-		 } catch (IOException e) {
+		 } catch (IOException e) 
+		 {
 			 e.printStackTrace();
+			 return false;
 		 }
 		 try 
 		 {
 			 lgg = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(plugin.getDataFolder(), "language.yml"));
-		 } catch (IOException e) {
+		 } catch (IOException e) 
+		 {
 			 e.printStackTrace();
+			 return false;
 		 }
+		 return true;
 	 }
 		
 	 public void saveConfig()
@@ -57,7 +76,7 @@ public class YamlHandler
 		 }
 	 }
 	 
-	 public void mkdir()
+	 public boolean mkdir()
 	 {
 		 if (!plugin.getDataFolder().exists())
 		 {
@@ -72,6 +91,7 @@ public class YamlHandler
 	         } catch (IOException e) 
 	    	 {
 	        	 e.printStackTrace();
+	        	 return false;
 	         }
 	     }
 	     
@@ -84,8 +104,10 @@ public class YamlHandler
 	         } catch (IOException e) 
 	    	 {
 	        	 e.printStackTrace();
+	        	 return false;
 	         }
 	     } 
+	     return true;
 	 }
 	 
 	 public Configuration get()
@@ -97,4 +119,9 @@ public class YamlHandler
 	 {
 		 return lgg;
 	 }
+
+	public String getLanguages()
+	{
+		return languages;
+	}
 }

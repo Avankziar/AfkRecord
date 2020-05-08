@@ -53,6 +53,9 @@ public class EVENTAkfCheck implements Listener
 	@EventHandler
 	public void onCommand(PlayerCommandPreprocessEvent event)
 	{
-		plugin.getUtility().softSave(event.getPlayer(), true, true, false);
+		if(!event.getMessage().equalsIgnoreCase("/afk"))
+		{
+			plugin.getUtility().softSave(event.getPlayer(), true, true, false);
+		}
 	}
 }

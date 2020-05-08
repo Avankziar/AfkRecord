@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
-import main.java.de.avankziar.afkrecord.spigot.interfaces.User;
+import main.java.de.avankziar.afkrecord.spigot.object.User;
 
 public class EVENTJoinLeave implements Listener
 {
@@ -23,15 +23,22 @@ public class EVENTJoinLeave implements Listener
 	public void onJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-		if(!plugin.getMysqlInterface().hasAccount(player))
+		if(!plugin.getMysqlHandler().hasAccount(player))
 		{
-			plugin.getMysqlInterface().createAccount(player);
+			plugin.getMysqlHandler().createAccount(player);
 		}
-		if(!plugin.getMysqlInterface().existDate(player, plugin.getUtility().getDate()))
+		String oldplayername = (String) plugin.getMysqlHandler().getDataI(
+				player.getUniqueId().toString(), "player_name", "player_uuid");
+		//Names Aktualisierung
+		if(!oldplayername.equals(player.getName()))
 		{
-			plugin.getMysqlInterface().createDate(player);
+			plugin.getMysqlHandler().updateDataI(player.getUniqueId().toString(), player.getName(), "player_name");
 		}
-		User u = new User(player, System.currentTimeMillis(), 0, 0, 0, System.currentTimeMillis(), false);
+		if(!plugin.getMysqlHandler().existDate(player, plugin.getUtility().getDate()))
+		{
+			plugin.getMysqlHandler().createDate(player);
+		}
+		User u = new User(player, player.getName(), System.currentTimeMillis(), 0, 0, 0, System.currentTimeMillis(), false);
 		User.addUser(u);
 	}
 	

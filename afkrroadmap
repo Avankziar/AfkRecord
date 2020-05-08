@@ -1,6 +1,10 @@
 Build 6
 - +softSave methode für die Api hinzugefügt
 - +kleine Fehler verbessert
+- +namens update in mysql einbauen
+- +Column Value von Mediumtext nach Bigint gewechselt
+- +Neuer Config Boolean eingebaut => SccIsActive
+- +ChatEvent umgebaut, sodass bei SccIsActive=true nur noch Command registriert werden. Bei false alles.
 
 Build 5
 - +in config.yml bungee: 'false' hinzugefügt
