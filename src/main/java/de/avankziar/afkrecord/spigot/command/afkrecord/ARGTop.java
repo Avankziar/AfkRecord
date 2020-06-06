@@ -14,7 +14,7 @@ public class ARGTop extends CommandModule
 	
 	public ARGTop(AfkRecord plugin)
 	{
-		super("top","afkrecord.cmd.afkrecord.top.alltime",AfkRecord.afkrarguments,1,3);
+		super("top","afkrecord.cmd.afkrecord.top.alltime",AfkRecord.afkrarguments,2,3);
 		this.plugin = plugin;
 	}
 

@@ -25,6 +25,10 @@ public class EventAfkCheck implements Listener
 	{
 		if(plugin.getYamlHandler().get().getBoolean("SccIsActive", false))
 		{
+			if(event.getMessage().equalsIgnoreCase("/afk"))
+			{
+				return;
+			}
 			softsave((ProxiedPlayer) event.getSender());
 			return;
 		} else if(event.getMessage().startsWith("/"))

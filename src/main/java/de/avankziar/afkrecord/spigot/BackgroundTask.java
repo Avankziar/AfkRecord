@@ -91,7 +91,7 @@ public class BackgroundTask
 				ac = plugin.getMysqlHandler().getTop("activitytime");
 			}
 		}.runTaskTimerAsynchronously(plugin, 20L, 
-				Long.parseLong(plugin.getYamlHandler().get().getString("General.TopListRefresh"))*20L);
+				plugin.getYamlHandler().get().getLong("General.TopListRefresh")*20L);
 		
 		new BukkitRunnable() 
 		{
@@ -103,7 +103,7 @@ public class BackgroundTask
 				all = plugin.getMysqlHandler().getTop("alltime");
 			}
 		}.runTaskTimerAsynchronously(plugin, 20L, 
-				Long.parseLong(plugin.getYamlHandler().get().getString("General.TopListRefresh"))*20L);
+				plugin.getYamlHandler().get().getLong("General.TopListRefresh")*20L);
 		
 		new BukkitRunnable() 
 		{
@@ -115,7 +115,7 @@ public class BackgroundTask
 				afk = plugin.getMysqlHandler().getTop("afktime");
 			}
 		}.runTaskTimerAsynchronously(plugin, 20L, 
-				Long.parseLong(plugin.getYamlHandler().get().getString("General.TopListRefresh"))*20L);
+				plugin.getYamlHandler().get().getLong("General.TopListRefresh")*20L);
 		
 		
 	}
