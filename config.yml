@@ -19,3 +19,16 @@ General:
   AfkCheckerInSeconds: 300
   AfkAfterInSeconds: 900
   TopListRefresh: 60
+  
+# DO NOT CHANGE THINGS BELOW!
+# => <origin+message>~click@SUGGEST_COMMAND@/blubb~hover@SHOW_TEXT@messagepath
+# => click@SUGGEST_COMMAND@/blubb
+# => hover@SHOW_TEXTt@textpath
+Identifier:
+  Click: 'click'
+  Hover: 'hover'
+Seperator:
+  BetweenFunction: '~'
+  WhithinFuction: '@'
+  Space: '+'
+  HoverNewLine: '~!~'

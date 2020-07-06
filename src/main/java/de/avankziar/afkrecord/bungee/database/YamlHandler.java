@@ -81,7 +81,7 @@ public class YamlHandler
 		 if (!plugin.getDataFolder().exists())
 		 {
 			 plugin.getDataFolder().mkdir();
-		 } 
+		 }
 	     File c = new File(plugin.getDataFolder(), "config.yml");  
 	     if (!c.exists()) 
 	     {

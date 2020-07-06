@@ -5,11 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.object.PlayerInfo;
+import main.java.de.avankziar.afkrecord.spigot.object.PlayerInfoEx;
 import main.java.de.avankziar.afkrecord.spigot.object.TopList;
 
 public class MysqlHandler 
@@ -680,6 +682,98 @@ public class MysqlHandler
 		        	}
 		        }
 		        return pi;
+		    } catch (SQLException e) 
+			{
+				  AfkRecord.log.warning("Error: " + e.getMessage());
+				  e.printStackTrace();
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedUpdateStatement != null) 
+		    		  {
+		    			  preparedUpdateStatement.close();
+		    		  }
+		    	  } catch (Exception e) {
+		    		  e.printStackTrace();
+		    	  }
+		      }
+		}
+		return null;
+	}
+	
+	public ArrayList<PlayerInfoEx> getCountTimeList(int days, long min, String column)
+	{
+		String nowdates = plugin.getUtility().getDate();
+		String olddates = plugin.getUtility().addingDaysToDate(nowdates, -days);
+		long olddate = plugin.getUtility().getDateInLong(olddates);
+		PreparedStatement preparedUpdateStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
+		{
+			try 
+			{			
+				String sql = "SELECT * FROM `" + tableNameII 
+						+ "` WHERE `"+column+"` < ? ORDER BY `"+column+"` DESC";
+		        preparedUpdateStatement = conn.prepareStatement(sql);
+		        preparedUpdateStatement.setString(1, column);
+		        
+		        result = preparedUpdateStatement.executeQuery();
+		        LinkedHashMap<String, PlayerInfoEx> list = new LinkedHashMap<>();
+		        while (result.next()) 
+		        {
+		        	PlayerInfoEx pi = new PlayerInfoEx("", "",olddates, 0, 0, 0);
+		        	String uuid = result.getString("player_uuid");
+		        	if(list.containsKey(uuid))
+		        	{
+		        		pi = list.get(uuid);
+		        	}
+		        	long current = plugin.getUtility().getDateInLong(result.getString("datum"));
+		        	if(olddate<=current)
+		        	{
+		        		long acc = 0;
+		        		long afkk = 0;
+		        		long alll = 0;
+		        		if(result.getLong("activitytime")!=0)
+			        	{
+			        		acc = result.getLong("activitytime");
+			        	}
+		        		if(result.getLong("afktime")!=0)
+			        	{
+			        		afkk = result.getLong("afktime");
+			        	}
+		        		if(result.getLong("alltime")!=0)
+			        	{
+			        		alll = result.getLong("alltime");
+			        	}
+		        		pi.setUuid(uuid);
+		        		pi.setPlayername(result.getString("player_name"));
+		        		long ac = acc + pi.getActivitytime();
+			        	pi.setActivitytime(ac);
+			        	long afk = afkk + pi.getAfktime();
+			        	pi.setAfktime(afk);
+			        	long all = alll + pi.getAlltime();
+			        	pi.setAlltime(all);
+			        	if(list.containsKey(uuid))
+			        	{
+			        		list.replace(uuid, pi);
+			        	} else
+			        	{
+			        		list.put(uuid, pi);
+			        	}
+		        	} else
+		        	{
+		        		break;
+		        	}
+		        }
+		        ArrayList<PlayerInfoEx> playerlist = new ArrayList<>();
+		        playerlist.addAll(list.values());
+		        return playerlist;
 		    } catch (SQLException e) 
 			{
 				  AfkRecord.log.warning("Error: " + e.getMessage());

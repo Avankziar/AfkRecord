@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import main.java.de.avankziar.afkrecord.spigot.command.CommandHelper;
@@ -23,10 +24,11 @@ import main.java.de.avankziar.afkrecord.spigot.command.afkrecord.ARGTop;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.spigot.database.YamlHandler;
-import main.java.de.avankziar.afkrecord.spigot.object.User;
-import main.java.de.avankziar.afkrecord.spigot.listener.EVENTAkfCheck;
+import main.java.de.avankziar.afkrecord.spigot.listener.EVENTAfkCheck;
 import main.java.de.avankziar.afkrecord.spigot.listener.EVENTJoinLeave;
 import main.java.de.avankziar.afkrecord.spigot.listener.ServerListener;
+import main.java.de.avankziar.afkrecord.spigot.object.User;
+import net.milkbowl.vault.permission.Permission;
 
 public class AfkRecord extends JavaPlugin
 {
@@ -39,7 +41,8 @@ public class AfkRecord extends JavaPlugin
 	private static Utility utility;
 	private static CommandHelper commandHelper;
 	private static AfkRecord plugin;
-	
+	private static Permission perms = null;
+
 	public static HashMap<String, CommandModule> afkrarguments;
 	
 	public void onEnable()
@@ -63,6 +66,7 @@ public class AfkRecord extends JavaPlugin
 		}
 		CommandSetup();
 		ListenerSetup();
+		setupPermissions();
 	}
 	
 	public void onDisable()
@@ -114,6 +118,7 @@ public class AfkRecord extends JavaPlugin
 	private void CommandSetup()
 	{
 		new ARGCountTime(this);
+		//new ARGCountTimeList(this);
 		new ARGGetAfk(this);
 		new ARGGetTime(this);
 		new ARGReload(this);
@@ -127,7 +132,7 @@ public class AfkRecord extends JavaPlugin
 	private void ListenerSetup()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new EVENTAkfCheck(this), this);
+		pm.registerEvents(new EVENTAfkCheck(this), this);
 		pm.registerEvents(new EVENTJoinLeave(this), this);
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "afkrecord:afkrecordin");
 		this.getServer().getMessenger().registerIncomingPluginChannel(this, "afkrecord:afkrecordout", new ServerListener(this));
@@ -164,6 +169,22 @@ public class AfkRecord extends JavaPlugin
 	public static AfkRecord getPlugin()
 	{
 		return plugin;
+	}
+	
+	private boolean setupPermissions() 
+	{
+		if (Bukkit.getPluginManager().getPlugin("Vault") == null) 
+        {
+            return false;
+        }
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        perms = rsp.getProvider();
+        return perms != null;
+    }
+	
+	public static Permission getPerms()
+	{
+		return perms;
 	}
 	
 	public boolean isAfk(Player player)

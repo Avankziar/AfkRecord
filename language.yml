@@ -3,6 +3,7 @@ German:
   PlayerNotExist: '&cDer Spieler existiert nicht!'
   IllegalArgument: '&cDas angegebene Argument ist keine Zahl!'
   InputIsWrong: '&cDeine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!'
+  NoVault: '&cVault ist nicht installiert!'
   Time:
     Seconds: '&es'
     Minutes: '&6min &f'
@@ -58,6 +59,9 @@ German:
       AfkTime: '&bAfkzeit:           &f%afktime%'
       Alltime: '&bGesamte Zeit:    &f%alltime%'
       LastActive: '&bLetzte Aktivität: &f%time%'
+    CountTimeList:
+      Headline: '&e===&fSpielzeitenlist, Permission &6%perm% &fder letzten &6%days% &fTage - unter %time%&e==='
+      Hover: '&bGesamte Zeit: &f%alltime%~!~&bAktive Spielzeit: &f%ontime%~!~&bAfkzeit: &f%afktime%~!~&bLetzte Aktivität: &f%time%'
     GetAfk:
       NoPlayerAfk: '&eKein Spieler ist afk!'
       PlayerAfk: '&eAfk Spieler: '
@@ -81,6 +85,7 @@ English:
   PlayerNotExist: '&cThe player does not exist!'
   IllegalArgument: '&cThe argument given is not a number!'
   InputIsWrong: '&cYour entry is incorrect, click on the text here to get &cfurther &cinformation!'
+  NoVault: '&cVault is not installt!'
   Eime:
     Seconds: '&es'
     Minutes: '&6min &f'

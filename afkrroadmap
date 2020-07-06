@@ -1,3 +1,9 @@
+Build 8
+- Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen 
+
+Buil 7
+- +/afkr counttimelist <days> <permission> [Under Value] [s/m/h/d] [all/afk/on] | afkrecord.cmd.afkrecord.counttimelist
+
 Build 6
 - +softSave methode für die Api hinzugefügt
 - +kleine Fehler verbessert

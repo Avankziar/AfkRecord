@@ -11,11 +11,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 
-public class EVENTAkfCheck implements Listener
+public class EVENTAfkCheck implements Listener
 {
 	private AfkRecord plugin;
 	
-	public EVENTAkfCheck(AfkRecord plugin)
+	public EVENTAfkCheck(AfkRecord plugin)
 	{
 		this.plugin = plugin;
 	}

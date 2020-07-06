@@ -1,10 +1,11 @@
 name: AfkRecord
 main: main.java.de.avankziar.afkrecord.spigot.AfkRecord
-version: 6
+version: 7
 author: Avankziar
 website: https://www.spigotmc.org/resources/authors/avankziar.332028/
 load: STARTUP
 description: Afk Tracker Plugin
+softdepend: [Vault]
 commands:
   afk:
     description: A Afk Command
@@ -43,6 +44,9 @@ permissions:
     default: false
   afkrecord.cmd.afkrecord.counttime.other:
     description: Give acess to use /afkr counttime <days> <player>.
+    default: false
+  afkrecord.cmd.afkrecord.counttimelist:
+    description: Give acess to use /afkr counttimelist <days> <permission> [Under Value] [s/m/h/d] [all/afk/on].
     default: false
   afkrecord.cmd.afkrecord.getafk:
     description: Give acess to use /afkr getafk.
