@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.object.User;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -49,21 +50,21 @@ public class MultipleCommandExecutor implements CommandExecutor
 					} else
 					{
 						///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
-						player.spigot().sendMessage(plugin.getUtility().clickEvent(language+".InputIsWrong",
-								ClickEvent.Action.RUN_COMMAND, "/afkr", true));
+						player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getL().getString(language+".InputIsWrong"),
+								ClickEvent.Action.RUN_COMMAND, "/afkr"));
 						return false;
 					}
 				} else 
 				{
 					///Du hast dafür keine Rechte!
-					player.spigot().sendMessage(plugin.getUtility().tctlYaml(language+".NoPermission"));
+					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 					return false;
 				}
 			} else 
 			{
 				///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
-				player.spigot().sendMessage(plugin.getUtility().clickEvent(language+".InputIsWrong",
-						ClickEvent.Action.RUN_COMMAND, "/afkr", true));
+				player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getL().getString(language+".InputIsWrong"),
+						ClickEvent.Action.RUN_COMMAND, "/afkr"));
 				return false;
 			}
 		} else if(cmd.getName().equalsIgnoreCase("afk"))
@@ -78,7 +79,7 @@ public class MultipleCommandExecutor implements CommandExecutor
 			{
 				if(!player.hasPermission("afkrecord.cmd.afk"))
 				{
-					player.spigot().sendMessage(plugin.getUtility().tctl(
+					player.spigot().sendMessage(ChatApi.tctl(
 							plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 					return false;
 				}
@@ -91,7 +92,7 @@ public class MultipleCommandExecutor implements CommandExecutor
 						plugin.getMysqlHandler().updateDataI(player, true, "isafk");
 					} else
 					{
-						player.spigot().sendMessage(plugin.getUtility().tctl(
+						player.spigot().sendMessage(ChatApi.tctl(
 								plugin.getYamlHandler().getL().getString(language+".CmdAfk.AlreadyAfk")));
 					}
 					return true;
@@ -103,15 +104,15 @@ public class MultipleCommandExecutor implements CommandExecutor
 						plugin.getMysqlHandler().updateDataI(player, true, "isafk");
 					} else
 					{
-						player.spigot().sendMessage(plugin.getUtility().tctl(
+						player.spigot().sendMessage(ChatApi.tctl(
 								plugin.getYamlHandler().getL().getString(language+".CmdAfk.AlreadyAfk")));
 					}
 					return true;
 				}
 			} else
 			{
-				TextComponent msg = plugin.getUtility().tc(
-						plugin.getUtility().tl(plugin.getYamlHandler().getL().getString(language+".InputIsWrong")));
+				TextComponent msg = ChatApi.tc(
+						ChatApi.tl(plugin.getYamlHandler().getL().getString(language+".InputIsWrong")));
 				msg.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr"));
 				player.spigot().sendMessage(msg);
 			}

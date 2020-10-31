@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.command.CommandModule;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -27,7 +28,7 @@ public class ARGTop extends CommandModule
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.top.onlinetime"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 				return;
 			}
@@ -40,7 +41,7 @@ public class ARGTop extends CommandModule
 			{
 				if(!args[2].matches("[0-9]+"))
 				{
-					player.spigot().sendMessage(plugin.getUtility().tctl(
+					player.spigot().sendMessage(ChatApi.tctl(
 							plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 					return;
 				}
@@ -53,7 +54,7 @@ public class ARGTop extends CommandModule
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.top.alltime"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 				return;
 			}
@@ -66,7 +67,7 @@ public class ARGTop extends CommandModule
 			{
 				if(!args[2].matches("[0-9]+"))
 				{
-					player.spigot().sendMessage(plugin.getUtility().tctl(
+					player.spigot().sendMessage(ChatApi.tctl(
 							plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 					return;
 				}
@@ -79,7 +80,7 @@ public class ARGTop extends CommandModule
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.top.afktime"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 				return;
 			}
@@ -92,7 +93,7 @@ public class ARGTop extends CommandModule
 			{
 				if(!args[2].matches("[0-9]+"))
 				{
-					player.spigot().sendMessage(plugin.getUtility().tctl(
+					player.spigot().sendMessage(ChatApi.tctl(
 							plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 					return;
 				}
@@ -103,8 +104,8 @@ public class ARGTop extends CommandModule
 			return;
 		} else
 		{
-			TextComponent msg = plugin.getUtility().tc(
-					plugin.getUtility().tl(plugin.getYamlHandler().getL().getString(language+".InputIsWrong")));
+			TextComponent msg = ChatApi.tc(
+					ChatApi.tl(plugin.getYamlHandler().getL().getString(language+".InputIsWrong")));
 			msg.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr"));
 			player.spigot().sendMessage(msg);
 			return;

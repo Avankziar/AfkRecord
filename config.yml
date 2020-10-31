@@ -19,6 +19,16 @@ General:
   AfkCheckerInSeconds: 300
   AfkAfterInSeconds: 900
   TopListRefresh: 60
+EventListener:
+  AsyncChat: true
+  CommandPreprocess: true
+  Fish: true
+  InteractEntity: true
+  ItemConsume: true
+  LevelChange: true
+  Move: false #Attention! Activate the MoveEvent may cause Lags!
+  ToggleSneak: true
+  ToggleSprint: true
   
 # DO NOT CHANGE THINGS BELOW!
 # => <origin+message>~click@SUGGEST_COMMAND@/blubb~hover@SHOW_TEXT@messagepath

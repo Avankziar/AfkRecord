@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.command.CommandModule;
 
 public class ARGCountTime extends CommandModule
@@ -28,14 +29,14 @@ public class ARGCountTime extends CommandModule
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.counttime.self"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 				return;
 			}
 			if(!args[1].matches("[0-9]+"))
 			{
 				player.spigot().sendMessage(
-						plugin.getUtility().tctl(plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
+						ChatApi.tctl(plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 				return;
 			}
 			int days = Integer.parseInt(args[1]);
@@ -45,19 +46,19 @@ public class ARGCountTime extends CommandModule
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.counttime.other"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 				return;
 			}
 			if(!args[1].matches("[0-9]+"))
 			{
 				player.spigot().sendMessage(
-						plugin.getUtility().tctl(plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
+						ChatApi.tctl(plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 				return;
 			}
 			if(!plugin.getMysqlHandler().hasAccount(Bukkit.getOfflinePlayer(args[2]).getUniqueId().toString()))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".PlayerNotExist")));
 				return;
 			}

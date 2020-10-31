@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.command.CommandModule;
 
 public class ARGReload extends CommandModule
@@ -24,12 +25,12 @@ public class ARGReload extends CommandModule
 		if(plugin.reload())
 		{
 			///Yaml Datein wurden neugeladen.
-			player.spigot().sendMessage(plugin.getUtility().tctlYaml(language+".CmdAfkRecord.Reload.Success"));
+			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Reload.Success")));
 			return;
 		} else
 		{
 			///Es wurde ein Fehler gefunden! Siehe Konsole!
-			player.spigot().sendMessage(plugin.getUtility().tctlYaml(language+".CmdAfkRecord.Reload.Error"));
+			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Reload.Error")));
 			return;
 		}
 	}

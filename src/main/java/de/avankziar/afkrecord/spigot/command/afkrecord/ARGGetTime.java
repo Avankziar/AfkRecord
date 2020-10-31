@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.command.CommandModule;
 
 public class ARGGetTime extends CommandModule
@@ -28,7 +29,7 @@ public class ARGGetTime extends CommandModule
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.gettime.self"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 				return;
 			}
@@ -38,13 +39,13 @@ public class ARGGetTime extends CommandModule
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.gettime.self"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 				return;
 			}
 			if(!args[1].matches("[0-9]+"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 				return;
 			}
@@ -55,20 +56,20 @@ public class ARGGetTime extends CommandModule
 		{
 			if(!player.hasPermission("afkrecord.cmd.afkrecord.gettime.other"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".NoPermission")));
 				return;
 			}
 			if(!plugin.getMysqlHandler().hasAccount(Bukkit.getOfflinePlayer(args[2]).getUniqueId().toString()))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".PlayerNotExist")));
 				return;
 			}
 			OfflinePlayer target = Bukkit.getOfflinePlayer(args[2]);
 			if(!args[1].matches("[0-9]+"))
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 				return;
 			}

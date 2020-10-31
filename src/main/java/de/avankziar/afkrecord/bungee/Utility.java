@@ -118,7 +118,7 @@ public class Utility
 	    return msg;
 	}
 	
-	public ArrayList<User> sortAfkList(ProxiedPlayer player)
+	public ArrayList<User> sortAfkList()
 	{
 		ArrayList<User> b = new ArrayList<>();
 		for(ProxiedPlayer p : plugin.getProxy().getPlayers())
@@ -145,7 +145,7 @@ public class Utility
         		{
         			u = us;
         		}
-        		if(us.getActivitytime()<u.getLastactivity())
+        		if(us.getLastactivity()<u.getLastactivity())
         		{
         			u = us;
         		}
@@ -159,7 +159,7 @@ public class Utility
 	public void getafk(ProxiedPlayer player)
 	{
 		String language = plugin.getUtility().getLanguage();
-		ArrayList<User> user = plugin.getUtility().sortAfkList(player);
+		ArrayList<User> user = plugin.getUtility().sortAfkList();
 		boolean check = false;
 		TextComponent playerlist = plugin.getUtility().tc("");
 		TextComponent MSG = plugin.getUtility().tctl(

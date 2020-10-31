@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
-import main.java.de.avankziar.afkrecord.spigot.ChatApi;
+import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.command.CommandModule;
 import main.java.de.avankziar.afkrecord.spigot.object.PlayerInfoEx;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -35,7 +35,7 @@ public class ARGCountTimeList extends CommandModule
 		if(AfkRecord.getPerms() == null)
 		{
 			player.sendMessage(
-					plugin.getUtility().tl(plugin.getYamlHandler().getL().getString(language+".NoVault")));
+					ChatApi.tl(plugin.getYamlHandler().getL().getString(language+".NoVault")));
 			return;
 		}
 		int days = 1;
@@ -49,7 +49,7 @@ public class ARGCountTimeList extends CommandModule
 		if(!args[1].matches("[0-9]+"))
 		{
 			player.spigot().sendMessage(
-					plugin.getUtility().tctl(plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
+					ChatApi.tctl(plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 			return;
 		}
 		days = Integer.parseInt(args[1]);
@@ -97,7 +97,7 @@ public class ARGCountTimeList extends CommandModule
 			if(!args[6].matches("[0-9]+"))
 			{
 				player.spigot().sendMessage(
-						plugin.getUtility().tctl(plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
+						ChatApi.tctl(plugin.getYamlHandler().getL().getString(language+".IllegalArgument")));
 				return;
 			}
 			page = Integer.parseInt(args[6]);
@@ -129,7 +129,7 @@ public class ARGCountTimeList extends CommandModule
 			lastpage = true;
 			end = last;
 		}
-		player.sendMessage(plugin.getUtility().tl(
+		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.CountTimeList.Headline")
 				.replace("%perm%", permission)
 				.replace("%days%", String.valueOf(days))
@@ -159,11 +159,11 @@ public class ARGCountTimeList extends CommandModule
 		page = (int) pa;
 		int i = page+1;
 		int j = page-1;
-		TextComponent MSG = plugin.getUtility().tctl("");
+		TextComponent MSG = ChatApi.tctl("");
 		List<BaseComponent> list = new ArrayList<BaseComponent>();
 		if(page!=0)
 		{
-			TextComponent msg2 = plugin.getUtility().tc(plugin.getUtility().tl(
+			TextComponent msg2 = ChatApi.tc(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Top.Past")));
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND,
 					"/afkr counttimelist "+days+" "+permission+" "+min+" "+time+" "+column+" "+j));
@@ -171,13 +171,13 @@ public class ARGCountTimeList extends CommandModule
 		}
 		if(!lastpage)
 		{
-			TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
+			TextComponent msg1 = ChatApi.tc(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Top.Next")));
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND,
 					"/afkr counttimelist "+days+" "+permission+" "+min+" "+time+" "+column+" "+i));
 			if(list.size()==1)
 			{
-				list.add(plugin.getUtility().tc(" | "));
+				list.add(ChatApi.tc(" | "));
 			}
 			list.add(msg1);
 		}

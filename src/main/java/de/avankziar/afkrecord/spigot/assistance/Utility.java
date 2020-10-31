@@ -1,23 +1,17 @@
-package main.java.de.avankziar.afkrecord.spigot;
+package main.java.de.avankziar.afkrecord.spigot.assistance;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.object.TopList;
 import main.java.de.avankziar.afkrecord.spigot.object.User;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class Utility 
 {
@@ -42,7 +36,7 @@ public class Utility
 		return true;
 	}
 
-	public String tl(String path)
+	/*public String tl(String path)
 	{
 		return ChatColor.translateAlternateColorCodes('&', path);
 	}
@@ -95,7 +89,7 @@ public class Utility
 		}
 		msg.setHoverEvent( new HoverEvent(haction, new ComponentBuilder(tl(hover)).create()));
 		return msg;
-	}
+	}*/
 	
 	public void softSave(Player player, boolean setactiv, boolean newactivity, boolean setafk)
 	{
@@ -114,7 +108,7 @@ public class Utility
 					{
 						u.setIsafk(false);
 						plugin.getMysqlHandler().updateDataI(player, false, "isafk");
-						player.spigot().sendMessage(plugin.getUtility().tctl(
+						player.spigot().sendMessage(ChatApi.tctl(
 								plugin.getYamlHandler().getL().getString(language+".CmdAfk.NoMoreAfk")));
 					}
 				} else
@@ -125,7 +119,7 @@ public class Utility
 					{
 						u.setIsafk(true);
 						plugin.getMysqlHandler().updateDataI(player, true, "isafk");
-						player.spigot().sendMessage(plugin.getUtility().tctl(
+						player.spigot().sendMessage(ChatApi.tctl(
 								plugin.getYamlHandler().getL().getString(language+".CmdAfk.SetAfk")));
 					}
 				}
@@ -162,7 +156,7 @@ public class Utility
 				u.setAfktime(afktime);
 				u.setIsafk(false);
 				plugin.getMysqlHandler().updateDataI(player, false, "isafk");
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".CmdAfk.NoMoreAfk")));
 				long alltime = u.getAlltime()+difference;
 				u.setAlltime(alltime);
@@ -181,7 +175,7 @@ public class Utility
 				u.setActivitytime(activitytime);
 				u.setIsafk(true);
 				plugin.getMysqlHandler().updateDataI(player, true, "isafk");
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".CmdAfk.SetAfk")));
 				long alltime = u.getAlltime()+difference;
 				u.setAlltime(alltime);

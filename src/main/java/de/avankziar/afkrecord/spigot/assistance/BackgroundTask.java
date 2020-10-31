@@ -1,10 +1,11 @@
-package main.java.de.avankziar.afkrecord.spigot;
+package main.java.de.avankziar.afkrecord.spigot.assistance;
 
 import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.object.TopList;
 
 public class BackgroundTask 

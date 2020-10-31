@@ -148,6 +148,15 @@ public class AfkRecord extends Plugin
 		return (boolean) mysqlHandler.getDataI(player, "isafk", "player_uuid");
 	}
 	
+	public long lastActivity(ProxiedPlayer player)
+	{
+		if(!mysqlHandler.hasAccount(player))
+		{
+			return -1;
+		}
+		return (long) mysqlHandler.getDataI(player, "lastactivity", "player_uuid");
+	}
+	
 	public void softSave(ProxiedPlayer player)
 	{
 		ServerInfo server = player.getServer().getInfo();

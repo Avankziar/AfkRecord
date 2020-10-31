@@ -11,6 +11,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import main.java.de.avankziar.afkrecord.spigot.assistance.BackgroundTask;
+import main.java.de.avankziar.afkrecord.spigot.assistance.Utility;
 import main.java.de.avankziar.afkrecord.spigot.command.CommandHelper;
 import main.java.de.avankziar.afkrecord.spigot.command.CommandModule;
 import main.java.de.avankziar.afkrecord.spigot.command.MultipleCommandExecutor;
@@ -24,9 +26,17 @@ import main.java.de.avankziar.afkrecord.spigot.command.afkrecord.ARGTop;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.spigot.database.YamlHandler;
-import main.java.de.avankziar.afkrecord.spigot.listener.EVENTAfkCheck;
 import main.java.de.avankziar.afkrecord.spigot.listener.EVENTJoinLeave;
 import main.java.de.avankziar.afkrecord.spigot.listener.ServerListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerAsyncChatListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerCommandPreprocessListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerFishListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerInteractEntityListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerItemConsumeListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerLevelChangeListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerMoveListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerToggleSneakListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerToggleSprintListener;
 import main.java.de.avankziar.afkrecord.spigot.object.User;
 import net.milkbowl.vault.permission.Permission;
 
@@ -132,10 +142,54 @@ public class AfkRecord extends JavaPlugin
 	private void ListenerSetup()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new EVENTAfkCheck(this), this);
-		pm.registerEvents(new EVENTJoinLeave(this), this);
+		pm.registerEvents(new EVENTJoinLeave(plugin), plugin);
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "afkrecord:afkrecordin");
 		this.getServer().getMessenger().registerIncomingPluginChannel(this, "afkrecord:afkrecordout", new ServerListener(this));
+		if(yamlHandler.get().getBoolean("EventListener.AsyncChat", false))
+		{
+			pm.registerEvents(new PlayerAsyncChatListener(plugin), plugin);
+			log.info("AsyncChatListener is active");
+		}
+		if(yamlHandler.get().getBoolean("EventListener.CommandPreprocess", false))
+		{
+			pm.registerEvents(new PlayerCommandPreprocessListener(plugin), plugin);
+			log.info("CommandPreprocessListener is active");
+		}
+		if(yamlHandler.get().getBoolean("EventListener.Fish", false))
+		{
+			pm.registerEvents(new PlayerFishListener(plugin), plugin);
+			log.info("FishListener is active");
+		}
+		if(yamlHandler.get().getBoolean("EventListener.InteractEntity", false))
+		{
+			pm.registerEvents(new PlayerInteractEntityListener(plugin), plugin);
+			log.info("InteractEntityListener is active");
+		}
+		if(yamlHandler.get().getBoolean("EventListener.ItemConsume", false))
+		{
+			pm.registerEvents(new PlayerItemConsumeListener(plugin), plugin);
+			log.info("ItemConsumeListener is active");
+		}
+		if(yamlHandler.get().getBoolean("EventListener.LevelChange", false))
+		{
+			pm.registerEvents(new PlayerLevelChangeListener(plugin), plugin);
+			log.info("LevelChangeListener is active");
+		}
+		if(yamlHandler.get().getBoolean("EventListener.Move", false))
+		{
+			pm.registerEvents(new PlayerMoveListener(plugin), plugin);
+			log.info("MoveListener is active");
+		}
+		if(yamlHandler.get().getBoolean("EventListener.ToggleSneak", false))
+		{
+			pm.registerEvents(new PlayerToggleSneakListener(plugin), plugin);
+			log.info("ToggleSneakListener is active");
+		}
+		if(yamlHandler.get().getBoolean("EventListener.ToggleSprint", false))
+		{
+			pm.registerEvents(new PlayerToggleSprintListener(plugin), plugin);
+			log.info("ToggleSprintListener is active");
+		}
 	}
 	
 	public boolean reload()
@@ -195,6 +249,15 @@ public class AfkRecord extends JavaPlugin
 			return u.isIsafk();
 		}
 		return false;
+	}
+	
+	public long lastActivity(Player player)
+	{
+		if(!mysqlHandler.hasAccount(player))
+		{
+			return -1;
+		}
+		return (long) mysqlHandler.getDataI(player, "lastactivity", "player_uuid");
 	}
 	
 	public void softSave(Player player)

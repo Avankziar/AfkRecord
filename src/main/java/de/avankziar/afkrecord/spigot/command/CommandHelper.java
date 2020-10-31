@@ -7,7 +7,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
-import main.java.de.avankziar.afkrecord.spigot.Utility;
+import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
+import main.java.de.avankziar.afkrecord.spigot.assistance.Utility;
 import main.java.de.avankziar.afkrecord.spigot.object.PlayerInfo;
 import main.java.de.avankziar.afkrecord.spigot.object.TopList;
 import main.java.de.avankziar.afkrecord.spigot.object.User;
@@ -29,25 +30,25 @@ public class CommandHelper
 	public void afkr(Player player)
 	{
 		String language = plugin.getUtility().getLanguage();
-		TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
+		TextComponent msg1 = ChatApi.tc(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Info.msg02")));
 		msg1.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord time"));
-		TextComponent msg2 = plugin.getUtility().tc(plugin.getUtility().tl(
+		TextComponent msg2 = ChatApi.tc(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Info.msg03")));
 		msg2.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord top "));
-		TextComponent msg3 = plugin.getUtility().tc(plugin.getUtility().tl(
+		TextComponent msg3 = ChatApi.tc(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Info.msg04")));
 		msg3.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord gettime"));
-		TextComponent msg5 = plugin.getUtility().tc(plugin.getUtility().tl(
+		TextComponent msg5 = ChatApi.tc(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Info.msg06")));
 		msg5.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afk"));
-		TextComponent msg6 = plugin.getUtility().tc(plugin.getUtility().tl(
+		TextComponent msg6 = ChatApi.tc(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Info.msg07")));
 		msg6.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord counttime "));
-		TextComponent msg7 = plugin.getUtility().tc(plugin.getUtility().tl(
+		TextComponent msg7 = ChatApi.tc(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Info.msg08")));
 		msg7.setClickEvent( new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/afkrecord counttime "));
-		player.spigot().sendMessage(plugin.getUtility().tctl(
+		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Info.msg01")));
 		player.spigot().sendMessage(msg1);
 		player.spigot().sendMessage(msg2);
@@ -57,6 +58,7 @@ public class CommandHelper
 		player.spigot().sendMessage(msg5);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void time(Player player, OfflinePlayer target, User u)
 	{
 		String language = plugin.getUtility().getLanguage();
@@ -97,10 +99,10 @@ public class CommandHelper
 					(Long) plugin.getMysqlHandler().getDataI(
 							target.getUniqueId().toString(), "lastactivity", "player_uuid"));
 		}
-		player.spigot().sendMessage(plugin.getUtility().tctl(
+		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getL().getString(
 						language+".CmdAfkRecord.Time.Headline").replaceAll("%player%", target.getName())));
-		TextComponent msg1 = plugin.getUtility().tctl(
+		TextComponent msg1 = ChatApi.tctl(
 				plugin.getYamlHandler().getL().getString(
 						language+".CmdAfkRecord.Time.ActiveTime")
 				.replaceAll("%ontime%", ontime)
@@ -114,24 +116,24 @@ public class CommandHelper
 		{
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top onlinetime"));
 			msg1.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAcT"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CmdAfkRecord.Time.ActiveTime").contains("%afktime%"))
 		{
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top afktime"));
 			msg1.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAfT"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CmdAfkRecord.Time.ActiveTime").contains("%alltime%"))
 		{
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top alltime"));
 			msg1.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAlT"))).create()));
 		}
-		TextComponent msg2 = plugin.getUtility().tctl(
+		TextComponent msg2 = ChatApi.tctl(
 				plugin.getYamlHandler().getL().getString(
 						language+".CmdAfkRecord.Time.AfkTime")
 				.replaceAll("%ontime%", ontime)
@@ -145,24 +147,24 @@ public class CommandHelper
 		{
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top onlinetime"));
 			msg2.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAcT"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CmdAfkRecord.Time.AfkTime").contains("%afktime%"))
 		{
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top afktime"));
 			msg2.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAfT"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CmdAfkRecord.Time.AfkTime").contains("%alltime%"))
 		{
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top alltime"));
 			msg2.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAlT"))).create()));
 		}
-		TextComponent msg3 = plugin.getUtility().tctl(
+		TextComponent msg3 = ChatApi.tctl(
 				plugin.getYamlHandler().getL().getString(
 						language+".CmdAfkRecord.Time.Alltime")
 				.replaceAll("%ontime%", ontime)
@@ -176,21 +178,21 @@ public class CommandHelper
 		{
 			msg3.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top onlinetime"));
 			msg3.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAcT"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CmdAfkRecord.Time.Alltime").contains("%afktime%"))
 		{
 			msg3.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top afktime"));
 			msg3.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAfT"))).create()));
 		} else if(plugin.getYamlHandler().getL().getString(
 				language+".CmdAfkRecord.Time.Alltime").contains("%alltime%"))
 		{
 			msg3.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top alltime"));
 			msg3.setHoverEvent( new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
-					new ComponentBuilder(plugin.getUtility().tl
+					new ComponentBuilder(ChatApi.tl
 					(plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Time.HoverAlT"))).create()));
 		}
 		player.spigot().sendMessage(msg1);
@@ -198,7 +200,7 @@ public class CommandHelper
 		player.spigot().sendMessage(msg3);
 		if(player.hasPermission(Utility.PERMTIMELASTACTIVITY))
 		{
-			player.spigot().sendMessage(plugin.getUtility().tctl(
+			player.spigot().sendMessage(ChatApi.tctl(
 					plugin.getYamlHandler().getL().getString(
 							language+".CmdAfkRecord.Time.LastActive").replaceAll("%time%", lastactivity)));
 		}
@@ -225,7 +227,7 @@ public class CommandHelper
 				start = 0;
 			}
 		}
-		player.spigot().sendMessage(plugin.getUtility().tctl(
+		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getL().getString(language+headpath)));
 		while(start<=stop)
 		{
@@ -239,7 +241,7 @@ public class CommandHelper
 			}
 			if(i!=null)
 			{
-				player.spigot().sendMessage(plugin.getUtility().tctl(
+				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Top.PlaceAndTime")
 						.replaceAll("%place%", plugin.getUtility().getPlaceColor(i.getPlace()))
 						.replaceAll("%player%", i.getName())
@@ -249,23 +251,23 @@ public class CommandHelper
 		}
 		int i = page+1;
 		int j = page-1;
-		TextComponent MSG = plugin.getUtility().tctl("");
+		TextComponent MSG = ChatApi.tctl("");
 		List<BaseComponent> list = new ArrayList<BaseComponent>();
 		if(page!=0)
 		{
-			TextComponent msg2 = plugin.getUtility().tc(plugin.getUtility().tl(
+			TextComponent msg2 = ChatApi.tc(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Top.Past")));
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top "+subcmd+" "+j));
 			list.add(msg2);
 		}
 		if(!lastpage)
 		{
-			TextComponent msg1 = plugin.getUtility().tc(plugin.getUtility().tl(
+			TextComponent msg1 = ChatApi.tc(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.Top.Next")));
 			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/afkr top "+subcmd+" "+i));
 			if(list.size()==1)
 			{
-				list.add(plugin.getUtility().tc(" | "));
+				list.add(ChatApi.tc(" | "));
 			}
 			list.add(msg1);
 		}
@@ -289,12 +291,12 @@ public class CommandHelper
 				start = 0;
 			}
 		}
-		player.spigot().sendMessage(plugin.getUtility().tctl(
+		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.GetTime.Headline")
 				.replaceAll("%player%", target.getName())));
 		while(start<stop)
 		{
-			player.spigot().sendMessage(plugin.getUtility().tctl(
+			player.spigot().sendMessage(ChatApi.tctl(
 					plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.GetTime.Line")
 					.replaceAll("%date%", a.get(start).getDate())
 					.replaceAll("%alltime%", plugin.getUtility().timetl(a.get(start).getAlltime()))
@@ -308,28 +310,28 @@ public class CommandHelper
 	{
 		String language = plugin.getUtility().getLanguage();
 		PlayerInfo pi = plugin.getMysqlHandler().getCountTime(target.getUniqueId().toString(), days);
-		player.sendMessage(plugin.getUtility().tl(
+		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.CountTime.Headline")
 				.replaceAll("%player%", target.getName())
 				.replaceAll("%days%", String.valueOf(days))));
-		player.sendMessage(plugin.getUtility().tl(
+		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.CountTime.ActiveTime")
 				.replaceAll("%ontime%", plugin.getUtility().timetl(pi.getActivitytime()))
 				.replaceAll("%afktime%", plugin.getUtility().timetl(pi.getAfktime()))
 				.replaceAll("%alltime%", plugin.getUtility().timetl(pi.getAlltime()))));
-		player.sendMessage(plugin.getUtility().tl(
+		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.CountTime.AfkTime")
 				.replaceAll("%ontime%", plugin.getUtility().timetl(pi.getActivitytime()))
 				.replaceAll("%afktime%", plugin.getUtility().timetl(pi.getAfktime()))
 				.replaceAll("%alltime%", plugin.getUtility().timetl(pi.getAlltime()))));
-		player.sendMessage(plugin.getUtility().tl(
+		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.CountTime.Alltime")
 				.replaceAll("%ontime%", plugin.getUtility().timetl(pi.getActivitytime()))
 				.replaceAll("%afktime%", plugin.getUtility().timetl(pi.getAfktime()))
 				.replaceAll("%alltime%", plugin.getUtility().timetl(pi.getAlltime()))));
 		if(player.hasPermission(Utility.PERMCOUNTTIMELASTACTIVITY))
 		{
-			player.sendMessage(plugin.getUtility().tl(
+			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.CountTime.LastActive")
 					.replaceAll("%time%", plugin.getUtility().getDateExact(
 							(Long) plugin.getMysqlHandler().getDataI(
@@ -342,9 +344,9 @@ public class CommandHelper
 		String language = plugin.getUtility().getLanguage();
 		ArrayList<User> user = plugin.getUtility().sortAfkList(User.getUsers(), bungeeplayerlist);
 		boolean check = false;
-		TextComponent playerlist = plugin.getUtility().tc("");
+		TextComponent playerlist = ChatApi.tc("");
 		long now = System.currentTimeMillis();
-		TextComponent MSG = plugin.getUtility().tctl(
+		TextComponent MSG = ChatApi.tctl(
 				plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.GetAfk.PlayerAfk"));
 		List<BaseComponent> list = new ArrayList<>();
 		for(User u : user)
@@ -357,7 +359,7 @@ public class CommandHelper
 				{
 					String pc = plugin.getYamlHandler().getL()
 							.getString(language+".CmdAfkRecord.GetAfk.PlayerColor.Under15Min");
-					playerlist = plugin.getUtility().tctl(pc+u.getName()
+					playerlist = ChatApi.tctl(pc+u.getName()
 							+"&f|"+plugin.getUtility().timetl(t)+" ");
 					playerlist.setClickEvent(new ClickEvent(
 							ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getName()));
@@ -365,7 +367,7 @@ public class CommandHelper
 				{
 					String pc = plugin.getYamlHandler().getL()
 							.getString(language+".CmdAfkRecord.GetAfk.PlayerColor.15Min");
-					playerlist = plugin.getUtility().tctl(pc+u.getName()
+					playerlist = ChatApi.tctl(pc+u.getName()
 							+"&f|"+plugin.getUtility().timetl(t)+" ");
 					playerlist.setClickEvent(new ClickEvent(
 							ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getName()));
@@ -373,7 +375,7 @@ public class CommandHelper
 				{
 					String pc = plugin.getYamlHandler().getL()
 							.getString(language+".CmdAfkRecord.GetAfk.PlayerColor.30Min");
-					playerlist = plugin.getUtility().tctl(pc+u.getName()
+					playerlist = ChatApi.tctl(pc+u.getName()
 							+"&f|"+plugin.getUtility().timetl(t)+" ");
 					playerlist.setClickEvent(new ClickEvent(
 							ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getName()));
@@ -381,7 +383,7 @@ public class CommandHelper
 				{
 					String pc = plugin.getYamlHandler().getL()
 							.getString(language+".CmdAfkRecord.GetAfk.PlayerColor.45Min");
-					playerlist = plugin.getUtility().tctl(pc+u.getName()
+					playerlist = ChatApi.tctl(pc+u.getName()
 							+"&f|"+plugin.getUtility().timetl(t)+" ");
 					playerlist.setClickEvent(new ClickEvent(
 							ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getName()));
@@ -389,7 +391,7 @@ public class CommandHelper
 				{
 					String pc = plugin.getYamlHandler().getL()
 							.getString(language+".CmdAfkRecord.GetAfk.PlayerColor.60Min");
-					playerlist = plugin.getUtility().tctl(pc+u.getName()
+					playerlist = ChatApi.tctl(pc+u.getName()
 							+"&f|"+plugin.getUtility().timetl(t)+" ");
 					playerlist.setClickEvent(new ClickEvent(
 							ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getName()));
@@ -397,7 +399,7 @@ public class CommandHelper
 				{
 					String pc = plugin.getYamlHandler().getL()
 							.getString(language+".CmdAfkRecord.GetAfk.PlayerColor.90Min");
-					playerlist = plugin.getUtility().tctl(pc+u.getName()
+					playerlist = ChatApi.tctl(pc+u.getName()
 							+"&f|"+plugin.getUtility().timetl(t)+" ");
 					playerlist.setClickEvent(new ClickEvent(
 							ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getName()));
@@ -405,7 +407,7 @@ public class CommandHelper
 				{
 					String pc = plugin.getYamlHandler().getL()
 							.getString(language+".CmdAfkRecord.GetAfk.PlayerColor.120Min");
-					playerlist = plugin.getUtility().tctl(pc+u.getName()
+					playerlist = ChatApi.tctl(pc+u.getName()
 							+"&f|"+plugin.getUtility().timetl(t)+" ");
 					playerlist.setClickEvent(new ClickEvent(
 							ClickEvent.Action.RUN_COMMAND, "/afkr time "+u.getName()));
@@ -419,7 +421,7 @@ public class CommandHelper
 		}
 		if(check==false)
 		{
-			player.sendMessage(plugin.getUtility().tl(
+			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString(language+".CmdAfkRecord.GetAfk.NoPlayerAfk")));
 			return;
 		}
