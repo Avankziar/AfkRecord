@@ -20,7 +20,7 @@ public class PlayerCommandPreprocessListener implements Listener
 	{
 		if(!event.getMessage().equalsIgnoreCase("/afk"))
 		{
-			plugin.getUtility().softSave(event.getPlayer(), true, true, false);
+			plugin.getUtility().save(event.getPlayer(), true, false, false);
 		}
 	}
 }

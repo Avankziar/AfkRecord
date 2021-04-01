@@ -1,23 +1,20 @@
 package main.java.de.avankziar.afkrecord.spigot.assistance;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
-import main.java.de.avankziar.afkrecord.spigot.object.TopList;
-import main.java.de.avankziar.afkrecord.spigot.object.User;
+import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler;
+import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler.Type;
+import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
+import main.java.de.avankziar.afkrecord.spigot.object.TimeRecord;
 
 public class Utility 
 {
 	private AfkRecord plugin;
-	private String prefix;
-	private String language;
+	private static boolean serverDisable = false;
+	public static ArrayList<String> playerWhoBypassAfkTracking = new ArrayList<>(); //UUIDs
 	
 	final public static String 
 	PERMTIMELASTACTIVITY = "afkrecord.cmd.afkrecord.time.lastactivity",
@@ -31,264 +28,143 @@ public class Utility
 	
 	public boolean loadUtility()
 	{
-		setPrefix(plugin.getYamlHandler().get().getString("Prefix", "&7[&cAfk&eRecord&7] &r"));
-		setLanguage(plugin.getYamlHandler().getLanguages());
 		return true;
 	}
-
-	/*public String tl(String path)
+	
+	public void saveAndServerDisable(Player player, boolean incomeNewActivity, boolean incomeSetAfk)
 	{
-		return ChatColor.translateAlternateColorCodes('&', path);
+		serverDisable = true;
+		save(player, incomeNewActivity, incomeSetAfk, true);
 	}
 	
-	public TextComponent tc(String s)
-	{
-		return new TextComponent(s);
-	}
 	
-	public TextComponent tctl(String s)
-	{
-		return new TextComponent(ChatColor.translateAlternateColorCodes('&', s));
-	}
 	
-	public TextComponent tctlYaml(String path)
+	/*
+	 * @param incomeNewActivity == If you move etc. Or if you become active
+	 * @param incomeSetAfk == Afkchecker
+	 * @param playerQuit == When the player quit the server
+	 */
+	public void save(Player player,
+			boolean incomeNewActivity, boolean incomeSetAfk, boolean playerQuit)
 	{
-		return new TextComponent(ChatColor.translateAlternateColorCodes('&', plugin.getYamlHandler().getL().getString(path)));
-	}
-	
-	public TextComponent TextWithExtra(String s, List<BaseComponent> list)
-	{
-		TextComponent tc = tctl(s);
-		tc.setExtra(list);
-		return tc;
-	}
-	
-	public TextComponent clickEvent(String text, ClickEvent.Action caction, String cmd, boolean yaml)
-	{
-		TextComponent msg = null;
-		if(yaml)
+		if(player == null)
 		{
-			msg = tctl(plugin.getYamlHandler().getL().getString(text));
-		} else
-		{
-			msg = tctl(text);
+			return;
 		}
-		msg.setClickEvent( new ClickEvent(caction, cmd));
-		return msg;
-	}
-	
-	public TextComponent hoverEvent(String text, HoverEvent.Action haction, String hover, boolean yaml)
-	{
-		TextComponent msg = null;
-		if(yaml)
+		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLUGINUSER,
+				"`player_uuid` = ?", player.getUniqueId().toString());
+		long now = System.currentTimeMillis();
+		if(user == null)
 		{
-			msg = tctl(plugin.getYamlHandler().getL().getString(text));
-		} else
-		{
-			msg = tctl(text);
+			user = new PluginUser(player.getUniqueId(), player.getName(), now, 0, 0, 0, now, false, true);
 		}
-		msg.setHoverEvent( new HoverEvent(haction, new ComponentBuilder(tl(hover)).create()));
-		return msg;
-	}*/
-	
-	public void softSave(Player player, boolean setactiv, boolean newactivity, boolean setafk)
-	{
-		User u = User.getUser(player);
-		if(u!=null)
+		//If server goes off, than never go in this if.
+		if(!serverDisable && !playerQuit)
 		{
-			if(System.currentTimeMillis()>=u.getLasttimecheck()) //normaler Check
+			if(!incomeSetAfk)
 			{
-				long now = System.currentTimeMillis();
-				long difference = now - u.getLasttimecheck();
-				if(u.isIsafk())
+				if(user.isAFK() && !incomeNewActivity)
 				{
-					long afktime = u.getAfktime()+difference;
-					u.setAfktime(afktime);
-					if(setactiv==true)
+					//if the user lasttimecheck is no far away AND no /afk is exceute, so return.
+					if(user.getLastTimeCheck()+plugin.getYamlHandler().getConfig().getLong("General.SaveInSeconds", 60)*1000
+							> now)
 					{
-						u.setIsafk(false);
-						plugin.getMysqlHandler().updateDataI(player, false, "isafk");
-						player.spigot().sendMessage(ChatApi.tctl(
-								plugin.getYamlHandler().getL().getString(language+".CmdAfk.NoMoreAfk")));
+						return;
 					}
-				} else
-				{
-					long activitytime = u.getActivitytime()+difference;
-					u.setActivitytime(activitytime);
-					if(setafk==true)
-					{
-						u.setIsafk(true);
-						plugin.getMysqlHandler().updateDataI(player, true, "isafk");
-						player.spigot().sendMessage(ChatApi.tctl(
-								plugin.getYamlHandler().getL().getString(language+".CmdAfk.SetAfk")));
-					}
-				}
-				long alltime = u.getAlltime()+difference;
-				u.setAlltime(alltime);
-				long newlasttimecheck = now;
-				u.setLasttimecheck(newlasttimecheck);
-				if(newactivity==true)
-				{
-					u.setLastactivity(now);
-					plugin.getMysqlHandler().updateDataI(player, now, "lastactivity");
-				}
-			} else if(setactiv == true && newactivity == true && setafk == false && u.isIsafk() == false) 
-				//wenn man nicht afk war aber durch externe Anfragen auf den softsave zugegriffen wird.
-			{
-				long now = System.currentTimeMillis();
-				long difference = now - u.getLasttimecheck();
-				long activitytime = u.getActivitytime()+difference;
-				u.setActivitytime(activitytime);
-				long alltime = u.getAlltime()+difference;
-				u.setAlltime(alltime);
-				long newlasttimecheck = now;
-				u.setLasttimecheck(newlasttimecheck);
-				if(newactivity==true)
-				{
-					u.setLastactivity(now);
-					plugin.getMysqlHandler().updateDataI(player, now, "lastactivity");
-				}
-			} else if(setactiv == true && newactivity == true && u.isIsafk()) //Wenn man afk war, und nun sich bewegt etc.
-			{
-				long now = System.currentTimeMillis();
-				long difference = now - u.getLasttimecheck();
-				long afktime = u.getAfktime()+difference;
-				u.setAfktime(afktime);
-				u.setIsafk(false);
-				plugin.getMysqlHandler().updateDataI(player, false, "isafk");
-				player.spigot().sendMessage(ChatApi.tctl(
-						plugin.getYamlHandler().getL().getString(language+".CmdAfk.NoMoreAfk")));
-				long alltime = u.getAlltime()+difference;
-				u.setAlltime(alltime);
-				long newlasttimecheck = now;
-				u.setLasttimecheck(newlasttimecheck);
-				if(newactivity==true)
-				{
-					u.setLastactivity(now);
-					plugin.getMysqlHandler().updateDataI(player, now, "lastactivity");
-				}
-			} else if(setafk == true && u.isIsafk() == false) //wenn man /afk nutzt
-			{
-				long now = System.currentTimeMillis();
-				long difference = now - u.getLasttimecheck();
-				long activitytime = u.getActivitytime()+difference;
-				u.setActivitytime(activitytime);
-				u.setIsafk(true);
-				plugin.getMysqlHandler().updateDataI(player, true, "isafk");
-				player.spigot().sendMessage(ChatApi.tctl(
-						plugin.getYamlHandler().getL().getString(language+".CmdAfk.SetAfk")));
-				long alltime = u.getAlltime()+difference;
-				u.setAlltime(alltime);
-				long newlasttimecheck = now;
-				u.setLasttimecheck(newlasttimecheck);
-				if(newactivity==true)
-				{
-					u.setLastactivity(now);
-					plugin.getMysqlHandler().updateDataI(player, now, "lastactivity");
 				}
 			}
 		}
-	}
-	
-	public void hardSave(Player player, boolean removeuser)
-	{
-		User u = User.getUser(player);
-		if(u!=null)
+		long date = TimeHandler.getDate(TimeHandler.getDate(now));
+		TimeRecord tr = (TimeRecord) plugin.getMysqlHandler().getData(Type.TIMERECORD,
+				"`player_uuid` = ? AND `timestamp_unix` = ?", user.getUUID().toString(),
+				date);
+		boolean create = false;
+		//Multiple Timehandler, from now => dd.MM.yyyy => long from day begin
+		if(tr == null)
 		{
-			String date = getDate();
-			long activitytimeI = u.getActivitytime() 
-					+ (Long) plugin.getMysqlHandler().getDataI(player, "activitytime", "player_uuid");
-			plugin.getMysqlHandler().updateDataI(player, activitytimeI, "activitytime");
-			long activitytimeII = u.getActivitytime() 
-					+ (Long) plugin.getMysqlHandler().getDataII(player, "activitytime", date);
-			plugin.getMysqlHandler().updateDataII(player, activitytimeII, "activitytime", date);
-			u.setActivitytime(0);
-			long afktimeI = u.getAfktime()+(Long) plugin.getMysqlHandler().getDataI(player, "afktime", "player_uuid");
-			plugin.getMysqlHandler().updateDataI(player, afktimeI, "afktime");
-			long afktimeII = u.getAfktime()+(Long) plugin.getMysqlHandler().getDataII(player, "afktime", date);
-			plugin.getMysqlHandler().updateDataII(player, afktimeII, "afktime", date);
-			u.setAfktime(0);
-			long alltimeI = u.getAlltime()+ (Long) plugin.getMysqlHandler().getDataI(player, "alltime", "player_uuid");
-			plugin.getMysqlHandler().updateDataI(player, alltimeI, "alltime");
-			long alltimeII = u.getAlltime()+(Long) plugin.getMysqlHandler().getDataII(player, "alltime", date);
-			plugin.getMysqlHandler().updateDataII(player, alltimeII, "alltime", date);
-			u.setAlltime(0);
-			if(removeuser==true)
+			tr = new TimeRecord(user.getUUID(), user.getPlayerName(), date, 0, 0, 0);
+			create = true;
+		}
+		//Difference from last time the player was checked
+		long difference = now - user.getLastTimeCheck();
+		if(user.isAFK() && !playerWhoBypassAfkTracking.contains(player.getUniqueId().toString()))
+		{
+			user.setAfkTime(user.getAfkTime()+difference);
+			tr.setAfkTime(tr.getAfkTime()+difference);
+		} else
+		{
+			user.setActivityTime(user.getActivityTime()+difference);
+			tr.setActivityTime(tr.getActivityTime()+difference);
+		}
+		user.setAllTime(user.getAllTime()+difference);
+		tr.setAllTime(tr.getAllTime()+difference);
+		if(incomeNewActivity)
+		{
+			if(user.isAFK())
 			{
-				User.removeUser(u);
-				u = null;
+				user.setAFK(false);
+				player.spigot().sendMessage(ChatApi.tctl(
+						plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")));
 			}
+		} else if(incomeSetAfk)
+		{
+			if(!user.isAFK())
+			{
+				player.spigot().sendMessage(ChatApi.tctl(
+						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")));
+				user.setAFK(true);
+			} else
+			{
+				player.spigot().sendMessage(ChatApi.tctl(
+						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAntiAfk")));
+				user.setAFK(false);
+			}
+		}
+		if(playerQuit)
+		{
+			//If the player quit, he is always NOT Afk
+			user.setOnline(false);
+			user.setAFK(false);
+		}
+		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", user.getUUID().toString());
+		
+		if(create)
+		{
+			plugin.getMysqlHandler().create(Type.TIMERECORD, tr);
+		} else
+		{
+			plugin.getMysqlHandler().updateData(Type.TIMERECORD, tr, 
+					"`player_uuid` = ? AND `timestamp_unix` = ?",
+					user.getUUID().toString(),
+					date);
 		}
 	}
 	
 	public void afkchecker(Player player)
 	{
-		User u = User.getUser(player);
-		if(u!=null)
+		if(!player.isOnline())
 		{
-			long now = System.currentTimeMillis();
-			long lastactivity = u.getLastactivity()+plugin.getYamlHandler().get().getInt("General.AfkAfterInSeconds")*1000L;
-			if(now>=lastactivity)
+			return;
+		}
+		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
+							"`player_uuid` = ?", player.getUniqueId().toString());
+		if(user != null)
+		{
+			if(System.currentTimeMillis() >= 
+					(user.getLastActivity()+plugin.getYamlHandler().getConfig().getInt("General.AfkAfterInSeconds", 900)*1000L))
 			{
-				softSave(player, false, false, true);
-				plugin.getMysqlHandler().updateDataI(player, true, "isafk");
+				save(player, false, true, false);
 			}
-		}
-	}
-	
-	public String getDate()//FIN
-	{
-		Date now = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		String dt = sdf.format(now);
-		return dt;
-	}
-	
-	public String getDateExact(Long l)//FIN
-	{
-		Date now = new Date(l);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		String dt = sdf.format(now);
-		return dt;
-	}
-	
-	public String addingDaysToDate(String date, int days) //FIN
-	{
-		String oldDate = date;
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		Calendar calendar = Calendar.getInstance();
-		try
-		{
-			calendar.setTime(sdf.parse(oldDate));
-		} catch (ParseException e)
-		{
-			e.printStackTrace();
-		}
-		calendar.add(Calendar.DAY_OF_MONTH, days);
-		String newDate = sdf.format(calendar.getTime());
-		return newDate;
-	}
-	
-	public Long getDateInLong(String date)
-	{
-		SimpleDateFormat f = new SimpleDateFormat("dd-MM-yyyy");
-		try {
-		    Date d = f.parse(date);
-		    long time = d.getTime();
-		    return time;
-		} catch (ParseException e) 
-		{
-		    return 0L;
 		}
 	}
 	
 	public String timetl(final long time) 
 	{
 		long t = time;
-		String ss = plugin.getYamlHandler().getL().getString(language+".Time.Seconds");
-	    String mm = plugin.getYamlHandler().getL().getString(language+".Time.Minutes");
-	    String HH = plugin.getYamlHandler().getL().getString(language+".Time.Hours");
-	    String dd = plugin.getYamlHandler().getL().getString(language+".Time.Days");
+		String ss = plugin.getYamlHandler().getLang().getString("Time.Seconds");
+	    String mm = plugin.getYamlHandler().getLang().getString("Time.Minutes");
+	    String HH = plugin.getYamlHandler().getLang().getString("Time.Hours");
+	    String dd = plugin.getYamlHandler().getLang().getString("Time.Days");
 	    String msg = "";
 	    if(t<=0)
 	    {
@@ -326,145 +202,64 @@ public class Utility
 		String color = "";
 		if(place<=1)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0001")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0001")+place;
 			return color;
 		} else if(place==2)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0002")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0002")+place;
 			return color;
 		} else if(place==3)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0003")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0003")+place;
 			return color;
 		} else if(place>3 && place<=5)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0005")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0005")+place;
 			return color;
 		} else if(place>5 && place<=10)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0010")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0010")+place;
 			return color;
 		} else if(place>10 && place<=25)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0025")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0025")+place;
 			return color;
 		} else if(place>25 && place<=50)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0050")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0050")+place;
 			return color;
 		} else if(place>50 && place<=100)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0100")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0100")+place;
 			return color;
 		} else if(place>100 && place<=250)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0250")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0250")+place;
 			return color;
 		} else if(place>250 && place<=500)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top0500")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top0500")+place;
 			return color;
 		} else if(place>500 && place<=1000)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top1000")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top1000")+place;
 			return color;
 		} else if(place>1000 && place<=2500)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top2500")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top2500")+place;
 			return color;
 		} else if(place>2500 && place<=5000)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top5000")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top5000")+place;
 			return color;
 		} else if(place>5000 && place<=9999)
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Top9999")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Top9999")+place;
 			return color;
 		} else
 		{
-			color = plugin.getYamlHandler().getL().getString(language+".Placement.Above")+place;
+			color = plugin.getYamlHandler().getLang().getString("Placement.Above")+place;
 			return color;
 		}
-	}
-	
-	/*public ArrayList<TopList> sortTopList(ArrayList<TopList> a)
-	{
-		ArrayList<TopList> b = new ArrayList<>(a);
-        ArrayList<TopList> c = new ArrayList<>();
-        int i = 1;
-        while(b.size()!=0)
-        {
-        	TopList t = new TopList(1, "", -1);
-        	for(TopList tl : b)
-        	{
-        		if(tl.getTime()>t.getTime())
-        		{
-        			t = tl;
-        		}
-        	}
-        	t.setPlace(i);
-        	i++;
-        	b.remove(t);
-        	c.add(t);
-        }
-        return c;
-	}*/
-	
-	public ArrayList<User> sortAfkList(ArrayList<User> a, String list)
-	{
-		ArrayList<User> b = new ArrayList<>(a);
-        ArrayList<User> c = new ArrayList<>();
-        while(b.size()!=0)
-        {
-        	User u = null;
-        	for(User us : b)
-        	{
-        		if(u == null)
-        		{
-        			u = us;
-        		}
-        		if(us.getActivitytime()<u.getLastactivity())
-        		{
-        			u = us;
-        		}
-        	}
-        	b.remove(u);
-        	c.add(u);
-        }
-        return c;
-	}
-	
-	public int getPlace(OfflinePlayer player, ArrayList<TopList> array)
-	{
-		int place = 0;
-		for(TopList tl : array)
-		{
-			if(tl.getName().equals(player.getName()))
-			{
-				place = tl.getPlace();
-				break;
-			}
-		}
-		return place;
-	}
-
-	public String getLanguage()
-	{
-		return language;
-	}
-
-	public void setLanguage(String language)
-	{
-		this.language = language;
-	}
-
-	public String getPrefix()
-	{
-		return prefix;
-	}
-
-	public void setPrefix(String prefix)
-	{
-		this.prefix = prefix;
 	}
 }

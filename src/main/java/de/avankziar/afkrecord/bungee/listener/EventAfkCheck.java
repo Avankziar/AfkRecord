@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import main.java.de.avankziar.afkrecord.bungee.AfkRecord;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -13,32 +12,16 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
 public class EventAfkCheck implements Listener
-{
-	private AfkRecord plugin;
-	public EventAfkCheck(AfkRecord plugin)
-	{
-		this.plugin = plugin;
-	}
-	
+{	
 	@EventHandler (priority = EventPriority.LOWEST)
 	public void onChat(ChatEvent event)
 	{
-		if(plugin.getYamlHandler().get().getBoolean("SccIsActive", false))
+		if(event.getMessage().startsWith("/afk"))
 		{
-			if(event.getMessage().equalsIgnoreCase("/afk"))
-			{
-				return;
-			}
-			softsave((ProxiedPlayer) event.getSender());
-			return;
-		} else if(event.getMessage().startsWith("/"))
-		{
-			if(!event.getMessage().equalsIgnoreCase("/afk"))
-			{
-				softsave((ProxiedPlayer) event.getSender());
-			}
 			return;
 		}
+		softsave((ProxiedPlayer) event.getSender());
+		return;
 	}
 	
 	private void softsave(ProxiedPlayer player)

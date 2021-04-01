@@ -18,6 +18,6 @@ public class PlayerMoveListener implements Listener
 	@EventHandler
 	public void onMove(PlayerMoveEvent event)
 	{
-		plugin.getUtility().softSave(event.getPlayer(), true, true, false);
+		plugin.getUtility().save(event.getPlayer(), true, false, false);
 	}
 }

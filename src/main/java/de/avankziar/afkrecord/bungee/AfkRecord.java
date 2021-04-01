@@ -10,8 +10,9 @@ import java.util.logging.Logger;
 import main.java.de.avankziar.afkrecord.bungee.database.MysqlHandler;
 import main.java.de.avankziar.afkrecord.bungee.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlHandler;
+import main.java.de.avankziar.afkrecord.bungee.database.YamlManager;
 import main.java.de.avankziar.afkrecord.bungee.listener.EventAfkCheck;
-import main.java.de.avankziar.afkrecord.bungee.listener.ServerListener;
+import main.java.de.avankziar.afkrecord.bungee.object.PluginUser;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -19,24 +20,23 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 public class AfkRecord extends Plugin
 {
+	private static AfkRecord plugin;
 	public static Logger log;
 	public static String pluginName = "AfkRecord";
-	private static YamlHandler yamlHandler;
-	private static MysqlSetup mysqlSetup;
-	private static MysqlHandler mysqlHandler;
-	private static Utility utility;
-	private static AfkRecord plugin;
+	private YamlHandler yamlHandler;
+	private YamlManager yamlManager;
+	private MysqlSetup mysqlSetup;
+	private MysqlHandler mysqlHandler;
 	
 	public void onEnable() 
 	{
 		plugin = this;
 		log = getLogger();
-		yamlHandler = new YamlHandler(this);
-		utility = new Utility(this);
-		if(yamlHandler.get().getBoolean("Mysql.Status", false))
+		yamlHandler = new YamlHandler(plugin);
+		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
-			mysqlHandler = new MysqlHandler(this);
-			mysqlSetup = new MysqlSetup(this);
+			mysqlHandler = new MysqlHandler(plugin);
+			mysqlSetup = new MysqlSetup(plugin);
 		} else
 		{
 			disablePlugin();
@@ -44,15 +44,14 @@ public class AfkRecord extends Plugin
 		}
 		getProxy().registerChannel("afkrecord:afkrecordout");
 		getProxy().registerChannel("afkrecord:afkrecordin");
-		getProxy().getPluginManager().registerListener(this, new EventAfkCheck(this));
-		getProxy().getPluginManager().registerListener(this, new ServerListener(this));
+		getProxy().getPluginManager().registerListener(plugin, new EventAfkCheck());
 	}
 	
 	public void onDisable()
 	{
-		getProxy().getScheduler().cancel(this);
+		getProxy().getScheduler().cancel(plugin);
 		//HandlerList.unregisterAll();
-		if(yamlHandler.get().getBoolean("Mysql.Status", false))
+		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
 			if (mysqlSetup.getConnection() != null) 
 			{
@@ -69,6 +68,16 @@ public class AfkRecord extends Plugin
 		return yamlHandler;
 	}
 	
+	public YamlManager getYamlManager()
+	{
+		return yamlManager;
+	}
+	
+	public void setYamlManager(YamlManager yamlManager)
+	{
+		this.yamlManager = yamlManager;
+	}
+	
 	public MysqlSetup getMysqlSetup() 
 	{
 		return mysqlSetup;
@@ -79,42 +88,9 @@ public class AfkRecord extends Plugin
 		return mysqlHandler;
 	}
 	
-	public Utility getUtility()
-	{
-		return utility;
-	}
-	
 	public static AfkRecord getPlugin()
 	{
 		return plugin;
-	}
-	
-	public boolean reload()
-	{
-		if(!yamlHandler.loadYamlHandler())
-		{
-			return false;
-		}
-		if(!utility.loadUtility())
-		{
-			return false;
-		}
-		if(yamlHandler.get().getBoolean("Mysql.Status", false))
-		{
-			mysqlSetup.closeConnection();
-			if(!mysqlHandler.loadMysqlHandler())
-			{
-				return false;
-			}
-			if(!mysqlSetup.loadMysqlSetup())
-			{
-				return false;
-			}
-		} else 
-		{
-			return false;
-		}
-		return true;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -141,20 +117,14 @@ public class AfkRecord extends Plugin
 	
 	public boolean isAfk(ProxiedPlayer player)
 	{
-		if(!mysqlHandler.hasAccount(player))
-		{
-			return false;
-		}
-		return (boolean) mysqlHandler.getDataI(player, "isafk", "player_uuid");
+		PluginUser user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin, "`player_uuid` = ?", player.getUniqueId().toString());
+		return (user != null) ? user.isAFK() : false;
 	}
 	
 	public long lastActivity(ProxiedPlayer player)
 	{
-		if(!mysqlHandler.hasAccount(player))
-		{
-			return -1;
-		}
-		return (long) mysqlHandler.getDataI(player, "lastactivity", "player_uuid");
+		PluginUser user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin, "`player_uuid` = ?", player.getUniqueId().toString());
+		return (user != null) ? user.getLastActivity() : 0;
 	}
 	
 	public void softSave(ProxiedPlayer player)
@@ -172,5 +142,81 @@ public class AfkRecord extends Plugin
 		}
 	    server.sendData("afkrecord:afkrecordout", streamout.toByteArray());
 	    return;
+	}
+	
+	public boolean existOfflinePlayer(String playername)
+	{
+		if(plugin.getMysqlHandler().existI(plugin,
+				"`player_name` = ? AND `isonline` = ?", playername, false))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean existOnlinePlayer(ProxiedPlayer player)
+	{
+		if(plugin.getMysqlHandler().existI(plugin,
+				"`player_uuid` = ? AND `isonline` = ?", player.getUniqueId().toString(), true))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	public PluginUser getOfflineUser(String playername)
+	{
+		if(existOfflinePlayer(playername))
+		{
+			PluginUser user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin,
+					"`player_uuid` = ? AND `isonline` = ?", playername, false);
+			return user;
+		}
+		return null;
+	}
+	
+	public PluginUser getOnlineUser(ProxiedPlayer player)
+	{
+		if(player == null)
+		{
+			return null;
+		}
+		if(existOnlinePlayer(player))
+		{
+			PluginUser user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin,
+					"`player_uuid` = ? AND `online` = ?", player.getUniqueId().toString(), true);
+			return user;
+		}
+		return null;
+	}
+	
+	public long getTimes(Type type, String playername)
+	{
+		PluginUser user = null;
+		if(!existOfflinePlayer(playername))
+		{
+			return 0;
+		}
+		user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin,
+				"`player_uuid` = ?", playername);
+		switch(type)
+		{
+		case ALL:
+			return user.getAllTime();
+		case ONLINE:
+			return user.getActivityTime();
+		case AFK:
+			return user.getAfkTime();
+		case LASTACTIVITY:
+			return user.getLastActivity();
+		case LASTTIMECHECK:
+			return user.getLastTimeCheck();
+		}
+		return 0;
+	}
+	
+	public enum Type
+	{
+		ONLINE, AFK, ALL, LASTACTIVITY, LASTTIMECHECK;
 	}
 }

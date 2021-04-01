@@ -1,0 +1,8 @@
+package main.java.de.avankziar.afkrecord.spigot.permission;
+
+public class BypassPermission
+{
+	public static String COUNTTIMEOTHER = "afkrecord.cmd.afkrecord.counttime.other";
+	public static String GETTIMEOTHER = "afkrecord.cmd.afkrecord.gettime.other";
+	public static String TIMEOTHER = "afkrecord.cmd.afkrecord.time.other";
+}

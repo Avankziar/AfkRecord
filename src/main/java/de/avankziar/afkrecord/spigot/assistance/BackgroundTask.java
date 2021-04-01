@@ -1,19 +1,13 @@
 package main.java.de.avankziar.afkrecord.spigot.assistance;
 
-import java.util.ArrayList;
-
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
-import main.java.de.avankziar.afkrecord.spigot.object.TopList;
 
 public class BackgroundTask 
 {
 	private AfkRecord plugin;
-	public ArrayList<TopList> all;
-	public ArrayList<TopList> ac;
-	public ArrayList<TopList> afk;
 	
 	public BackgroundTask(AfkRecord plugin)
 	{
@@ -24,9 +18,7 @@ public class BackgroundTask
 	public void runTask()
 	{
 		runSave();
-		runDataSave();
 		runAfkTrackerTask();
-		runTopList();
 	}
 	
 	public void runSave() //Interne Abspeicherung
@@ -39,28 +31,11 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getUtility().softSave(player, false, false, false);
+					plugin.getUtility().save(player, false, false, false);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
-				plugin.getYamlHandler().get().getInt("General.SoftSaveInSeconds")*20L);
-	}
-	
-	public void runDataSave() //mysql abspeicherung
-	{
-		new BukkitRunnable() 
-		{
-			
-			@Override
-			public void run() 
-			{
-				for(Player player : plugin.getServer().getOnlinePlayers())
-				{
-					plugin.getUtility().hardSave(player, false);
-				}
-			}
-		}.runTaskTimerAsynchronously(plugin, 15L,
-				plugin.getYamlHandler().get().getInt("General.MysqlSaveInSeconds")*20L);
+				plugin.getYamlHandler().getConfig().getInt("General.SoftSaveInSeconds")*20L);
 	}
 	
 	public void runAfkTrackerTask()
@@ -77,55 +52,14 @@ public class BackgroundTask
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
-				plugin.getYamlHandler().get().getInt("General.AfkCheckerInSeconds")*20L);
-	}
-	
-	public void runTopList()
-	{
-		new BukkitRunnable() 
-		{
-			
-			@Override
-			public void run() 
-			{
-				//ac = plugin.getUtility().sortTopList(plugin.getMysqlHandler().getTop("activitytime"));
-				ac = plugin.getMysqlHandler().getTop("activitytime");
-			}
-		}.runTaskTimerAsynchronously(plugin, 20L, 
-				plugin.getYamlHandler().get().getLong("General.TopListRefresh")*20L);
-		
-		new BukkitRunnable() 
-		{
-			
-			@Override
-			public void run() 
-			{
-				//all = plugin.getUtility().sortTopList(plugin.getMysqlHandler().getTop("alltime"));
-				all = plugin.getMysqlHandler().getTop("alltime");
-			}
-		}.runTaskTimerAsynchronously(plugin, 20L, 
-				plugin.getYamlHandler().get().getLong("General.TopListRefresh")*20L);
-		
-		new BukkitRunnable() 
-		{
-			
-			@Override
-			public void run() 
-			{
-				//afk = plugin.getUtility().sortTopList(plugin.getMysqlHandler().getTop("afktime"));
-				afk = plugin.getMysqlHandler().getTop("afktime");
-			}
-		}.runTaskTimerAsynchronously(plugin, 20L, 
-				plugin.getYamlHandler().get().getLong("General.TopListRefresh")*20L);
-		
-		
+				plugin.getYamlHandler().getConfig().getInt("General.AfkCheckerInSeconds")*20L);
 	}
 	
 	public void onShutDownDataSave()
 	{
 		for(Player player : plugin.getServer().getOnlinePlayers())
 		{
-			plugin.getUtility().hardSave(player, true);
+			plugin.getUtility().saveAndServerDisable(player, false, false);
 		}
 	}
 }

@@ -363,7 +363,7 @@ public class ChatApi
 	public static TextComponent generateTextComponent(String message, HashMap<String,String> hoverReplacer)
 	{
 		String[] array = message.split(" ");
-		YamlConfiguration cfg = AfkRecord.getPlugin().getYamlHandler().get();
+		YamlConfiguration cfg = AfkRecord.getPlugin().getYamlHandler().getConfig();
 		String idclick = cfg.getString("Identifier.Click");
 		String idhover = cfg.getString("Identifier.Hover");
 		String sepb = cfg.getString("Seperator.BetweenFunction");
@@ -419,7 +419,7 @@ public class ChatApi
 							String hoveraction = function[1];
 							String hoverstringpath = function[2];
 							String hoverstring = replaceHoverReplacer(ChatApi.tl(
-									AfkRecord.getPlugin().getYamlHandler().getL().getString(hoverstringpath)), hoverReplacer);
+									AfkRecord.getPlugin().getYamlHandler().getLang().getString(hoverstringpath)), hoverReplacer);
 							ChatApi.hoverEvent(tc, HoverEvent.Action.valueOf(hoveraction),
 									hoverstring);
 						}

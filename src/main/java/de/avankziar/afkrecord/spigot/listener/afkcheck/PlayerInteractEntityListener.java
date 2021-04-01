@@ -18,6 +18,6 @@ public class PlayerInteractEntityListener implements Listener
 	@EventHandler
 	public void onEvent(PlayerInteractEntityEvent event)
 	{
-		plugin.getUtility().softSave(event.getPlayer(), true, true, false);
+		plugin.getUtility().save(event.getPlayer(), true, false, false);
 	}
 }
