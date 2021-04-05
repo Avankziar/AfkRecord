@@ -265,6 +265,54 @@ public interface TableII
 		return 0;
 	}
 	
+	default Object getSumII(AfkRecord plugin, String groupBy, String sumColumn, String whereColumn, Object... whereObject)
+	{
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
+		{
+			try 
+			{
+				String sql = "SELECT "+groupBy+", SUM("+sumColumn+") as ergebnis FROM `"+plugin.getMysqlHandler().tableNameII
+						+"` WHERE "+whereColumn+" GROUP BY "+groupBy;
+		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
+		        }
+		        
+		        result = preparedStatement.executeQuery();
+		        while (result.next()) 
+		        {
+		        	return result.getObject("ergebnis");
+		        }
+		    } catch (SQLException e) 
+			{
+				  AfkRecord.log.warning("Error: " + e.getMessage());
+				  e.printStackTrace();
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) {
+		    		  e.printStackTrace();
+		    	  }
+		      }
+		}
+		return 0;
+	}
+	
 	default boolean deleteDataII(AfkRecord plugin, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;

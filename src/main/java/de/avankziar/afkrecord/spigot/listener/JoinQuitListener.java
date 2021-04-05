@@ -58,6 +58,7 @@ public class JoinQuitListener implements Listener
 	public void onLeave(PlayerQuitEvent event)
 	{
 		Player player = event.getPlayer();
-		plugin.getUtility().save(player, true, false, true);
+		plugin.getUtility().debug(player, "AfkR PlayerQuit");
+		plugin.getUtility().save(player, true, false, false, true);
 	}
 }

@@ -18,6 +18,7 @@ public class PlayerLevelChangeListener implements Listener
 	@EventHandler
 	public void onEvent(PlayerLevelChangeEvent event)
 	{
-		plugin.getUtility().save(event.getPlayer(), true, false, false);
+		plugin.getUtility().debug(event.getPlayer(), "AfkR PlayerLevelChangeEvent");
+		plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 	}
 }

@@ -18,6 +18,7 @@ public class PlayerMoveListener implements Listener
 	@EventHandler
 	public void onMove(PlayerMoveEvent event)
 	{
-		plugin.getUtility().save(event.getPlayer(), true, false, false);
+		plugin.getUtility().debug(event.getPlayer(), "AfkR PlayerModeEvent");
+		plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 	}
 }

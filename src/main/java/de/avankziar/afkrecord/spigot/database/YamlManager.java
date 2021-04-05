@@ -641,16 +641,16 @@ public class YamlManager
 		
 		languageKeys.put("CmdAfk.SetAfk",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDu bist nun &cafk&e!",
-						"&eYou are &cafk &enow!"}));
+						"&7[%time%] &eDu bist nun &cafk&e!",
+						"&7[%time%] &eYou are &cafk &enow!"}));
 		languageKeys.put("CmdAfk.SetAntiAfk",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDu bist &anicht mehr afk&e!",
-						"&eYou are &anot afk anymore&e!"}));
+						"&7[%time%] &eDu bist &anicht mehr afk&e!",
+						"&7[%time%] &eYou are &anot afk anymore&e!"}));
 		languageKeys.put("CmdAfk.NoMoreAfk",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDu bist nicht mehr afk!",
-						"&eYou are no longer afk!"}));
+						"&7[%time%] &eDu bist nicht mehr afk!",
+						"&7[%time%] &eYou are no longer afk!"}));
 		
 		/*languageKeys.put(""
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

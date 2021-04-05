@@ -31,7 +31,8 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getUtility().save(player, false, false, false);
+					plugin.getUtility().debug(player, "AfkR runSave");
+					plugin.getUtility().save(player, false, false, false, false);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,

@@ -18,6 +18,7 @@ public class PlayerAsyncChatListener implements Listener
 	@EventHandler
 	public void onEvent(AsyncPlayerChatEvent event)
 	{
-		plugin.getUtility().save(event.getPlayer(), true, false, false);
+		plugin.getUtility().debug(event.getPlayer(), "AfkR AsyncPlayerChatEvent");
+		plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 	}
 }

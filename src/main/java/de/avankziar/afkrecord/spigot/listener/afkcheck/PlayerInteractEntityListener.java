@@ -18,6 +18,7 @@ public class PlayerInteractEntityListener implements Listener
 	@EventHandler
 	public void onEvent(PlayerInteractEntityEvent event)
 	{
-		plugin.getUtility().save(event.getPlayer(), true, false, false);
+		plugin.getUtility().debug(event.getPlayer(), "AfkR PlayerInteractEntityEvent");
+		plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 	}
 }

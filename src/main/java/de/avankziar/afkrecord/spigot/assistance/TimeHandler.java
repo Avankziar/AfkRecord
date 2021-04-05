@@ -1,5 +1,6 @@
 package main.java.de.avankziar.afkrecord.spigot.assistance;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -49,6 +50,24 @@ public class TimeHandler
 		return LocalDate.parse(l, DateTimeFormatter.ofPattern("dd-MM-yyyy"))
 				.atTime(LocalTime.MIDNIGHT).toEpochSecond(currentOffsetForMyZone)*1000;
 	}
+	
+	public static void main(String[] args)
+	{
+		long l = System.currentTimeMillis();
+		String s = getTime(l);
+		System.out.println(l);
+		System.out.println(s);
+	}
+	
+	public static String getTime(long l)
+	{
+		return new Time(l).toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+	}
+	
+	/*public static long getTime(String l)
+	{
+		
+	}*/
 	
 	public static String getRepeatingTime(long l, String timeformat) // yyyy-dd-HH:mm
 	{

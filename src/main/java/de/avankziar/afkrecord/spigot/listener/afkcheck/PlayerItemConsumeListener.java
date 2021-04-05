@@ -18,6 +18,7 @@ public class PlayerItemConsumeListener implements Listener
 	@EventHandler
 	public void onEvent(PlayerItemConsumeEvent event)
 	{
-		plugin.getUtility().save(event.getPlayer(), true, false, false);
+		plugin.getUtility().debug(event.getPlayer(), "AfkR PlayerItemConsumeEvent");
+		plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 	}
 }

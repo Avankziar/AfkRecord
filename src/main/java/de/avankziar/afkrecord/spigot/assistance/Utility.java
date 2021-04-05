@@ -23,29 +23,38 @@ public class Utility
 	public Utility(AfkRecord plugin)
 	{
 		this.plugin = plugin;
-		loadUtility();
 	}
 	
-	public boolean loadUtility()
+	public void debug(Player player, String s)
 	{
-		return true;
+		boolean boo = false;
+		if(boo)
+		{
+			if(player != null)
+			{
+				player.sendMessage(s);
+			}
+			System.out.println(s);
+		}
 	}
 	
 	public void saveAndServerDisable(Player player, boolean incomeNewActivity, boolean incomeSetAfk)
 	{
 		serverDisable = true;
-		save(player, incomeNewActivity, incomeSetAfk, true);
+		debug(player, "AfkR saveAndServerDisable ");
+		save(player, incomeNewActivity, incomeSetAfk, false, true);
 	}
 	
 	
 	
 	/*
 	 * @param incomeNewActivity == If you move etc. Or if you become active
-	 * @param incomeSetAfk == Afkchecker
+	 * @param incomeSetAfk == /afk
+	 * @param incomeAfk == afkchecker
 	 * @param playerQuit == When the player quit the server
 	 */
 	public void save(Player player,
-			boolean incomeNewActivity, boolean incomeSetAfk, boolean playerQuit)
+			boolean incomeNewActivity, boolean incomeSetAfk, boolean incomeAfk, boolean playerQuit)
 	{
 		if(player == null)
 		{
@@ -58,6 +67,8 @@ public class Utility
 		{
 			user = new PluginUser(player.getUniqueId(), player.getName(), now, 0, 0, 0, now, false, true);
 		}
+		//Difference from last time the player was checked
+		final long difference = now - user.getLastTimeCheck();
 		//If server goes off, than never go in this if.
 		if(!serverDisable && !playerQuit)
 		{
@@ -66,8 +77,13 @@ public class Utility
 				if(user.isAFK() && !incomeNewActivity)
 				{
 					//if the user lasttimecheck is no far away AND no /afk is exceute, so return.
-					if(user.getLastTimeCheck()+plugin.getYamlHandler().getConfig().getLong("General.SaveInSeconds", 60)*1000
-							> now)
+					if(difference < plugin.getYamlHandler().getConfig().getLong("General.SaveInSeconds", 60)*1000)
+					{
+						return;
+					}
+				} else if(!user.isAFK() && incomeNewActivity)
+				{
+					if(difference < plugin.getYamlHandler().getConfig().getLong("General.SaveInSeconds", 60)*1000)
 					{
 						return;
 					}
@@ -85,8 +101,14 @@ public class Utility
 			tr = new TimeRecord(user.getUUID(), user.getPlayerName(), date, 0, 0, 0);
 			create = true;
 		}
-		//Difference from last time the player was checked
-		long difference = now - user.getLastTimeCheck();
+		debug(player, "---AfkR---");
+		debug(player, "Afkr now: "+now);
+		debug(player, "Afkr lasttime: "+user.getLastTimeCheck());
+		debug(player, "Afkr difference: "+difference+" | "+TimeHandler.getRepeatingTime(difference, "dd-HH:mm:ss"));
+		debug(player, "Afkr incomeNewActivity: "+incomeNewActivity);
+		debug(player, "Afkr incomeSetAfk: "+incomeSetAfk);
+		debug(player, "Afkr playerQuit: "+playerQuit);
+		user.setLastTimeCheck(now);
 		if(user.isAFK() && !playerWhoBypassAfkTracking.contains(player.getUniqueId().toString()))
 		{
 			user.setAfkTime(user.getAfkTime()+difference);
@@ -104,20 +126,33 @@ public class Utility
 			{
 				user.setAFK(false);
 				player.spigot().sendMessage(ChatApi.tctl(
-						plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")));
+						plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")
+						.replace("%time%", TimeHandler.getTime(now))));
 			}
+			user.setActivityTime(now);
 		} else if(incomeSetAfk)
 		{
 			if(!user.isAFK())
 			{
 				player.spigot().sendMessage(ChatApi.tctl(
-						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")));
+						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
+						.replace("%time%", TimeHandler.getTime(now))));
 				user.setAFK(true);
 			} else
 			{
 				player.spigot().sendMessage(ChatApi.tctl(
-						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAntiAfk")));
+						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAntiAfk")
+						.replace("%time%", TimeHandler.getTime(now))));
 				user.setAFK(false);
+			}
+		} else if(incomeAfk)
+		{
+			if(!user.isAFK())
+			{
+				player.spigot().sendMessage(ChatApi.tctl(
+						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
+						.replace("%time%", TimeHandler.getTime(now))));
+				user.setAFK(true);
 			}
 		}
 		if(playerQuit)
@@ -153,7 +188,8 @@ public class Utility
 			if(System.currentTimeMillis() >= 
 					(user.getLastActivity()+plugin.getYamlHandler().getConfig().getInt("General.AfkAfterInSeconds", 900)*1000L))
 			{
-				save(player, false, true, false);
+				debug(player, "AfkR AfkChecker");
+				save(player, false, false, true, false);
 			}
 		}
 	}

@@ -18,6 +18,7 @@ public class PlayerToggleSprintListener implements Listener
 	@EventHandler
 	public void onEvent(PlayerToggleSprintEvent event)
 	{
-		plugin.getUtility().save(event.getPlayer(), true, false, false);
+		plugin.getUtility().debug(event.getPlayer(), "AfkR PlayerToggleSprintEvent");
+		plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 	}
 }

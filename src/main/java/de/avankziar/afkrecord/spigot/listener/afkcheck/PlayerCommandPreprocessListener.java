@@ -20,7 +20,8 @@ public class PlayerCommandPreprocessListener implements Listener
 	{
 		if(!event.getMessage().equalsIgnoreCase("/afk"))
 		{
-			plugin.getUtility().save(event.getPlayer(), true, false, false);
+			plugin.getUtility().debug(event.getPlayer(), "AfkR PlayerCommandPreprocessEvent");
+			plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 		}
 	}
 }

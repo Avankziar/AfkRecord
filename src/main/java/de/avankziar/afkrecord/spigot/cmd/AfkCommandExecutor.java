@@ -21,7 +21,7 @@ public class AfkCommandExecutor implements CommandExecutor
 	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
 	{
 		Player player = (Player) sender;
-		plugin.getUtility().save(player, false, true, false);
+		plugin.getUtility().save(player, false, true, false, false);
 		return false;
 	}
 }

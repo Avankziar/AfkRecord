@@ -35,7 +35,8 @@ public class ServerListener  implements PluginMessageListener
             			return;
             		}
             		Player player = plugin.getServer().getPlayer(UUID.fromString(PlayerUUID));
-            		plugin.getUtility().save(player, true, false, false);
+            		plugin.getUtility().debug(player, "AfkR PluginMessageRecieved");
+            		plugin.getUtility().save(player, true, false, false, false);
             	}
             } catch (IOException e) 
             {

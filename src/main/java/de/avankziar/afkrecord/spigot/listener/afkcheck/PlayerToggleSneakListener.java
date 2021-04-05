@@ -18,6 +18,7 @@ public class PlayerToggleSneakListener implements Listener
 	@EventHandler
 	public void onEvent(PlayerToggleSneakEvent event)
 	{
-		plugin.getUtility().save(event.getPlayer(), true, false, false);
+		plugin.getUtility().debug(event.getPlayer(), "AfkR PlayerToggleSneakEvent");
+		plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 	}
 }

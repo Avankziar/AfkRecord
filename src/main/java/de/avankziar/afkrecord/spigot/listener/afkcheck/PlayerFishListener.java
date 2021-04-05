@@ -18,6 +18,7 @@ public class PlayerFishListener implements Listener
 	@EventHandler
 	public void onEvent(PlayerFishEvent event)
 	{
-		plugin.getUtility().save(event.getPlayer(), true, false, false);
+		plugin.getUtility().debug(event.getPlayer(), "AfkR PlayerFishEvent");
+		plugin.getUtility().save(event.getPlayer(), true, false, false, false);
 	}
 }
