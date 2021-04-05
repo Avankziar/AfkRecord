@@ -74,10 +74,10 @@ public interface TableI
 			{
 				String sql = "INSERT INTO `" + plugin.getMysqlHandler().tableNameI 
 						+ "`(`player_uuid`, `player_name`, `alltime`, `activitytime`, `afktime`,"
-						+ " `lastactivity`, `lasttimecheck`, `isafk`, `isonline`) " 
+						+ " `lastactivity`, `lasttimecheck`, `isafk`, `isonline`, `vacationtime`) " 
 						+ "VALUES("
 						+ "?, ?, ?, ?, ?,"
-						+ "?, ?, ?, ?"
+						+ "?, ?, ?, ?, ?"
 						+ ")";
 				preparedStatement = conn.prepareStatement(sql);
 		        preparedStatement.setString(1, cu.getUUID().toString());
@@ -89,6 +89,7 @@ public interface TableI
 		        preparedStatement.setLong(7, cu.getLastTimeCheck());
 		        preparedStatement.setBoolean(8, cu.isAFK());
 		        preparedStatement.setBoolean(9, cu.isOnline());
+		        preparedStatement.setLong(10, cu.getVacationTime());
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -133,7 +134,8 @@ public interface TableI
 				String data = "UPDATE `" + plugin.getMysqlHandler().tableNameI
 						+ "` SET `player_uuid` = ?, `player_name` = ?,"
 						+ " `alltime` = ?, `activitytime` = ?, `afktime` = ?,"
-						+ " `lastactivity`= ?, `lasttimecheck` = ?, `isafk`= ?, `isonline` = ?" 
+						+ " `lastactivity` = ?, `lasttimecheck` = ?, `isafk`= ?, `isonline` = ?,"
+						+ " `vacationtime` = ?" 
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
 				preparedStatement.setString(1, cu.getUUID().toString());
@@ -145,8 +147,9 @@ public interface TableI
 			    preparedStatement.setLong(7, cu.getLastTimeCheck());
 		        preparedStatement.setBoolean(8, cu.isAFK());
 		        preparedStatement.setBoolean(9, cu.isOnline());
+		        preparedStatement.setLong(10, cu.getVacationTime());
 		        
-		        int i = 10;
+		        int i = 11;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -203,7 +206,8 @@ public interface TableI
 		        			result.getLong("alltime"),
 		        			result.getLong("lastactivity"),
 		        			result.getBoolean("isafk"),
-		        			result.getBoolean("isonline"));
+		        			result.getBoolean("isonline"),
+		        			result.getLong("vacationtime"));
 		        }
 		    } catch (SQLException e) 
 			{
@@ -444,7 +448,8 @@ public interface TableI
 		        			result.getLong("alltime"),
 		        			result.getLong("lastactivity"),
 		        			result.getBoolean("isafk"),
-		        			result.getBoolean("isonline"));
+		        			result.getBoolean("isonline"),
+		        			result.getLong("vacationtime"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -507,7 +512,8 @@ public interface TableI
 		        			result.getLong("alltime"),
 		        			result.getLong("lastactivity"),
 		        			result.getBoolean("isafk"),
-		        			result.getBoolean("isonline"));
+		        			result.getBoolean("isonline"),
+		        			result.getLong("vacationtime"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -575,7 +581,8 @@ public interface TableI
 		        			result.getLong("alltime"),
 		        			result.getLong("lastactivity"),
 		        			result.getBoolean("isafk"),
-		        			result.getBoolean("isonline"));
+		        			result.getBoolean("isonline"),
+		        			result.getLong("vacationtime"));
 		        	list.add(ep);
 		        }
 		        return list;

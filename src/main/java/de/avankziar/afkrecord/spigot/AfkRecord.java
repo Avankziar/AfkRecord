@@ -18,6 +18,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -46,6 +47,7 @@ import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.spigot.database.YamlHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.YamlManager;
+import main.java.de.avankziar.afkrecord.spigot.interfacehub.PlayerTimesAPI;
 import main.java.de.avankziar.afkrecord.spigot.listener.JoinQuitListener;
 import main.java.de.avankziar.afkrecord.spigot.listener.ServerListener;
 import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerAsyncChatListener;
@@ -59,6 +61,7 @@ import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerToggleSne
 import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerToggleSprintListener;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginSettings;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
+import main.java.de.avankziar.afkrecord.spigot.papi.Expansion;
 import main.java.de.avankziar.afkrecord.spigot.permission.BypassPermission;
 import main.java.de.avankziar.afkrecord.spigot.permission.KeyHandler;
 import net.milkbowl.vault.permission.Permission;
@@ -67,6 +70,7 @@ public class AfkRecord extends JavaPlugin
 {
 	public static Logger log;
 	public static String pluginName = "AfkRecord";
+	public static boolean isPapiRegistered = false;
 	private YamlHandler yamlHandler;
 	private YamlManager yamlManager;
 	private MysqlSetup mysqlSetup;
@@ -76,6 +80,7 @@ public class AfkRecord extends JavaPlugin
 	private CommandHelper commandHelper;
 	private static AfkRecord plugin;
 	private static Permission perms = null;
+	private static PlayerTimesAPI ptapi;
 	
 	private ArrayList<BaseConstructor> helpList = new ArrayList<>();
 	private ArrayList<CommandConstructor> commandTree = new ArrayList<>();
@@ -121,6 +126,8 @@ public class AfkRecord extends JavaPlugin
 		setupCommandTree();
 		ListenerSetup();
 		setupPermissions();
+		setupPlayerTimes();
+		isPapiRegistered = setupPlaceholderAPI();
 	}
 	
 	public void onDisable()
@@ -466,9 +473,34 @@ public class AfkRecord extends JavaPlugin
         return perms != null;
     }
 	
+	private void setupPlayerTimes()
+	{      
+        if (plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+		{
+			ptapi = new PlayerTimesAPI(this);
+            plugin.getServer().getServicesManager().register(
+            		main.java.me.avankziar.interfacehub.spigot.interfaces.PlayerTimes.class,
+            		ptapi,
+            		this,
+                    ServicePriority.Normal);
+            log.info(pluginName + " detected InterfaceHub. Hooking!");
+            return;
+        }
+	}
+	
 	public Permission getPerms()
 	{
 		return perms;
+	}
+	
+	private boolean setupPlaceholderAPI()
+	{
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+		{
+            new Expansion(plugin).register();
+            return true;
+		}
+		return false;
 	}
 	
 	public boolean isAfk(Player player)
@@ -499,7 +531,8 @@ public class AfkRecord extends JavaPlugin
 		{
 			return;
 		}
-		plugin.getUtility().save(player, false, false, false);
+		plugin.getUtility().debug(player, "AfkR Main Class");
+		plugin.getUtility().save(player, false, false, false, false);
 	}
 	
 	public boolean existOfflinePlayer(OfflinePlayer player)

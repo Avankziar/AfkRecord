@@ -253,18 +253,12 @@ public class CommandHelper
 	
 	public void counttime(Player player, OfflinePlayer target, int days) throws IOException
 	{
-		ArrayList<TimeRecord> a = ConvertHandler.convertListII(
-				plugin.getMysqlHandler().getList(Type.TIMERECORD,
-						"timestamp_unix", true, 0, days, "`player_uuid` = ?", target.getUniqueId().toString()));
-		long act = 0; //FIXME eventuell mit getSumII machen.
-		long afkt = 0;
-		long allt = 0;
-		for(TimeRecord tr : a)
-		{
-			act += tr.getActivityTime();
-			afkt += tr.getAfkTime();
-			allt += tr.getAllTime();
-		}
+		long act = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "activitytime",
+				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), days);
+		long afkt = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "alltime",
+				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), days);
+		long allt = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "alltime",
+				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), days);
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.Headline")
 				.replaceAll("%player%", target.getName())

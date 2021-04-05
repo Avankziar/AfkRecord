@@ -42,7 +42,7 @@ public class JoinQuitListener implements Listener
 			plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", player.getUniqueId().toString());
 		} else
 		{
-			user = new PluginUser(player.getUniqueId(), player.getName(), now, 0, 0, 0, now, false, true);
+			user = new PluginUser(player.getUniqueId(), player.getName(), now, 0, 0, 0, now, false, true, 0);
 			plugin.getMysqlHandler().create(Type.PLUGINUSER, user);
 		}
 		long date = TimeHandler.getDate(TimeHandler.getDate(now));

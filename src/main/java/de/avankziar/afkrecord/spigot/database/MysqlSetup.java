@@ -89,7 +89,8 @@ public class MysqlSetup
 			        		+ " lastactivity BIGINT NULL DEFAULT '0',"
 			        		+ " lasttimecheck BIGINT NULL DEFAULT '0',"
 			        		+ " isafk boolean,"
-			        		+ " isonline boolean);";
+			        		+ " isonline boolean,"
+			        		+ " vacationtime BIGINT NULL DEFAULT '0');";
 		        query = conn.prepareStatement(data);
 		        query.execute();
 		      } catch (SQLException e) {

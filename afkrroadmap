@@ -1,9 +1,9 @@
 Build 8
-- Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen 
-
-Buil 7
+- Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
+- Support PlaceholderApi
+- Support InterfaceHub
 - Mysql neue Column:
-  - TableI: lasttimecheck BIGINT, isonline boolean
+  - TableI: lasttimecheck BIGINT, isonline boolean, vacationtime BIGINT
   - TableII: timestamp_unix BIGINT
 
 Build 6

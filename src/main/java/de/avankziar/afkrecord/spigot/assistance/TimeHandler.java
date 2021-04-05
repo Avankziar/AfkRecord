@@ -51,14 +51,6 @@ public class TimeHandler
 				.atTime(LocalTime.MIDNIGHT).toEpochSecond(currentOffsetForMyZone)*1000;
 	}
 	
-	public static void main(String[] args)
-	{
-		long l = System.currentTimeMillis();
-		String s = getTime(l);
-		System.out.println(l);
-		System.out.println(s);
-	}
-	
 	public static String getTime(long l)
 	{
 		return new Time(l).toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));

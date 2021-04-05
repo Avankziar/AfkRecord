@@ -65,7 +65,7 @@ public class Utility
 		long now = System.currentTimeMillis();
 		if(user == null)
 		{
-			user = new PluginUser(player.getUniqueId(), player.getName(), now, 0, 0, 0, now, false, true);
+			user = new PluginUser(player.getUniqueId(), player.getName(), now, 0, 0, 0, now, false, true, 0);
 		}
 		//Difference from last time the player was checked
 		final long difference = now - user.getLastTimeCheck();

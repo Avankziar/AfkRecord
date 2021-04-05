@@ -13,9 +13,14 @@ public class PluginUser
 	private long lastActivity;
 	private boolean isAFK;
 	private boolean isOnline;
+	private long vacationTime;
 	
-	public PluginUser(UUID uuid, String playername, long lastTimeCheck,
-			long activityTime, long afkTime, long allTime, long lastActivity, boolean isAFK, boolean isOnline)
+	public PluginUser(UUID uuid, String playername,
+			long lastTimeCheck,
+			long activityTime, long afkTime, long allTime,
+			long lastActivity,
+			boolean isAFK, boolean isOnline,
+			long vacationtime)
 	{
 		setPlayerName(playername);
 		setUUID(uuid);
@@ -26,6 +31,7 @@ public class PluginUser
 		setLastActivity(lastActivity);
 		setAFK(isAFK);
 		setOnline(isOnline);
+		setVacationTime(vacationtime);
 	}
 
 	public String getPlayerName()
@@ -116,6 +122,16 @@ public class PluginUser
 	public void setOnline(boolean isOnline)
 	{
 		this.isOnline = isOnline;
+	}
+
+	public long getVacationTime()
+	{
+		return vacationTime;
+	}
+
+	public void setVacationTime(long vacationTime)
+	{
+		this.vacationTime = vacationTime;
 	}
 
 }
