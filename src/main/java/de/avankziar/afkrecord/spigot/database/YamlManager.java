@@ -151,9 +151,6 @@ public class YamlManager
 		
 		configKeys.put("General.SoftSaveInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				60}));
-		configKeys.put("General.MysqlSaveInSeconds"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				600}));
 		configKeys.put("General.SaveInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -164,9 +161,6 @@ public class YamlManager
 		configKeys.put("General.AfkAfterInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				900}));
-		configKeys.put("General.TopListRefresh"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				300}));
 		configKeys.put("EventListener.AsyncChat"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
@@ -268,6 +262,10 @@ public class YamlManager
 				"/afkr top afktime [number]", "/afkr top afktime ",
 				"&c/afkr top afktime [number] &f| Zeigt die Topliste an, 10 Plätze pro Seite.",
 				"&c/afkr top afktime [number] &f| Displays the top list, 10 places per page.");
+		argumentInput("afkr_vacation", "vacation", basePermission,
+				"/afkr vacation [<player> || <<dd.MM.yyyy> <HH:mm>>]", "/afkr vacation ",
+				"&c/afkr vacation [<player> || <<dd.MM.yyyy> <HH:mm>>] &f| Zeigt an ob und bis wielange der Spieler in Urlaub ist oder setzt die Zeit, bis wann man in Urlaub ist.",
+				"&c/afkr vacation [<player> || <<dd.MM.yyyy> <HH:mm>>] &f| Shows if and until how long the player is on vacation or sets the time until when you are on vacation.");
 		commandsInput("afk", "afk", "afkrecord.cmd.afk", 
 				"/afk", "/afk ",
 				"&c/afk &f| Toggelt den Afk-Zustand.",
@@ -286,6 +284,9 @@ public class YamlManager
 		commandsKeys.put(path+"TimeOther"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"afkrecord.cmd.afkrecord.time.other"}));
+		commandsKeys.put(path+"VacationOther"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"afkrecord.cmd.afkrecord.vacation.other"}));
 	}
 	
 	private void commandsInput(String path, String name, String basePermission, 
@@ -346,6 +347,10 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&cDas angegebene Argument ist keine Zahl!",
 						"&cThe argument given is not a number!"}));
+		languageKeys.put("IllegalNumber",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&cDie angegebene Zahl ist nicht in einer bestimmten Größe!",
+						"&cThe specified number is not in a specific size!"}));
 		languageKeys.put("InputIsWrong",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&cDeine Eingabe ist fehlerhaft! Klicke hier auf den Text, um weitere Infos zu bekommen!",
@@ -638,6 +643,35 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&ePlatz &c%place%&f: &6%player% &f| &eZeit: &f%time%",
 						"&ePlace &c%place%&f: &6%player% &f| &eTime: &f%time%"}));
+		
+		languageKeys.put("CmdAfkRecord.Vacation.NotInVacation",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDu bist nicht im Urlaub!",
+						"&eYou are not in vacation!"}));
+		languageKeys.put("CmdAfkRecord.Vacation.YourAreInVacation",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDu bist bis zum &f%time% &ein Urlaub!",
+						"&eYou are on vacation for the &f%time%&e!"}));
+		languageKeys.put("CmdAfkRecord.Vacation.ThePlayerNotInVacation",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDer Spieler &f%player% &eist nicht im Urlaub!",
+						"&eThe player &f%player% &eis not on vacation!"}));
+		languageKeys.put("CmdAfkRecord.Vacation.ThePlayerIsInVacation",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDer Spieler &f%player% &eist zum &f%time% &eim Urlaub!",
+						"&eThe player &f%player% &eis on vacation at &f%time%&e!"}));
+		languageKeys.put("CmdAfkRecord.Vacation.WrongFormat",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&cFalsche Formateingabe! Bitte an das Format &fdd.MM.yyyy HH:mm &chalten!",
+						"&cWrong format input! Please switch to the format &fdd.MM.yyyy HH:mm&c!"}));
+		languageKeys.put("CmdAfkRecord.Vacation.NoVacationInThePast",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&cDu kannst keinen Urlaub für die Vergangenheit eintragen!",
+						"&cYou cannot enter a vacation for the past!"}));
+		languageKeys.put("CmdAfkRecord.Vacation.SetVacation",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&6Du bist nun bist zum &f%time% &6im Urlaub!",
+						"&6You are now on vacation for the &f%time%&6!"}));
 		
 		languageKeys.put("CmdAfk.SetAfk",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

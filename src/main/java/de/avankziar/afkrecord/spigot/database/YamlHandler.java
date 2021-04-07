@@ -66,7 +66,7 @@ public class YamlHandler
 	
 	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, Language> keyMap)
 	{
-		yml.options().header("For more explanation see \n Your pluginsite");
+		yml.options().header("For more explanation see \n https://www.spigotmc.org/resources/afkrecord.74626/");
 		for(String key : keyMap.keySet())
 		{
 			Language languageObject = keyMap.get(key);

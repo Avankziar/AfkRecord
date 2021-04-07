@@ -39,6 +39,7 @@ import main.java.de.avankziar.afkrecord.spigot.cmd.afkrecord.ARGTop;
 import main.java.de.avankziar.afkrecord.spigot.cmd.afkrecord.ARGTop_AfkTime;
 import main.java.de.avankziar.afkrecord.spigot.cmd.afkrecord.ARGTop_AllTime;
 import main.java.de.avankziar.afkrecord.spigot.cmd.afkrecord.ARGTop_OnlineTime;
+import main.java.de.avankziar.afkrecord.spigot.cmd.afkrecord.ARGVacation;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.ArgumentConstructor;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.ArgumentModule;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.BaseConstructor;
@@ -278,9 +279,9 @@ public class AfkRecord extends JavaPlugin
 		PluginSettings.settings.addCommands(KeyHandler.TOP_AFKTIME, top_afktime.getCommandString());
 		ArgumentConstructor top = new ArgumentConstructor(baseCommandI+"_top", 0, 2, 3, false, null,
 				top_onlinetime, top_alltime, top_afktime);
-		
+		ArgumentConstructor vacation = new ArgumentConstructor(baseCommandI+"_vacation", 0, 0, 3, false, playerMapII);	
 		CommandConstructor afkr = new CommandConstructor(baseCommandIName, false,
-				bypass, convert, counttime, counttimeperm, getafk, gettime, time, top);
+				bypass, convert, counttime, counttimeperm, getafk, gettime, time, top, vacation);
 		
 		registerCommand(afkr.getPath(), afkr.getName());
 		getCommand(afkr.getName()).setExecutor(new AfkRCommandExecutor(plugin, afkr));
@@ -294,7 +295,7 @@ public class AfkRecord extends JavaPlugin
 		
 		addingHelps(afkr,
 						convert, bypass, counttime, counttimeperm, getafk, gettime, time, top,
-							top_onlinetime, top_alltime, top_afktime,
+							top_onlinetime, top_alltime, top_afktime, vacation,
 					afk);
 		
 		new ARGConvert(plugin, convert);
@@ -310,6 +311,7 @@ public class AfkRecord extends JavaPlugin
 		new ARGTop_AllTime(plugin, top_alltime);
 		new ARGTop_OnlineTime(plugin, top_onlinetime);
 		new ARGTop_AfkTime(plugin, top_afktime);
+		new ARGVacation(plugin, vacation);
 	}
 	
 	public void setupBypassPerm()
@@ -318,6 +320,7 @@ public class AfkRecord extends JavaPlugin
 		BypassPermission.COUNTTIMEOTHER = yamlHandler.getCom().getString(path+"CountTimeOther");
 		BypassPermission.GETTIMEOTHER = yamlHandler.getCom().getString(path+"GetTimeOther");
 		BypassPermission.TIMEOTHER = yamlHandler.getCom().getString(path+"TimeOther");
+		BypassPermission.VACATIONOTHER = yamlHandler.getCom().getString(path+"VacationOther");
 	}
 	
 	public ArrayList<BaseConstructor> getHelpList()

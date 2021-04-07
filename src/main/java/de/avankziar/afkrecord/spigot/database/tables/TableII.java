@@ -265,7 +265,7 @@ public interface TableII
 		return 0;
 	}
 	
-	default Object getSumII(AfkRecord plugin, String groupBy, String sumColumn, String whereColumn, Object... whereObject)
+	default long getSumII(AfkRecord plugin, String groupBy, String sumColumn, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -287,7 +287,7 @@ public interface TableII
 		        result = preparedStatement.executeQuery();
 		        while (result.next()) 
 		        {
-		        	return result.getObject("ergebnis");
+		        	return result.getLong("ergebnis");
 		        }
 		    } catch (SQLException e) 
 			{

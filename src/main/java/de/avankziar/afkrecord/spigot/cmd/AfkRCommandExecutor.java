@@ -125,7 +125,7 @@ public class AfkRCommandExecutor implements CommandExecutor
 		int count = 0;
 		int start = page*10;
 		int end = page*10+9;
-		//int last = 0;
+		int last = 0;
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString(
 				AfkRecord.infoCommandPath+".BaseInfo.Headline")));
 		for(BaseConstructor bc : plugin.getHelpList())
@@ -138,14 +138,14 @@ public class AfkRCommandExecutor implements CommandExecutor
 				}
 			}
 			count++;
-			//last++;
+			last++;
 		}
-		/*boolean lastpage = false;
+		boolean lastpage = false;
 		if(end >= last)
 		{
 			lastpage = true;
 		}
-		pastNextPage(player, AfkRecord.infoCommandPath, page, lastpage, AfkRecord.infoCommand);*/
+		pastNextPage(player, AfkRecord.infoCommandPath, page, lastpage, AfkRecord.infoCommand);
 	}
 	
 	private void sendInfo(Player player, BaseConstructor bc)
