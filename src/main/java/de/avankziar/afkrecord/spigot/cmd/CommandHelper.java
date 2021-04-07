@@ -169,14 +169,14 @@ public class CommandHelper
 			start = lastEntry-9;
 			lastpage = true;
 		}
-		int stop = start+9;
 		ArrayList<PluginUser> arr = ConvertHandler.convertListI(
 				plugin.getMysqlHandler().getTop(Type.PLUGINUSER, "`"+orderByColumn+"`", true, start, quantity));
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString(headpath)));
-		while(start < stop)
+		int a = 0;
+		while(a < arr.size())
 		{
-			PluginUser user = arr.get(start);
+			PluginUser user = arr.get(a);
 			int place = start+1;
 			long time = 0;
 			switch(orderByColumn)
@@ -201,6 +201,7 @@ public class CommandHelper
 						.replace("%player%", user.getPlayerName())
 						.replace("%time%", plugin.getUtility().timetl(time))));
 			}
+			a++;
 			start++;
 		}
 		int i = page+1;
@@ -229,10 +230,17 @@ public class CommandHelper
 		player.spigot().sendMessage(MSG);
 	}
 	
-	public void gettime(Player player, OfflinePlayer target, int page) throws IOException
+	public void gettime(Player player, OfflinePlayer target, int page, String subcmd) throws IOException
 	{
 		int start = page*10;
 		int quantity = 9;
+		boolean lastpage = false;
+		int lastid = plugin.getMysqlHandler().lastID(Type.TIMERECORD);
+		if((start+quantity) > lastid)
+		{
+			start = lastid-quantity;
+			lastpage = true;
+		}
 		ArrayList<TimeRecord> a = ConvertHandler.convertListII(
 				plugin.getMysqlHandler().getList(Type.TIMERECORD,
 						"timestamp_unix", true, start, quantity, "`player_uuid` = ?", target.getUniqueId().toString()));
@@ -249,16 +257,42 @@ public class CommandHelper
 					.replaceAll("%afktime%", plugin.getUtility().timetl(tr.getAfkTime()))));
 			start++;
 		}
+		int i = page+1;
+		int j = page-1;
+		TextComponent MSG = ChatApi.tctl("");
+		List<BaseComponent> list = new ArrayList<BaseComponent>();
+		if(page!=0)
+		{
+			TextComponent msg2 = ChatApi.tc(ChatApi.tl(
+					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.BaseInfo.Past")));
+			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, subcmd+" "+j));
+			list.add(msg2);
+		}
+		if(!lastpage)
+		{
+			TextComponent msg1 = ChatApi.tc(ChatApi.tl(
+					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.BaseInfo.Next")));
+			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, subcmd+" "+i));
+			if(list.size()==1)
+			{
+				list.add(ChatApi.tc(" | "));
+			}
+			list.add(msg1);
+		}
+		MSG.setExtra(list);	
+		player.spigot().sendMessage(MSG);
 	}
 	
 	public void counttime(Player player, OfflinePlayer target, int days) throws IOException
 	{
-		long act = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "activitytime",
-				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), days);
-		long afkt = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "alltime",
-				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), days);
-		long allt = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "alltime",
-				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), days);
+		long before = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis()))
+				- (days-1)*1000L*60*60*24;
+		long act = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`activitytime`",
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), before);
+		long afkt = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`alltime`",
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), before);
+		long allt = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`afktime`",
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), before);
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.Headline")
 				.replaceAll("%player%", target.getName())

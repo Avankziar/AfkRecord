@@ -171,7 +171,7 @@ public class PlayerTimesAPI implements PlayerTimes
 		}
 		long beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*(days-1);
 		return (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "activitytime",
-				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays);
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays);
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class PlayerTimesAPI implements PlayerTimes
 		}
 		long beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*(days-1);
 		return (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "afktime",
-				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays);
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays);
 	}
 
 	@Override
@@ -234,7 +234,7 @@ public class PlayerTimesAPI implements PlayerTimes
 		}
 		long beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*(days-1);
 		return (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "alltime",
-				"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays);
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays);
 	}
 
 	@Override

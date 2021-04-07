@@ -189,9 +189,9 @@ public interface TableII
 		        			UUID.fromString(result.getString("player_uuid")),
 		        			result.getString("player_name"),
 		        			result.getLong("timestamp_unix"),
+		        			result.getLong("alltime"),
 		        			result.getLong("activitytime"),
-		        			result.getLong("afktime"),
-		        			result.getLong("alltime"));
+		        			result.getLong("afktime"));
 		        }
 		    } catch (SQLException e) 
 			{
@@ -283,7 +283,6 @@ public interface TableII
 		        	preparedStatement.setObject(i, o);
 		        	i++;
 		        }
-		        
 		        result = preparedStatement.executeQuery();
 		        while (result.next()) 
 		        {
@@ -474,9 +473,9 @@ public interface TableII
 		        			UUID.fromString(result.getString("player_uuid")),
 		        			result.getString("player_name"),
 		        			result.getLong("timestamp_unix"),
+		        			result.getLong("alltime"),
 		        			result.getLong("activitytime"),
-		        			result.getLong("afktime"),
-		        			result.getLong("alltime"));
+		        			result.getLong("afktime"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -533,9 +532,9 @@ public interface TableII
 		        			UUID.fromString(result.getString("player_uuid")),
 		        			result.getString("player_name"),
 		        			result.getLong("timestamp_unix"),
+		        			result.getLong("alltime"),
 		        			result.getLong("activitytime"),
-		        			result.getLong("afktime"),
-		        			result.getLong("alltime"));
+		        			result.getLong("afktime"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -598,9 +597,9 @@ public interface TableII
 		        			UUID.fromString(result.getString("player_uuid")),
 		        			result.getString("player_name"),
 		        			result.getLong("timestamp_unix"),
+		        			result.getLong("alltime"),
 		        			result.getLong("activitytime"),
-		        			result.getLong("afktime"),
-		        			result.getLong("alltime"));
+		        			result.getLong("afktime"));
 		        	list.add(ep);
 		        }
 		        return list;

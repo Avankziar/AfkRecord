@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import main.java.de.avankziar.afkrecord.bungee.AfkRecord;
-import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
+import main.java.de.avankziar.afkrecord.bungee.object.PluginUser;
 
 public class MysqlHandler 
 {

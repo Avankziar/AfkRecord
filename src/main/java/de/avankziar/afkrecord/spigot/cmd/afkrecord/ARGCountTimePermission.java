@@ -117,7 +117,7 @@ public class ARGCountTimePermission extends ArgumentModule
 				for(RAMUser user : ram)
 				{
 					TextComponent tc = ChatApi.apiChat(getColor(user.name, user.activitytime)+" &r",
-							Action.RUN_COMMAND, PluginSettings.settings.getCommands(KeyHandler.COUNTTIME)+days+""+user.name,
+							Action.RUN_COMMAND, PluginSettings.settings.getCommands(KeyHandler.COUNTTIME)+days+" "+user.name,
 							HoverEvent.Action.SHOW_TEXT,
 							String.join("~!~", 
 									replacer(plugin.getYamlHandler().getLang().getStringList("CmdAfkRecord.CountTimePerm.Hover"),

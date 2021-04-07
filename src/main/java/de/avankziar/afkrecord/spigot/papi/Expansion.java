@@ -83,56 +83,56 @@ public class Expansion extends PlaceholderExpansion
 		case "user_30days_activitytime":
 			long beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*29;
 			return String.valueOf(plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "activitytime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays));
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays));
 		case "user_30days_activitytime_with_format":
 			beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*29;
 			long sum = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "activitytime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays);
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays);
 			return TimeHandler.getRepeatingTime(sum, format);
 		case "user_30days_afktime":
 			beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*29;
 			return String.valueOf(plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "afktime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays));
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays));
 		case "user_30days_afktime_with_format":
 			beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*29;
 			sum = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "afktime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays);
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays);
 			return TimeHandler.getRepeatingTime(sum, format);
 		case "user_30days_alltime":
 			beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*29;
 			return String.valueOf(plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "afktime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays));
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays));
 		case "user_30days_alltime_with_format":
 			beforeDays = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*29;
 			sum = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "alltime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeDays);
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeDays);
 			return TimeHandler.getRepeatingTime(sum, format);
 		case "user_365days_activitytime":
 			long beforeYear = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*364;
 			return String.valueOf(plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "activitytime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeYear));
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeYear));
 		case "user_365days_activitytime_with_format":
 			beforeYear = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*364;
 			sum = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "activitytime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeYear);
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeYear);
 			return TimeHandler.getRepeatingTime(sum, format);
 		case "user_365days_afktime":
 			beforeYear = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*364;
 			return String.valueOf(plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "afktime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeYear));
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeYear));
 		case "user_365days_afktime_with_format":
 			beforeYear = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*364;
 			sum = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "afktime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeYear);
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeYear);
 			return TimeHandler.getRepeatingTime(sum, format);
 		case "user_365days_alltime":
 			beforeYear = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*364;
 			return String.valueOf(plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "alltime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeYear));
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeYear));
 		case "user_365days_alltime_with_format":
 			beforeYear = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis())) - 1000L*60*60*24*364;
 			sum = (long) plugin.getMysqlHandler().getSumII(plugin, "player_uuid", "alltime",
-					"`player_uuid` = ? AND `timestamp_unix` = ?", player.getUniqueId().toString(), beforeYear);
+					"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), beforeYear);
 			return TimeHandler.getRepeatingTime(sum, format);
 		case "user_toplist_place_activitytime":
 			return String.valueOf(plugin.getMysqlHandler().getTopListPlaceI(plugin,

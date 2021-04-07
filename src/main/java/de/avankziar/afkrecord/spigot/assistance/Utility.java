@@ -129,21 +129,21 @@ public class Utility
 						plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")
 						.replace("%time%", TimeHandler.getTime(now))));
 			}
-			user.setActivityTime(now);
+			user.setLastActivity(now);
 		} else if(incomeSetAfk)
 		{
-			if(!user.isAFK())
-			{
-				player.spigot().sendMessage(ChatApi.tctl(
-						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
-						.replace("%time%", TimeHandler.getTime(now))));
-				user.setAFK(true);
-			} else
+			if(user.isAFK())
 			{
 				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAntiAfk")
 						.replace("%time%", TimeHandler.getTime(now))));
 				user.setAFK(false);
+			} else
+			{
+				player.spigot().sendMessage(ChatApi.tctl(
+						plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
+						.replace("%time%", TimeHandler.getTime(now))));
+				user.setAFK(true);
 			}
 		} else if(incomeAfk)
 		{

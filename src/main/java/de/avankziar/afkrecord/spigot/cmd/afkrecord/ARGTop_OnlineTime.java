@@ -38,7 +38,7 @@ public class ARGTop_OnlineTime extends ArgumentModule
 			page = Integer.parseInt(args[2]);
 		}
 		plugin.getCommandHelper().top(player, "activitytime", page, "CmdAfkRecord.Top.HeadlineAcT",
-				PluginSettings.settings.getCommands(KeyHandler.TOP_ALLTIME));
+				PluginSettings.settings.getCommands(KeyHandler.TOP_ACTIVITYTIME));
 		return;
 	}
 }

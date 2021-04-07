@@ -271,13 +271,13 @@ public class AfkRecord extends JavaPlugin
 		ArgumentConstructor time = new ArgumentConstructor(baseCommandI+"_time", 0, 0, 1, false, null);
 		PluginSettings.settings.addCommands(KeyHandler.TIME, time.getCommandString());
 		
-		ArgumentConstructor top_onlinetime = new ArgumentConstructor(baseCommandI+"_top_onlinetime", 1, 1, 2, false, null);
+		ArgumentConstructor top_onlinetime = new ArgumentConstructor(baseCommandI+"_top_onlinetime", 1, 1, 3, false, null);
 		PluginSettings.settings.addCommands(KeyHandler.TOP_ACTIVITYTIME, top_onlinetime.getCommandString());
-		ArgumentConstructor top_alltime = new ArgumentConstructor(baseCommandI+"_top_alltime", 1, 1, 2, false, null);
+		ArgumentConstructor top_alltime = new ArgumentConstructor(baseCommandI+"_top_alltime", 1, 1, 3, false, null);
 		PluginSettings.settings.addCommands(KeyHandler.TOP_ALLTIME, top_alltime.getCommandString());
-		ArgumentConstructor top_afktime = new ArgumentConstructor(baseCommandI+"_top_afktime", 1, 1, 2, false, null);
+		ArgumentConstructor top_afktime = new ArgumentConstructor(baseCommandI+"_top_afktime", 1, 1, 3, false, null);
 		PluginSettings.settings.addCommands(KeyHandler.TOP_AFKTIME, top_afktime.getCommandString());
-		ArgumentConstructor top = new ArgumentConstructor(baseCommandI+"_top", 0, 2, 3, false, null,
+		ArgumentConstructor top = new ArgumentConstructor(baseCommandI+"_top", 0, 0, 0, false, null,
 				top_onlinetime, top_alltime, top_afktime);
 		ArgumentConstructor vacation = new ArgumentConstructor(baseCommandI+"_vacation", 0, 0, 3, false, playerMapII);	
 		CommandConstructor afkr = new CommandConstructor(baseCommandIName, false,

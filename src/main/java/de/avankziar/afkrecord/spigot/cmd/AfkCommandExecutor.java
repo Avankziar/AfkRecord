@@ -22,6 +22,6 @@ public class AfkCommandExecutor implements CommandExecutor
 	{
 		Player player = (Player) sender;
 		plugin.getUtility().save(player, false, true, false, false);
-		return false;
+		return true;
 	}
 }

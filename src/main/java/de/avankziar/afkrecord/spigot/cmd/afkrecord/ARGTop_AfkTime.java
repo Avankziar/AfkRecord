@@ -27,7 +27,7 @@ public class ARGTop_AfkTime extends ArgumentModule
 	{
 		Player player = (Player) sender;
 		int page = 0;
-		if(args.length == 3)
+		if(args.length >= 3)
 		{
 			if(!args[2].matches("[0-9]+"))
 			{

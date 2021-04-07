@@ -32,7 +32,7 @@ public class ARGConvert extends ArgumentModule
 			if(args[1].equalsIgnoreCase("bestätigen") || args[1].equalsIgnoreCase("confirm"))
 			{
 				time += System.currentTimeMillis();
-				plugin.getMysqlHandler().startConvert(count);
+				plugin.getMysqlHandler().startConvert(player, count);
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Convert.Start")
 						.replace("%time%", TimeHandler.getDateTime(time))));
 				return;

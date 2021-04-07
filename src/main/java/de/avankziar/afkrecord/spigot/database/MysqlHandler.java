@@ -7,9 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.assistance.TimeHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.tables.TableI;
 import main.java.de.avankziar.afkrecord.spigot.database.tables.TableII;
@@ -168,7 +170,7 @@ public class MysqlHandler implements TableI, TableII
 		return null;
 	}
 	
-	public void startConvert(int lastid)
+	public void startConvert(final Player player, int lastid)
 	{
 		new BukkitRunnable()
 		{
@@ -180,9 +182,13 @@ public class MysqlHandler implements TableI, TableII
 				if(start >= lastid)
 				{
 					cancel();
+					if(player != null)
+					{
+						player.sendMessage(ChatApi.tl("&6Convert finish!"));
+					}
 					return;
 				}
-				convertII(start, amount);
+				convertII(0, amount);
 				start += amount;
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L, 5L);
@@ -198,9 +204,9 @@ public class MysqlHandler implements TableI, TableII
 			try 
 			{			
 				String sql = "SELECT `datum`, `id` FROM `" + tableNameII + "` WHERE `timestamp_unix` = ? ORDER BY `id` ASC LIMIT "+start+", "+amount;
-		        preparedUpdateStatement = conn.prepareStatement(sql);
-		        preparedUpdateStatement.setLong(1, 0);
 		        
+				preparedUpdateStatement = conn.prepareStatement(sql);
+		        preparedUpdateStatement.setLong(1, 0);
 		        result = preparedUpdateStatement.executeQuery();
 		        while (result.next()) 
 		        {
@@ -247,7 +253,6 @@ public class MysqlHandler implements TableI, TableII
 				preparedUpdateStatement.setLong(1, l);
 				preparedUpdateStatement.setInt(2, id);
 				preparedUpdateStatement.setString(3, datum);
-				
 				preparedUpdateStatement.executeUpdate();
 				return;
 			} catch (SQLException e) {

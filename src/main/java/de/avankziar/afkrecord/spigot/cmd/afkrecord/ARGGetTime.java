@@ -17,10 +17,12 @@ import main.java.de.avankziar.afkrecord.spigot.permission.BypassPermission;
 public class ARGGetTime extends ArgumentModule
 {
 	private AfkRecord plugin;
+	private ArgumentConstructor argumentConstructor;
 	
 	public ARGGetTime(AfkRecord plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(argumentConstructor);
+		this.argumentConstructor = argumentConstructor;
 		this.plugin = plugin;
 	}
 
@@ -56,9 +58,9 @@ public class ARGGetTime extends ArgumentModule
 				return;
 			}
 			OfflinePlayer target = Bukkit.getOfflinePlayer(args[2]);
-			plugin.getCommandHelper().gettime(player, target, page);
+			plugin.getCommandHelper().gettime(player, target, page, argumentConstructor.getCommandString());
 			return;
 		}
-		plugin.getCommandHelper().gettime(player, player, 0);
+		plugin.getCommandHelper().gettime(player, player, 0, argumentConstructor.getCommandString());
 	}
 }

@@ -6,16 +6,16 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.LinkedHashMap;
 
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import main.java.de.avankziar.afkrecord.bungee.AfkRecord;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
 public class YamlHandler
 {
 	private AfkRecord plugin;
 	private File config = null;
-	private YamlConfiguration cfg = new YamlConfiguration();
+	private Configuration cfg = new Configuration();
 
 	public YamlHandler(AfkRecord plugin)
 	{
@@ -23,49 +23,9 @@ public class YamlHandler
 		loadYamlHandler();
 	}
 	
-	public YamlConfiguration getConfig()
+	public Configuration getConfig()
 	{
 		return cfg;
-	}
-	
-	private boolean loadYamlTask(File file, YamlConfiguration yaml)
-	{
-		try 
-		{
-			yaml.load(file);
-		} catch (IOException | InvalidConfigurationException e) 
-		{
-			AfkRecord.log.severe(
-					"Could not load the %file% file! You need to regenerate the %file%! Error: ".replace("%file%", file.getName())
-					+ e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-	
-	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, Language> keyMap)
-	{
-		yml.options().header("For more explanation see \n Your pluginsite");
-		for(String key : keyMap.keySet())
-		{
-			Language languageObject = keyMap.get(key);
-			if(languageObject.languageValues.containsKey(plugin.getYamlManager().getLanguageType()) == true)
-			{
-				plugin.getYamlManager().setFileInput(yml, keyMap, key, plugin.getYamlManager().getLanguageType());
-			} else if(languageObject.languageValues.containsKey(plugin.getYamlManager().getDefaultLanguageType()) == true)
-			{
-				plugin.getYamlManager().setFileInput(yml, keyMap, key, plugin.getYamlManager().getDefaultLanguageType());
-			}
-		}
-		try
-		{
-			yml.save(file);
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		return true;
 	}
 	
 	public boolean loadYamlHandler()
@@ -116,15 +76,53 @@ public class YamlHandler
 		/*
 		 * Load the config.yml
 		 */
-		if(!loadYamlTask(config, cfg))
-		{
-			return false;
-		}
+		cfg = loadYamlTask(config, cfg);
 		/*
 		 * Write all path for the configfile
 		 * Make sure, you use the right linkedHashmap from the YamlManager
 		 */
-		writeFile(config, cfg, plugin.getYamlManager().getConfigKey());
+		return writeFile(config, cfg, plugin.getYamlManager().getConfigKey());
+	}
+	
+	private Configuration loadYamlTask(File file, Configuration yaml)
+	{
+		Configuration y = null;
+		try 
+		{
+			yaml = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+			AfkRecord.log.info("File "+file.getName()+" loaded!");
+		} catch (IOException e) 
+		{
+			AfkRecord.log.severe(
+					"Could not load the %file% file! You need to regenerate the %file%! Error: ".replace("%file%", file.getName())
+					+ e.getMessage());
+			e.printStackTrace();
+		}
+		y = yaml;
+		return y;
+	}
+	
+	private boolean writeFile(File file, Configuration yml, LinkedHashMap<String, Language> keyMap)
+	{
+		for(String key : keyMap.keySet())
+		{
+			Language languageObject = keyMap.get(key);
+			if(languageObject.languageValues.containsKey(plugin.getYamlManager().getLanguageType()) == true)
+			{
+				plugin.getYamlManager().setFileInput(yml, keyMap, key, plugin.getYamlManager().getLanguageType());
+			} else if(languageObject.languageValues.containsKey(plugin.getYamlManager().getDefaultLanguageType()) == true)
+			{
+				plugin.getYamlManager().setFileInput(yml, keyMap, key, plugin.getYamlManager().getDefaultLanguageType());
+			}
+		}
+		try
+		{
+			 ConfigurationProvider.getProvider(YamlConfiguration.class).save(yml, file);
+			 AfkRecord.log.info("File "+file.getName()+" saved!");
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		return true;
 	}
 }

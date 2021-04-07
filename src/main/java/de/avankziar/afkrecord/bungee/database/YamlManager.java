@@ -5,9 +5,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import main.java.de.avankziar.afkrecord.bungee.database.Language.ISO639_2B;
+import net.md_5.bungee.config.Configuration;
 
 public class YamlManager
 {
@@ -17,13 +16,6 @@ public class YamlManager
 	
 	//Per Flatfile a linkedhashmap.
 	private static LinkedHashMap<String, Language> configKeys = new LinkedHashMap<>();
-	private static LinkedHashMap<String, Language> commandsKeys = new LinkedHashMap<>();
-	private static LinkedHashMap<String, Language> languageKeys = new LinkedHashMap<>();
-	/*
-	 * Here are mutiplefiles in one "double" map. The first String key is the filename
-	 * So all filename muss be predefine. For example in the config.
-	 */
-	private static LinkedHashMap<String, LinkedHashMap<String, Language>> guisKeys = new LinkedHashMap<>();
 	
 	public YamlManager()
 	{
@@ -50,25 +42,10 @@ public class YamlManager
 		return configKeys;
 	}
 	
-	public LinkedHashMap<String, Language> getCommandsKey()
-	{
-		return commandsKeys;
-	}
-	
-	public LinkedHashMap<String, Language> getLanguageKey()
-	{
-		return languageKeys;
-	}
-	
-	public LinkedHashMap<String, LinkedHashMap<String, Language>> getGUIKey()
-	{
-		return guisKeys;
-	}
-	
 	/*
 	 * The main methode to set all paths in the yamls.
 	 */
-	public void setFileInput(YamlConfiguration yml, LinkedHashMap<String, Language> keyMap, String key, ISO639_2B languageType)
+	public void setFileInput(Configuration yml, LinkedHashMap<String, Language> keyMap, String key, ISO639_2B languageType)
 	{
 		if(!keyMap.containsKey(key))
 		{
