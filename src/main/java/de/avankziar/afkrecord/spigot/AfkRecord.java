@@ -60,6 +60,7 @@ import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerLevelChan
 import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerMoveListener;
 import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerToggleSneakListener;
 import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerToggleSprintListener;
+import main.java.de.avankziar.afkrecord.spigot.metrics.Metrics;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginSettings;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
 import main.java.de.avankziar.afkrecord.spigot.papi.Expansion;
@@ -129,6 +130,7 @@ public class AfkRecord extends JavaPlugin
 		setupPermissions();
 		setupPlayerTimes();
 		isPapiRegistered = setupPlaceholderAPI();
+		setupBstats();
 	}
 	
 	public void onDisable()
@@ -463,6 +465,12 @@ public class AfkRecord extends JavaPlugin
 	public ArrayList<String> getPlayers()
 	{
 		return players;
+	}
+	
+	public void setupBstats()
+	{
+		int pluginId = 10968;
+        new Metrics(plugin, pluginId);
 	}
 	
 	private boolean setupPermissions() 
