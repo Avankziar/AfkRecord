@@ -25,7 +25,7 @@ public class ARGConvert extends ArgumentModule
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
-		int count= plugin.getMysqlHandler().getCountII(plugin, "`id`", "`timestamp_unix` = ?", 0);
+		int count = plugin.getMysqlHandler().getCountII(plugin, "`id`", "`timestamp_unix` = ?", 0);
 		long time = (count/60)*1000;
 		if(args.length == 2)
 		{

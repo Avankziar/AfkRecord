@@ -38,22 +38,17 @@ public class TABCompletion implements TabCompleter
 			return null;
 		}
 		Player player = (Player) sender;
-		debug(player, "====================================");
-		debug(player, "CMD: "+cmd.getName());
 		CommandConstructor cc = plugin.getCommandFromPath(cmd.getName());
 		if(cc == null)
 		{
-			//debug(player, "CC frist time null");
 			cc = plugin.getCommandFromCommandString(cmd.getName());
 		}
 		if(cc == null)
 		{
-			//debug(player, "CC second time null");
 			return null;
 		}
 		int length = args.length-1;
 		ArrayList<ArgumentConstructor> aclist = cc.subcommands;
-		//debug(player, "CC: "+cc.getName()+" "+cc.getPath()+" | "+Arrays.toString(args)+" "+length);
 		ArrayList<String> OneArgumentBeforeList = new ArrayList<>();
 		ArgumentConstructor lastAc = null;
 		for(ArgumentConstructor ac : aclist)
@@ -122,13 +117,11 @@ public class TABCompletion implements TabCompleter
 				debug(player, "isBreak");
 				if(lastAc != null)
 				{
-					debug(player, "lastAc != null");
 					return getReturnTabList(lastAc.tabList.get(length), args[length]);
 					//Return null, wenn die Tabliste nicht existiert! Aka ein halbes break;
 				}
 				if(i == length || aclist.isEmpty()) //Wenn das ende erreicht ist oder die aclist vorher leer gesetzt worden ist
 				{
-					debug(player, "==> Breaking!");
 					break;
 				}
 			}
@@ -176,7 +169,6 @@ public class TABCompletion implements TabCompleter
 		{
 			if(ac != null)
 			{
-				debug(player, "arg: "+arg+" | ac: "+ac.getName());
 				if(ac.getName().toLowerCase().startsWith(arg.toLowerCase()))
 				{
 					if(player.hasPermission(ac.getPermission()))

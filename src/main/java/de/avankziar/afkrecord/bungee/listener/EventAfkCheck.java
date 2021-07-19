@@ -20,8 +20,10 @@ public class EventAfkCheck implements Listener
 		{
 			return;
 		}
-		softsave((ProxiedPlayer) event.getSender());
-		return;
+		if(event.isCancelled())
+		{
+			softsave((ProxiedPlayer) event.getSender());
+		}
 	}
 	
 	private void softsave(ProxiedPlayer player)

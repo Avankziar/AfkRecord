@@ -1,3 +1,6 @@
+Future Build
+- Wenn man /afk <Text>, macht, wird der Text im Chat geschrieben, dass man zeigt, dass diese Person afk ist.
+
 Build 8
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - Support PlaceholderApi
