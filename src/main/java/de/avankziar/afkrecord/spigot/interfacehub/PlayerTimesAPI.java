@@ -11,7 +11,7 @@ import main.java.de.avankziar.afkrecord.spigot.assistance.TimeHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler.Type;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
 import main.java.de.avankziar.afkrecord.spigot.object.TimeRecord;
-import main.java.me.avankziar.interfacehub.spigot.interfaces.PlayerTimes;
+import main.java.me.avankziar.ifh.spigot.interfaces.PlayerTimes;
 
 public class PlayerTimesAPI implements PlayerTimes
 {

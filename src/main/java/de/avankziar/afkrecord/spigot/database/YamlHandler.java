@@ -2,6 +2,8 @@ package main.java.de.avankziar.afkrecord.spigot.database;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
@@ -9,7 +11,6 @@ import java.util.List;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.database.Language.ISO639_2B;
@@ -48,7 +49,7 @@ public class YamlHandler
 		return lang;
 	}
 	
-	private boolean loadYamlTask(File file, YamlConfiguration yaml)
+	private YamlConfiguration loadYamlTask(File file, YamlConfiguration yaml)
 	{
 		try 
 		{
@@ -59,9 +60,8 @@ public class YamlHandler
 					"Could not load the %file% file! You need to regenerate the %file%! Error: ".replace("%file%", file.getName())
 					+ e.getMessage());
 			e.printStackTrace();
-			return false;
 		}
-		return true;
+		return yaml;
 	}
 	
 	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, Language> keyMap)
@@ -128,12 +128,13 @@ public class YamlHandler
 		if(!config.exists()) 
 		{
 			AfkRecord.log.info("Create config.yml...");
-			try
+			try (InputStream in = plugin.getResource("default.yml"))
 			{
 				/*
 				 * If config.yml dont exist in the main directory, than create config.yml as empty file
 				 */
-				FileUtils.copyToFile(plugin.getResource("default.yml"), config);
+				//FileUtils.copyToFile(plugin.getResource("default.yml"), config);
+				Files.copy(in, config.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -142,7 +143,8 @@ public class YamlHandler
 		/*
 		 * Load the config.yml
 		 */
-		if(!loadYamlTask(config, cfg))
+		cfg = loadYamlTask(config, cfg);
+		if (cfg == null)
 		{
 			return false;
 		}
@@ -162,17 +164,18 @@ public class YamlHandler
 		if(!commands.exists()) 
 		{
 			AfkRecord.log.info("Create commands.yml...");
-			try
+			try(InputStream in = plugin.getResource("default.yml"))
 			{
 				//Erstellung einer "leere" config.yml
-				FileUtils.copyToFile(plugin.getResource("default.yml"), commands);
+				Files.copy(in, commands.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
 			}
 		}
 		
-		if(!loadYamlTask(commands, com))
+		com = loadYamlTask(commands, com);
+		if (com == null)
 		{
 			return false;
 		}
@@ -229,15 +232,16 @@ public class YamlHandler
 		if(!language.exists()) 
 		{
 			AfkRecord.log.info("Create %lang%.yml...".replace("%lang%", languageString));
-			try
+			try(InputStream in = plugin.getResource("default.yml"))
 			{
-				FileUtils.copyToFile(plugin.getResource("default.yml"), language);
+				Files.copy(in, language.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
 			}
 		}
-		if(!loadYamlTask(language, lang))
+		lang = loadYamlTask(language, lang);
+		if (cfg == null)
 		{
 			return false;
 		}

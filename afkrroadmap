@@ -1,5 +1,6 @@
 Future Build
 - Wenn man /afk <Text>, macht, wird der Text im Chat geschrieben, dass man zeigt, dass diese Person afk ist.
+- Bungee wie Spigot MysqlSetup connection und Reconnection treiber updaten, siehe Scc
 
 Build 8
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen

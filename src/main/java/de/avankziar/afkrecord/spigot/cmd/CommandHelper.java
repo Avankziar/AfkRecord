@@ -168,6 +168,10 @@ public class CommandHelper
 		{
 			start = lastEntry-9;
 			lastpage = true;
+			if(start < 0)
+			{
+				start = 0;
+			}
 		}
 		ArrayList<PluginUser> arr = ConvertHandler.convertListI(
 				plugin.getMysqlHandler().getTop(Type.PLUGINUSER, "`"+orderByColumn+"`", true, start, quantity));

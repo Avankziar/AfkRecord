@@ -490,7 +490,7 @@ public class AfkRecord extends JavaPlugin
 		{
 			ptapi = new PlayerTimesAPI(this);
             plugin.getServer().getServicesManager().register(
-            		main.java.me.avankziar.interfacehub.spigot.interfaces.PlayerTimes.class,
+            		main.java.me.avankziar.ifh.spigot.interfaces.PlayerTimes.class,
             		ptapi,
             		this,
                     ServicePriority.Normal);
