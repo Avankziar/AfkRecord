@@ -16,10 +16,8 @@ import main.java.de.avankziar.afkrecord.spigot.assistance.TimeHandler;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.ArgumentConstructor;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.ArgumentModule;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler.Type;
-import main.java.de.avankziar.afkrecord.spigot.object.ConvertHandler;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginSettings;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
-import main.java.de.avankziar.afkrecord.spigot.object.TimeRecord;
 import main.java.de.avankziar.afkrecord.spigot.permission.KeyHandler;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
@@ -71,7 +69,6 @@ public class ARGCountTimePermission extends ArgumentModule
 		inProgress = true;
 		new BukkitRunnable()
 		{
-			
 			@Override
 			public void run()
 			{
@@ -80,10 +77,15 @@ public class ARGCountTimePermission extends ArgumentModule
 				{
 					if(plugin.getPerms().playerHas(null, off, perm))
 					{
-						uuids.add(off.getUniqueId().toString());
+						if(!uuids.contains(off.getUniqueId().toString()))
+						{
+							uuids.add(off.getUniqueId().toString());
+						}
 					}
 				}
-				ArrayList<RAMUser> ram = new ArrayList<>();
+				ArrayList<BaseComponent> bc = new ArrayList<>();
+				long before = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis()))
+						- (days-1)*1000L*60*60*24;
 				for(String uuid : uuids)
 				{
 					final PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER, "`player_uuid` = ?", uuid);
@@ -91,37 +93,25 @@ public class ARGCountTimePermission extends ArgumentModule
 					{
 						continue;
 					}
-					ArrayList<TimeRecord> a = new ArrayList<>();
-					try
-					{
-						a = ConvertHandler.convertListII(
-								plugin.getMysqlHandler().getList(Type.TIMERECORD,
-										"`timestamp_unix`", true, 0, days, "`player_uuid` = ?", uuid));
-					} catch (IOException e)
-					{
-						e.printStackTrace();
-					}
-					long act = 0;
-					long afkt = 0;
-					long allt = 0;
-					for(TimeRecord tr : a)
-					{
-						act += tr.getActivityTime();
-						afkt += tr.getAfkTime();
-						allt += tr.getAllTime();
-					}
-					final String name = user.getPlayerName();
-					ram.add(new RAMUser(uuid, name, act, allt, afkt, user.getLastActivity()));
-				}
-				ArrayList<BaseComponent> bc = new ArrayList<>();
-				for(RAMUser user : ram)
-				{
-					TextComponent tc = ChatApi.apiChat(getColor(user.name, user.activitytime)+" &r",
-							Action.RUN_COMMAND, PluginSettings.settings.getCommands(KeyHandler.COUNTTIME)+days+" "+user.name,
+					long act = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`activitytime`",
+							"`player_uuid` = ? AND `timestamp_unix` >= ?", user.getUUID().toString(), before);
+					long afkt = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`afktime`",
+							"`player_uuid` = ? AND `timestamp_unix` >= ?", user.getUUID().toString(), before);
+					long allt = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`alltime`",
+							"`player_uuid` = ? AND `timestamp_unix` >= ?", user.getUUID().toString(), before);
+					//SELECT `player_name`, SUM(`activitytime`) as ergebnis FROM `SecretCraftAfkDateList` WHERE `player_name` = 'Avankziar' AND `timestamp_unix` >= '0' GROUP BY `player_name`
+					//SELECT `player_name`, SUM(`activitytime`) as ergebnis FROM `SecretCraftAfkDateList` WHERE `player_name` = 'loki1818' AND `timestamp_unix` >= '0' GROUP BY `player_name`
+					/*
+					 * 38422214 ac 10,6 h
+					 * 44539016 all 12,3 h
+					 * 6116802 afk 1,69 h
+					 */
+					TextComponent tc = ChatApi.apiChat(getColor(user.getPlayerName(), act)+" &r",
+							Action.RUN_COMMAND, PluginSettings.settings.getCommands(KeyHandler.COUNTTIME)+days+" "+user.getPlayerName(),
 							HoverEvent.Action.SHOW_TEXT,
 							String.join("~!~", 
 									replacer(plugin.getYamlHandler().getLang().getStringList("CmdAfkRecord.CountTimePerm.Hover"),
-											user.afktime, user.alltime, user.activitytime, user.lastactivity)));
+											afkt, allt, act, user.getLastActivity())));
 					bc.add(tc);
 				}
 				inProgress = false;

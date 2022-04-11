@@ -20,6 +20,10 @@ public class AfkCommandExecutor implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
 	{
+		if(!(sender instanceof Player))
+		{
+			return false;
+		}
 		Player player = (Player) sender;
 		plugin.getUtility().save(player, false, true, false, false);
 		return true;

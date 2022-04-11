@@ -175,11 +175,17 @@ public class CommandHelper
 		}
 		ArrayList<PluginUser> arr = ConvertHandler.convertListI(
 				plugin.getMysqlHandler().getTop(Type.PLUGINUSER, "`"+orderByColumn+"`", true, start, quantity));
+		if(arr == null || arr.isEmpty())
+		{
+			player.sendMessage(ChatApi.tl("Arr ist null oder Empty"));
+		}
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString(headpath)));
 		int a = 0;
+		plugin.getLogger().info("10"); //TODO
 		while(a < arr.size())
 		{
+			plugin.getLogger().info("11 : "+a); //TODO
 			PluginUser user = arr.get(a);
 			int place = start+1;
 			long time = 0;
@@ -208,6 +214,7 @@ public class CommandHelper
 			a++;
 			start++;
 		}
+		
 		int i = page+1;
 		int j = page-1;
 		TextComponent MSG = ChatApi.tctl("");
@@ -230,8 +237,11 @@ public class CommandHelper
 			}
 			list.add(msg1);
 		}
-		MSG.setExtra(list);	
-		player.spigot().sendMessage(MSG);
+		if(!list.isEmpty())
+		{
+			MSG.setExtra(list);
+			player.spigot().sendMessage(MSG);
+		}
 	}
 	
 	public void gettime(Player player, OfflinePlayer target, int page, String subcmd) throws IOException
@@ -269,22 +279,25 @@ public class CommandHelper
 		{
 			TextComponent msg2 = ChatApi.tc(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.BaseInfo.Past")));
-			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, subcmd+" "+j));
+			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, subcmd+" "+j+" "+target.getName()));
 			list.add(msg2);
 		}
 		if(!lastpage)
 		{
 			TextComponent msg1 = ChatApi.tc(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.BaseInfo.Next")));
-			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, subcmd+" "+i));
+			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, subcmd+" "+i+" "+target.getName()));
 			if(list.size()==1)
 			{
 				list.add(ChatApi.tc(" | "));
 			}
 			list.add(msg1);
 		}
-		MSG.setExtra(list);	
-		player.spigot().sendMessage(MSG);
+		if(!list.isEmpty())
+		{
+			MSG.setExtra(list);	
+			player.spigot().sendMessage(MSG);
+		}
 	}
 	
 	public void counttime(Player player, OfflinePlayer target, int days) throws IOException
@@ -292,11 +305,11 @@ public class CommandHelper
 		long before = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis()))
 				- (days-1)*1000L*60*60*24;
 		long act = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`activitytime`",
-				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), before);
-		long afkt = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`alltime`",
-				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), before);
-		long allt = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`afktime`",
-				"`player_uuid` = ? AND `timestamp_unix` >= ?", player.getUniqueId().toString(), before);
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", target.getUniqueId().toString(), before);
+		long afkt = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`afktime`",
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", target.getUniqueId().toString(), before);
+		long allt = plugin.getMysqlHandler().getSumII(plugin, "`player_uuid`", "`alltime`",
+				"`player_uuid` = ? AND `timestamp_unix` >= ?", target.getUniqueId().toString(), before);
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.Headline")
 				.replaceAll("%player%", target.getName())

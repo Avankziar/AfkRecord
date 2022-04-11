@@ -20,23 +20,24 @@ public class ServerListener  implements PluginMessageListener
 	}
 	public void onPluginMessageReceived(String channel, Player p, byte[] bytes) 
 	{
-		if(channel.equals("afkrecord:afkrecordout")) 
+		if(channel.equals("afkr:afkrecordout")) 
 		{
         	ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
             DataInputStream in = new DataInputStream(stream);
-            try {
-            	String[] s = in.readUTF().split("µ");
-            	String Category = s[0];
-            	String PlayerUUID = s[1];
-            	if(Category.equals("softsave"))
+            String task = null;
+            try 
+            {
+            	task = in.readUTF();
+            	if(task.equals("afk-softsave"))
             	{
-            		if(plugin.getServer().getPlayer(UUID.fromString(PlayerUUID))==null)
-            		{
-            			return;
-            		}
-            		Player player = plugin.getServer().getPlayer(UUID.fromString(PlayerUUID));
-            		plugin.getUtility().debug(player, "AfkR PluginMessageRecieved");
-            		plugin.getUtility().save(player, true, false, false, false);
+		        	String PlayerUUID = in.readUTF();
+		        	if(plugin.getServer().getPlayer(UUID.fromString(PlayerUUID))==null)
+		    		{
+		    			return;
+		    		}
+		    		Player player = plugin.getServer().getPlayer(UUID.fromString(PlayerUUID));
+		    		plugin.getUtility().debug(player, "AfkR PluginMessageRecieved");
+		    		plugin.getUtility().save(player, true, false, false, false);
             	}
             } catch (IOException e) 
             {

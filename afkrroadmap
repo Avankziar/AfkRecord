@@ -1,17 +1,23 @@
 Future Build
 - Wenn man /afk <Text>, macht, wird der Text im Chat geschrieben, dass man zeigt, dass diese Person afk ist.
 - Bungee wie Spigot MysqlSetup connection und Reconnection treiber updaten, siehe Scc
-
-Build 8
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - Support PlaceholderApi
 - Support InterfaceHub
+
+Buil 9
+- +Java 17 & Mc 1.18.1 support
+- +ChatEvent Afk fix
+- +/afk counttimeperm fix
+- +/afk counttime fix
+
+Build 7
 - /afkr counttimeperm <Zahl> <Permission>
 - /afkr vacation [Spieler] | Zeigt an ob der Spieler  oder man selbst, im Urlaub ist
 - /afkr vacation <dd.MM.yyyy> <HH:mm> | Setz sich selber bis zum xx in Urlaub. Beispiel: 05.04.2021 15:00 (In Worten der 5. April 2021 Fünfzehn Uhr)
 - Mysql neue Column:
   - TableI: lasttimecheck BIGINT, isonline boolean, vacationtime BIGINT
-  - ALTER TABLE `YourPlaywterDataTable` ADD `lasttimecheck` BIGINT NOT NULL DEFAULT '0' AFTER `lastactivity`,
+  - ALTER TABLE `YourPlayerDataTable` ADD `lasttimecheck` BIGINT NOT NULL DEFAULT '0' AFTER `lastactivity`,
      ADD `isonline` TINYINT(1) NOT NULL DEFAULT '0' AFTER `lasttimecheck`, ADD `vacationtime` BIGINT NOT NULL DEFAULT '0' AFTER `isonline`; 
   - TableII: timestamp_unix BIGINT
   - ALTER TABLE `YourDateTable` ADD `timestamp_unix` BIGINT NOT NULL DEFAULT '0' AFTER `datum`;

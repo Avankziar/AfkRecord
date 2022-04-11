@@ -128,7 +128,7 @@ public class AfkRecord extends JavaPlugin
 		setupCommandTree();
 		ListenerSetup();
 		setupPermissions();
-		setupPlayerTimes();
+		//setupPlayerTimes();
 		isPapiRegistered = setupPlaceholderAPI();
 		setupBstats();
 	}
@@ -194,7 +194,7 @@ public class AfkRecord extends JavaPlugin
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new JoinQuitListener(plugin), plugin);
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "afkrecord:afkrecordin");
-		plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "afkrecord:afkrecordout", new ServerListener(plugin));
+		plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "afkr:afkrecordout", new ServerListener(plugin));
 		if(yamlHandler.getConfig().getBoolean("EventListener.AsyncChat", false))
 		{
 			pm.registerEvents(new PlayerAsyncChatListener(plugin), plugin);

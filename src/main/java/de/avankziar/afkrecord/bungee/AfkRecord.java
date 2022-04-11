@@ -42,7 +42,7 @@ public class AfkRecord extends Plugin
 			disablePlugin();
 			log.severe("MySQL is not enabled! "+pluginName+" is disabled!");
 		}
-		getProxy().registerChannel("afkrecord:afkrecordout");
+		getProxy().registerChannel("afkr:afkrecordout");
 		getProxy().registerChannel("afkrecord:afkrecordin");
 		getProxy().getPluginManager().registerListener(plugin, new EventAfkCheck());
 	}

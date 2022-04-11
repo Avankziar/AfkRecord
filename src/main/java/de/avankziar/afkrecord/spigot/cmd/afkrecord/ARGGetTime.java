@@ -44,7 +44,8 @@ public class ARGGetTime extends ArgumentModule
 		}
 		if(args.length == 3)
 		{
-			if(!player.hasPermission(BypassPermission.GETTIMEOTHER))
+			if(!player.hasPermission(BypassPermission.GETTIMEOTHER)
+					&& !player.getName().equals(args[2]))
 			{
 				player.spigot().sendMessage(ChatApi.tctl(
 						plugin.getYamlHandler().getLang().getString("NoPermission")));
