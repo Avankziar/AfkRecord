@@ -6,7 +6,21 @@ Future Build
 - Support PlaceholderApi
 - Support InterfaceHub
 
-Buil 9
+Build xx
+- IFH Anbindung aufräumen, keine OfflinePlayer instancen abfragen.
+- Intern alles über eine SubInstance laufen lassen, die wie IFH aufgebaut ist.
+
+Build 10-0-x
+ xxx Nicht vergessen, Cmd die AfkStatus anzeigen, müssen auch die RAM anzeigen. xxx
+- IFH Anbindung aufgeräumt.
+- intern aufgeräumt um struckturiert zur Performance verbesserung
+- Mehre Events können abgefragt werden. Events haben nun einen Aktivierungsboolean und einen Cooldown per Config.
+- IFH PlayerChangeToAfkEvent & PlayerChangeToNotAfkEvent eingebaut.
+
+Build 9-1-0
+- MC 1.19 support
+
+Build 9
 - +Java 17 & Mc 1.18.1 support
 - +ChatEvent Afk fix
 - +/afk counttimeperm fix

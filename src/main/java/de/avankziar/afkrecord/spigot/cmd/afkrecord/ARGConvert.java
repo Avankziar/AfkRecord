@@ -34,7 +34,7 @@ public class ARGConvert extends ArgumentModule
 				time += System.currentTimeMillis();
 				plugin.getMysqlHandler().startConvert(player, count);
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Convert.Start")
-						.replace("%time%", TimeHandler.getDateTime(time))));
+						.replace("%time%", plugin.getPlayerTimes().formatDate(time))));
 				return;
 			}
 		}

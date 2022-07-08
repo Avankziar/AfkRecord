@@ -36,17 +36,17 @@ public class CommandHelper
 	public void time(Player player, OfflinePlayer target)
 	{
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER, "`player_uuid` = ?", target.getUniqueId().toString());
-		int acplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`activitytime`", "`activitytime` > ?", user.getActivityTime());
+		int acplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`activitytime`", "`activitytime` > ?", user.getActiveTime());
 		int afkplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`afktime`", "`afktime` > ?", user.getAfkTime());
-		int allplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`alltime`", "`alltime` > ?", user.getAllTime());
-		String format = "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") +
-						"&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") +
-						"&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") +
-						"&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds");
-		String afktime = String.valueOf((user != null) ? TimeHandler.getRepeatingTime(user.getAfkTime(), format) : 0);
-		String ontime = String.valueOf((user != null) ? TimeHandler.getRepeatingTime(user.getActivityTime(), format) : 0);
-		String alltime = String.valueOf((user != null) ? TimeHandler.getRepeatingTime(user.getAllTime(), format) : 0);
-		String lastactivity = String.valueOf((user != null) ? TimeHandler.getDateTime(user.getLastActivity()) : 0);
+		int allplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`alltime`", "`alltime` > ?", user.getTotalTime());
+		boolean b = true;
+		String afktime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getAfkTime(), false, b, b, b, b) : "0";
+				//TimeHandler.getRepeatingTime(user.getAfkTime(), format) : 0);
+		String ontime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getActiveTime(), false, b, b, b, b) : "0";
+				//TimeHandler.getRepeatingTime(user.getActiveTime(), format) : "0";
+		String alltime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getTotalTime(), false, b, b, b, b) : "0";
+				//TimeHandler.getRepeatingTime(user.getTotalTime(), format) : 0);
+		String lastactivity = String.valueOf((user != null) ? plugin.getPlayerTimes().formatDate(user.getLastActivity()) : 0);
 		
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString(
@@ -174,7 +174,7 @@ public class CommandHelper
 			}
 		}
 		ArrayList<PluginUser> arr = ConvertHandler.convertListI(
-				plugin.getMysqlHandler().getTop(Type.PLUGINUSER, "`"+orderByColumn+"`", true, start, quantity));
+				plugin.getMysqlHandler().getTop(plugin, "`"+orderByColumn+"`", true, start, quantity));
 		if(arr == null || arr.isEmpty())
 		{
 			player.sendMessage(ChatApi.tl("Arr ist null oder Empty"));
@@ -182,10 +182,8 @@ public class CommandHelper
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString(headpath)));
 		int a = 0;
-		plugin.getLogger().info("10"); //TODO
 		while(a < arr.size())
 		{
-			plugin.getLogger().info("11 : "+a); //TODO
 			PluginUser user = arr.get(a);
 			int place = start+1;
 			long time = 0;
@@ -195,10 +193,10 @@ public class CommandHelper
 				time = user.getAfkTime();
 				break;
 			case "activitytime":
-				time = user.getActivityTime();
+				time = user.getActiveTime();
 				break;
 			case "alltime":
-				time = user.getAllTime();
+				time = user.getTotalTime();
 				break;
 			default:
 				break;
@@ -209,7 +207,7 @@ public class CommandHelper
 						plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Top.PlaceAndTime")
 						.replace("%place%", plugin.getUtility().getPlaceColor(place))
 						.replace("%player%", user.getPlayerName())
-						.replace("%time%", plugin.getUtility().timetl(time))));
+						.replace("%time%", plugin.getPlayerTimes().formatTimePeriod(time))));
 			}
 			a++;
 			start++;
@@ -255,9 +253,9 @@ public class CommandHelper
 			start = lastid-quantity;
 			lastpage = true;
 		}
-		ArrayList<TimeRecord> a = ConvertHandler.convertListII(
-				plugin.getMysqlHandler().getList(Type.TIMERECORD,
-						"timestamp_unix", true, start, quantity, "`player_uuid` = ?", target.getUniqueId().toString()));
+		
+		ArrayList<TimeRecord> a = TimeRecord.convert(plugin.getMysqlHandler().getList(Type.TIMERECORD, "`timestamp_unix` DESC", start, quantity,
+				"`player_uuid` = ?", target.getUniqueId().toString()));
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.GetTime.Headline")
 				.replaceAll("%player%", target.getName())));
@@ -266,9 +264,9 @@ public class CommandHelper
 			player.spigot().sendMessage(ChatApi.tctl(
 					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.GetTime.Line")
 					.replaceAll("%date%", TimeHandler.getDate(tr.getTimeStamp()))
-					.replaceAll("%alltime%", plugin.getUtility().timetl(tr.getAllTime()))
-					.replaceAll("%ontime%", plugin.getUtility().timetl(tr.getActivityTime()))
-					.replaceAll("%afktime%", plugin.getUtility().timetl(tr.getAfkTime()))));
+					.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(tr.getTotalTime()))
+					.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(tr.getActiveTime()))
+					.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(tr.getAfkTime()))));
 			start++;
 		}
 		int i = page+1;
@@ -316,19 +314,19 @@ public class CommandHelper
 				.replaceAll("%days%", String.valueOf(days))));
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.ActiveTime")
-				.replaceAll("%ontime%", plugin.getUtility().timetl(act))
-				.replaceAll("%afktime%", plugin.getUtility().timetl(afkt))
-				.replaceAll("%alltime%", plugin.getUtility().timetl(allt))));
+				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act))
+				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt))
+				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt))));
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.AfkTime")
-				.replaceAll("%ontime%", plugin.getUtility().timetl(act))
-				.replaceAll("%afktime%", plugin.getUtility().timetl(afkt))
-				.replaceAll("%alltime%", plugin.getUtility().timetl(allt))));
+				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act))
+				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt))
+				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt))));
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.Alltime")
-				.replaceAll("%ontime%", plugin.getUtility().timetl(act))
-				.replaceAll("%afktime%", plugin.getUtility().timetl(afkt))
-				.replaceAll("%alltime%", plugin.getUtility().timetl(allt))));
+				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act))
+				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt))
+				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt))));
 		if(player.hasPermission(Utility.PERMCOUNTTIMELASTACTIVITY))
 		{
 			PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
@@ -336,14 +334,14 @@ public class CommandHelper
 			
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.LastActive")
-					.replaceAll("%time%", TimeHandler.getDateTime((user != null) ? user.getLastActivity() : 0))));
+					.replaceAll("%time%", plugin.getPlayerTimes().formatDate((user != null) ? user.getLastActivity() : 0))));
 		}
 	}
 	
-	public void getafk(Player player, String bungeeplayerlist) throws IOException
+	public void getafk(Player player) throws IOException
 	{
-		ArrayList<PluginUser> users = ConvertHandler.convertListI(
-				plugin.getMysqlHandler().getAllListAt(Type.PLUGINUSER, "`id`", false, "`isafk` = ? AND `isonline` = ?", true, true));
+		ArrayList<PluginUser> users = PluginUser.convert(plugin.getMysqlHandler(
+				).getFullList(Type.PLUGINUSER, "`id` ASC", "`isafk` = ? AND `isonline` = ?", true, true));
 		boolean check = false;
 		TextComponent playerlist = ChatApi.tc("");
 		long now = System.currentTimeMillis();
@@ -359,7 +357,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.Under15Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getUtility().timetl(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -368,7 +366,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.15Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getUtility().timetl(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -377,7 +375,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.30Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getUtility().timetl(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -386,7 +384,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.45Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getUtility().timetl(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND, 
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -395,7 +393,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.60Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getUtility().timetl(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -404,16 +402,16 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.90Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getUtility().timetl(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
-			} else if(time>=120)
+			} else
 			{
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.120Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getUtility().timetl(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND, 
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));

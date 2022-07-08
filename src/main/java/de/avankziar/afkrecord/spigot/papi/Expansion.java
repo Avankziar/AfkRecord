@@ -67,15 +67,15 @@ public class Expansion extends PlaceholderExpansion
 		switch(identifier)
 		{
 		case "user_total_alltime":
-			return TimeHandler.getRepeatingTime(user.getAllTime(), format);
+			return TimeHandler.getRepeatingTime(user.getTotalTime(), format);
 		case "user_total_activitytime":
-			return TimeHandler.getRepeatingTime(user.getActivityTime(), format);
+			return TimeHandler.getRepeatingTime(user.getActiveTime(), format);
 		case "user_total_afktime":
 			return TimeHandler.getRepeatingTime(user.getAfkTime(), format);
 		case "user_lastactivity":
-			return TimeHandler.getDateTime(user.getLastActivity());
+			return plugin.getPlayerTimes().formatDate(user.getLastActivity());
 		case "user_lasttimechecked":
-			return TimeHandler.getDateTime(user.getLastTimeCheck());
+			return plugin.getPlayerTimes().formatDate(user.getLastTimeCheck());
 		case "user_isafk":
 			return getLanguageBoolean(user.isAFK());
 		case "user_isonline":
@@ -112,22 +112,22 @@ public class Expansion extends PlaceholderExpansion
 			return TimeHandler.getRepeatingTime(sum, format);
 		case "user_toplist_place_activitytime":
 			return String.valueOf(plugin.getMysqlHandler().getTopListPlaceI(plugin,
-					"`activitytime`", "`activitytime` > ?", user.getActivityTime()));
+					"`activitytime`", "`activitytime` > ?", user.getActiveTime()));
 		case "user_toplist_place_afktime":
 			return String.valueOf(plugin.getMysqlHandler().getTopListPlaceI(plugin,
 					"`afktime`", "`afktime` > ?", user.getAfkTime()));
 		case "user_toplist_place_alltime":
 			return String.valueOf(plugin.getMysqlHandler().getTopListPlaceI(plugin,
-					"`alltime`", "`alltime` > ?", user.getAllTime()));
+					"`alltime`", "`alltime` > ?", user.getTotalTime()));
 		case "user_toplist_place_activitytime_with_format":
 			return plugin.getUtility().getPlaceColor(plugin.getMysqlHandler().getTopListPlaceI(plugin,
-					"`activitytime`", "`activitytime` > ?", user.getActivityTime()));
+					"`activitytime`", "`activitytime` > ?", user.getActiveTime()));
 		case "user_toplist_place_afktime_with_format":
 			return plugin.getUtility().getPlaceColor(plugin.getMysqlHandler().getTopListPlaceI(plugin,
 					"`afktime`", "`afktime` > ?", user.getAfkTime()));
 		case "user_toplist_place_alltime_with_format":
 			return plugin.getUtility().getPlaceColor(plugin.getMysqlHandler().getTopListPlaceI(plugin,
-					"`alltime`", "`alltime` > ?", user.getAllTime()));
+					"`alltime`", "`alltime` > ?", user.getTotalTime()));
 		default:
 			break;
 		}

@@ -12,55 +12,92 @@ public class BackgroundTask
 	public BackgroundTask(AfkRecord plugin)
 	{
 		this.plugin = plugin;
-		runTask();
+		runRAMSave();
+		runMySQLSave();
+		runAfkCheckerTask();
+		runAfkKickerTask();
 	}
 	
-	public void runTask()
-	{
-		runSave();
-		runAfkTrackerTask();
-	}
-	
-	public void runSave() //Interne Abspeicherung
+	public void runRAMSave()
 	{
 		new BukkitRunnable() 
 		{
-			
 			@Override
 			public void run() 
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getUtility().debug(player, "AfkR runSave");
-					plugin.getUtility().save(player, false, false, false, false);
+					plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, false, false, true);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
-				plugin.getYamlHandler().getConfig().getInt("General.SoftSaveInSeconds")*20L);
+				plugin.getYamlHandler().getConfig().getInt("General.RAMSave.InSeconds")*20L);
 	}
 	
-	public void runAfkTrackerTask()
+	public void runMySQLSave()
 	{
 		new BukkitRunnable() 
 		{
-			
 			@Override
 			public void run() 
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getUtility().afkchecker(player);
+					plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, true, true, true);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
-				plugin.getYamlHandler().getConfig().getInt("General.AfkCheckerInSeconds")*20L);
+				plugin.getYamlHandler().getConfig().getInt("General.MySQLSave.InSeconds")*20L);
+	}
+	
+	public void runAfkCheckerTask()
+	{
+		new BukkitRunnable() 
+		{
+			final long afkAfterLastActivityInSeconds = plugin.getYamlHandler().getConfig()
+					.getInt("General.AfkChecker.AfkAfterLastActivityInSeconds")*1000L;
+			@Override
+			public void run() 
+			{
+				for(Player player : plugin.getServer().getOnlinePlayers())
+				{
+					plugin.getPlayerTimes().afkChecker(player.getUniqueId(), afkAfterLastActivityInSeconds);
+				}
+			}
+		}.runTaskTimerAsynchronously(plugin, 0L,
+				plugin.getYamlHandler().getConfig().getInt("General.AfkChecker.InSeconds")*20L);
+	}
+	
+	public void runAfkKickerTask()
+	{
+		new BukkitRunnable() 
+		{
+			final long kickAfterLastActivityInSeconds = plugin.getYamlHandler().getConfig()
+					.getInt("General.AfkKick.KickAfterLastActivityInSeconds")*1000L;
+			final String msg = plugin.getYamlHandler().getLang().getString("AfkKicker.Kick")
+					.replace("%time%",
+									String.valueOf(plugin.getYamlHandler().getConfig()
+									.getInt("General.AfkKick.KickAfterLastActivityInSeconds")/60
+									+ plugin.getYamlHandler().getConfig()
+									.getInt("General.AfkChecker.AfkAfterLastActivityInSeconds")/60)+" min"
+					);
+			@Override
+			public void run() 
+			{
+				for(Player player : plugin.getServer().getOnlinePlayers())
+				{
+					plugin.getPlayerTimes().afkKicker(player.getUniqueId(), msg, kickAfterLastActivityInSeconds);
+				}
+			}
+		}.runTaskTimerAsynchronously(plugin, 0L,
+				plugin.getYamlHandler().getConfig().getInt("General.AfkKicker.InSeconds")*20L);
 	}
 	
 	public void onShutDownDataSave()
 	{
 		for(Player player : plugin.getServer().getOnlinePlayers())
 		{
-			plugin.getUtility().saveAndServerDisable(player, false, false);
+			plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, false, true, false);
 		}
 	}
 }

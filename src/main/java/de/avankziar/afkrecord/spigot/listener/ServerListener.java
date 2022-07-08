@@ -30,14 +30,8 @@ public class ServerListener  implements PluginMessageListener
             	task = in.readUTF();
             	if(task.equals("afk-softsave"))
             	{
-		        	String PlayerUUID = in.readUTF();
-		        	if(plugin.getServer().getPlayer(UUID.fromString(PlayerUUID))==null)
-		    		{
-		    			return;
-		    		}
-		    		Player player = plugin.getServer().getPlayer(UUID.fromString(PlayerUUID));
-		    		plugin.getUtility().debug(player, "AfkR PluginMessageRecieved");
-		    		plugin.getUtility().save(player, true, false, false, false);
+		        	String playerUUID = in.readUTF();
+		    		plugin.getPlayerTimes().saveRAM(UUID.fromString(playerUUID), null, false, false, false);
             	}
             } catch (IOException e) 
             {

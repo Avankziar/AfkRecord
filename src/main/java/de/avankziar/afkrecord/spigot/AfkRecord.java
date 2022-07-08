@@ -6,14 +6,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -48,21 +47,14 @@ import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.spigot.database.YamlHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.YamlManager;
-import main.java.de.avankziar.afkrecord.spigot.interfacehub.PlayerTimesAPI;
+import main.java.de.avankziar.afkrecord.spigot.handler.PlayerTimesHandler;
+import main.java.de.avankziar.afkrecord.spigot.ifh.PlayerTimesAPI;
 import main.java.de.avankziar.afkrecord.spigot.listener.JoinQuitListener;
 import main.java.de.avankziar.afkrecord.spigot.listener.ServerListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerAsyncChatListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerCommandPreprocessListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerFishListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerInteractEntityListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerItemConsumeListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerLevelChangeListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerMoveListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerToggleSneakListener;
-import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerToggleSprintListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.BaseListener;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerListener;
 import main.java.de.avankziar.afkrecord.spigot.metrics.Metrics;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginSettings;
-import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
 import main.java.de.avankziar.afkrecord.spigot.papi.Expansion;
 import main.java.de.avankziar.afkrecord.spigot.permission.BypassPermission;
 import main.java.de.avankziar.afkrecord.spigot.permission.KeyHandler;
@@ -72,7 +64,6 @@ public class AfkRecord extends JavaPlugin
 {
 	public static Logger log;
 	public static String pluginName = "AfkRecord";
-	public static boolean isPapiRegistered = false;
 	private YamlHandler yamlHandler;
 	private YamlManager yamlManager;
 	private MysqlSetup mysqlSetup;
@@ -81,6 +72,9 @@ public class AfkRecord extends JavaPlugin
 	private Utility utility;
 	private CommandHelper commandHelper;
 	private static AfkRecord plugin;
+	
+	private PlayerTimesHandler pth;
+	
 	private static Permission perms = null;
 	private static PlayerTimesAPI ptapi;
 	
@@ -95,6 +89,8 @@ public class AfkRecord extends JavaPlugin
 	
 	public static String infoCommandPath = "CmdAfkRecord";
 	public static String infoCommand = "/";
+	
+	public static String afkcmd = "";
 	
 	public void onEnable()
 	{
@@ -127,9 +123,10 @@ public class AfkRecord extends JavaPlugin
 		PluginSettings.initSettings(plugin);
 		setupCommandTree();
 		ListenerSetup();
+		pth = new PlayerTimesHandler(plugin);
 		setupPermissions();
-		//setupPlayerTimes();
-		isPapiRegistered = setupPlaceholderAPI();
+		setupPlayerTimes();
+		setupPlaceholderAPI();
 		setupBstats();
 	}
 	
@@ -142,7 +139,6 @@ public class AfkRecord extends JavaPlugin
 			if (mysqlSetup.getConnection() != null) 
 			{
 				backgroundtask.onShutDownDataSave();
-				mysqlSetup.closeConnection();
 			}
 		}
 		
@@ -189,57 +185,81 @@ public class AfkRecord extends JavaPlugin
 		return utility;
 	}
 	
+	public PlayerTimesHandler getPlayerTimes()
+	{
+		return pth;
+	}
+	
 	private void ListenerSetup()
 	{
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new JoinQuitListener(plugin), plugin);
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "afkrecord:afkrecordin");
 		plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "afkr:afkrecordout", new ServerListener(plugin));
-		if(yamlHandler.getConfig().getBoolean("EventListener.AsyncChat", false))
+		int i = 0;
+		int j = 0;
+		PlayerListener pl = new PlayerListener();
+		for(BaseListener.EventType et : new ArrayList<BaseListener.EventType>(EnumSet.allOf(BaseListener.EventType.class)))
 		{
-			pm.registerEvents(new PlayerAsyncChatListener(plugin), plugin);
-			log.info("AsyncChatListener is active");
+			j++;
+			if(BaseListener.isEventActive(et))
+			{
+				i++;
+				switch(et)
+				{
+				default:
+					break;
+				case AsyncPlayerChat:
+					pm.registerEvents(pl. new AsyncChatListener(plugin, et), plugin); break;
+				case PlayerArmorStandManipulate:
+					pm.registerEvents(pl. new PlayerArmorStandManipulateListener(plugin, et), plugin); break;
+				case PlayerBedEnter:
+					pm.registerEvents(pl. new PlayerBedEnterListener(plugin, et), plugin); break;
+				case PlayerBucketEmpty:
+					pm.registerEvents(pl. new PlayerBucketEmptyListener(plugin, et), plugin); break;
+				case PlayerBucketFill:
+					pm.registerEvents(pl. new PlayerBucketFillListener(plugin, et), plugin); break;
+				case PlayerCommandPreprocess:
+					pm.registerEvents(pl. new PlayerCommandPreprocessListener(plugin, et, afkcmd), plugin); break;
+				case PlayerDropItem:
+					pm.registerEvents(pl. new PlayerDropItemListener(plugin, et), plugin); break;
+				case PlayerEditBook:
+					pm.registerEvents(pl. new PlayerEditBookListener(plugin, et), plugin); break;
+				case PlayerEggThrow:
+					pm.registerEvents(pl. new PlayerEggThrowListener(plugin, et), plugin); break;
+				case PlayerExpChange:
+					pm.registerEvents(pl. new PlayerExpChangeListener(plugin, et), plugin); break;
+				case PlayerFish:
+					pm.registerEvents(pl. new PlayerFishListener(plugin, et), plugin); break;
+				case PlayerGameModeChange:
+					pm.registerEvents(pl. new PlayerGameModeChangeListener(plugin, et), plugin); break;
+				case PlayerHarvestBlock:
+					pm.registerEvents(pl. new PlayerHarvestBlockListener(plugin, et), plugin); break;
+				case PlayerInteract:
+					pm.registerEvents(pl. new PlayerInteractListener(plugin, et), plugin); break;
+				case PlayerItemBreak:
+					pm.registerEvents(pl. new PlayerItemBreakListener(plugin, et), plugin); break;
+				case PlayerItemConsume:
+					pm.registerEvents(pl. new PlayerItemConsumeListener(plugin, et), plugin); break;
+				case PlayerItemDamage:
+					pm.registerEvents(pl. new PlayerItemDamageListener(plugin, et), plugin); break;
+				case PlayerLevelChange:
+					pm.registerEvents(pl. new PlayerLevelChangeListener(plugin, et), plugin); break;
+				case PlayerMove:
+					pm.registerEvents(pl. new PlayerMoveListener(plugin, et), plugin); break;
+				case PlayerToggleFlight:
+					pm.registerEvents(pl. new PlayerToggleFlightListener(plugin, et), plugin); break;
+				case PlayerToggleSneak:
+					pm.registerEvents(pl. new PlayerToggleSneakListener(plugin, et), plugin); break;
+				case PlayerToggleSprint:
+					pm.registerEvents(pl. new PlayerToggleSprintListener(plugin, et), plugin); break;
+				case PlayerUnleashEntity:
+					pm.registerEvents(pl. new PlayerUnleashEntityListener(plugin, et), plugin); break;
+				}
+				
+			}
 		}
-		if(yamlHandler.getConfig().getBoolean("EventListener.CommandPreprocess", false))
-		{
-			pm.registerEvents(new PlayerCommandPreprocessListener(plugin), plugin);
-			log.info("CommandPreprocessListener is active");
-		}
-		if(yamlHandler.getConfig().getBoolean("EventListener.Fish", false))
-		{
-			pm.registerEvents(new PlayerFishListener(plugin), plugin);
-			log.info("FishListener is active");
-		}
-		if(yamlHandler.getConfig().getBoolean("EventListener.InteractEntity", false))
-		{
-			pm.registerEvents(new PlayerInteractEntityListener(plugin), plugin);
-			log.info("InteractEntityListener is active");
-		}
-		if(yamlHandler.getConfig().getBoolean("EventListener.ItemConsume", false))
-		{
-			pm.registerEvents(new PlayerItemConsumeListener(plugin), plugin);
-			log.info("ItemConsumeListener is active");
-		}
-		if(yamlHandler.getConfig().getBoolean("EventListener.LevelChange", false))
-		{
-			pm.registerEvents(new PlayerLevelChangeListener(plugin), plugin);
-			log.info("LevelChangeListener is active");
-		}
-		if(yamlHandler.getConfig().getBoolean("EventListener.Move", false))
-		{
-			pm.registerEvents(new PlayerMoveListener(plugin), plugin);
-			log.info("MoveListener is active");
-		}
-		if(yamlHandler.getConfig().getBoolean("EventListener.ToggleSneak", false))
-		{
-			pm.registerEvents(new PlayerToggleSneakListener(plugin), plugin);
-			log.info("ToggleSneakListener is active");
-		}
-		if(yamlHandler.getConfig().getBoolean("EventListener.ToggleSprint", false))
-		{
-			pm.registerEvents(new PlayerToggleSprintListener(plugin), plugin);
-			log.info("ToggleSprintListener is active");
-		}
+		log.info("Listen to "+i+" from "+j+" Events.");
 	}
 	
 	private void setupCommandTree()
@@ -290,7 +310,7 @@ public class AfkRecord extends JavaPlugin
 		getCommand(afkr.getName()).setTabCompleter(new TABCompletion(plugin));
 		
 		CommandConstructor afk = new CommandConstructor(baseCommandIIName, false);
-		
+		afkcmd = afk.getCommandString();
 		registerCommand(afk.getPath(), afk.getName());
 		getCommand(afk.getName()).setExecutor(new AfkCommandExecutor(plugin, afk));
 		getCommand(afk.getName()).setTabCompleter(new TABCompletion(plugin));
@@ -490,7 +510,7 @@ public class AfkRecord extends JavaPlugin
 		{
 			ptapi = new PlayerTimesAPI(this);
             plugin.getServer().getServicesManager().register(
-            		main.java.me.avankziar.ifh.spigot.interfaces.PlayerTimes.class,
+            		main.java.me.avankziar.ifh.general.interfaces.PlayerTimes.class,
             		ptapi,
             		this,
                     ServicePriority.Normal);
@@ -504,121 +524,13 @@ public class AfkRecord extends JavaPlugin
 		return perms;
 	}
 	
-	private boolean setupPlaceholderAPI()
+	private void setupPlaceholderAPI()
 	{
 		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
 		{
             new Expansion(plugin).register();
-            return true;
+            return;
 		}
-		return false;
-	}
-	
-	public boolean isAfk(Player player)
-	{
-		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLUGINUSER,
-				"`player_uuid` = ?", player.getUniqueId().toString());
-		if(user != null)
-		{
-			return user.isAFK();
-		}
-		return false;
-	}
-	
-	public long lastActivity(Player player)
-	{
-		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLUGINUSER,
-				"`player_uuid` = ?", player.getUniqueId().toString());
-		if(user != null)
-		{
-			return user.getLastActivity();
-		}
-		return 0;
-	}
-	
-	public void softSave(Player player)
-	{
-		if(!player.isOnline())
-		{
-			return;
-		}
-		plugin.getUtility().debug(player, "AfkR Main Class");
-		plugin.getUtility().save(player, false, false, false, false);
-	}
-	
-	public boolean existOfflinePlayer(OfflinePlayer player)
-	{
-		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLUGINUSER,
-				"`player_uuid` = ? AND `isonline` = ?", player.getUniqueId().toString(), false))
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean existOnlinePlayer(Player player)
-	{
-		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLUGINUSER,
-				"`player_uuid` = ? AND `isonline` = ?", player.getUniqueId().toString(), true))
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	public PluginUser getOfflineUser(OfflinePlayer player)
-	{
-		if(existOfflinePlayer(player))
-		{
-			PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLUGINUSER,
-					"`player_uuid` = ? AND `isonline` = ?", player.getUniqueId().toString(), false);
-			return user;
-		}
-		return null;
-	}
-	
-	public PluginUser getOnlineUser(Player player)
-	{
-		if(!player.isOnline())
-		{
-			return null;
-		}
-		if(existOnlinePlayer(player))
-		{
-			PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLUGINUSER,
-					"`player_uuid` = ? AND `online` = ?", player.getUniqueId().toString(), true);
-			return user;
-		}
-		return null;
-	}
-	
-	public long getTimes(Type type, OfflinePlayer player)
-	{
-		PluginUser user = null;
-		if(!existOfflinePlayer(player))
-		{
-			return 0;
-		}
-		user = (PluginUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLUGINUSER,
-				"`player_uuid` = ?", player.getUniqueId().toString());
-		switch(type)
-		{
-		case ALL:
-			return user.getAllTime();
-		case ONLINE:
-			return user.getActivityTime();
-		case AFK:
-			return user.getAfkTime();
-		case LASTACTIVITY:
-			return user.getLastActivity();
-		case LASTTIMECHECK:
-			return user.getLastTimeCheck();
-		}
-		return 0;
-	}
-	
-	public enum Type
-	{
-		ONLINE, AFK, ALL, LASTACTIVITY, LASTTIMECHECK;
+		return;
 	}
 }

@@ -21,12 +21,6 @@ public class TimeHandler
 	private static long MM = 1000*60*60*24*30;
 	private final static long yyyy = 1000*60*60*24*365;
 	
-	public static String getDateTime(long l)
-	{
-		return LocalDateTime.ofInstant(Instant.ofEpochMilli(l), ZoneId.systemDefault())
-				.format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"));
-	}
-	
 	public static long getDateTime(String l)
 	{
 		return LocalDateTime.parse(l, DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))

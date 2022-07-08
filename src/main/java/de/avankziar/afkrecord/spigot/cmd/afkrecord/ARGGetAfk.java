@@ -23,12 +23,6 @@ public class ARGGetAfk extends ArgumentModule
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
-		 String allPlayerUUID = "";
-		 for(Player all : plugin.getServer().getOnlinePlayers())
-		 {
-		   	allPlayerUUID+=all.getUniqueId().toString()+"@";
-		 }
-		 plugin.getCommandHelper().getafk(player,allPlayerUUID);
-		 return;
+		plugin.getCommandHelper().getafk(player);
 	}
 }

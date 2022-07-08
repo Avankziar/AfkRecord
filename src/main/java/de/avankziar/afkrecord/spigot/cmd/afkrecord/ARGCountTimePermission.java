@@ -163,7 +163,7 @@ public class ARGCountTimePermission extends ArgumentModule
 			String a = s.replace("%afktime%", TimeHandler.getRepeatingTime(afk, format))
 					.replace("%alltime%",  TimeHandler.getRepeatingTime(all, format))
 					.replace("%activitytime%",  TimeHandler.getRepeatingTime(active, format))
-					.replace("%lastactivity%",  TimeHandler.getDateTime(lastActivity));
+					.replace("%lastactivity%",  plugin.getPlayerTimes().formatDate(lastActivity));
 			array.add(a);
 		}
 		return array;

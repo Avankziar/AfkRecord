@@ -2,12 +2,14 @@ package main.java.de.avankziar.afkrecord.spigot.database;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import main.java.de.avankziar.afkrecord.spigot.database.Language.ISO639_2B;
+import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.BaseListener;
 
 public class YamlManager
 {
@@ -142,52 +144,38 @@ public class YamlManager
 		configKeys.put("Mysql.Password"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"not_0123456789"}));
-		configKeys.put("Mysql.TableNameI"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"afkrecordPlayerData"}));
-		configKeys.put("Mysql.TableNameII"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"afkrecordDateList"}));
 		
-		configKeys.put("General.SoftSaveInSeconds"
+		configKeys.put("General.RAMSave.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				600}));
-		configKeys.put("General.SaveInSeconds"
+		configKeys.put("General.RAMSave.CooldownInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				60}));
-		configKeys.put("General.AfkCheckerInSeconds"
+		configKeys.put("General.MySQLSave.InSeconds"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				240}));
+		configKeys.put("General.AfkChecker.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				300}));
-		configKeys.put("General.AfkAfterInSeconds"
+		configKeys.put("General.AfkChecker.AfkAfterLastActivityInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				900}));
-		configKeys.put("EventListener.AsyncChat"
+		configKeys.put("General.AfkKicker.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
-		configKeys.put("EventListener.CommandPreprocess"
+				60}));
+		configKeys.put("General.AfkKicker.KickAfterLastActivityInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
-		configKeys.put("EventListener.Fish"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
-		configKeys.put("EventListener.InteractEntity"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
-		configKeys.put("EventListener.ItemConsume"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
-		configKeys.put("EventListener.LevelChange"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
-		configKeys.put("EventListener.Move"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				false}));
-		configKeys.put("EventListener.ToggleSneak"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
-		configKeys.put("EventListener.ToggleSprint"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				true}));
+				600}));
+		//--------Above finish
+		for(BaseListener.EventType et : new ArrayList<BaseListener.EventType>(EnumSet.allOf(BaseListener.EventType.class)))
+		{
+			configKeys.put("EventListener."+et.toString()+".isActive"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					et.isActive()}));
+			configKeys.put("EventListener."+et.toString()+".CooldownInSecond"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					et.getCooldown()}));
+		}
 		configKeys.put("Identifier.Click"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"click"}));
@@ -364,26 +352,35 @@ public class YamlManager
 						"&eKlick mich!",
 						"&eClick me!"}));
 		
-		languageKeys.put("Time.Seconds",
+		languageKeys.put("TimeFormat.Seperator", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&es",
-						"&es"}));
-		languageKeys.put("Time.Minutes",
+						" ",
+						" "}));
+		languageKeys.put("TimeFormat.Year", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&6min &f",
-						"&6min &f"}));
-		languageKeys.put("Time.Hours",
+						"%value% &dJahre&f",
+						"%value% &dYears&f"}));
+		languageKeys.put("TimeFormat.Day", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&ch &f",
-						"&ch &f"}));
-		languageKeys.put("Time.Days",
+						"%value% &4Tage&f",
+						"%value% &4days&f"}));
+		languageKeys.put("TimeFormat.Hour", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&4Tage &f",
-						"&4days &f"}));
-		languageKeys.put("Time.Years",
+						"%value% &ch&f",
+						"%value% &ch&f"}));
+		languageKeys.put("TimeFormat.Minute", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&dJahre &f",
-						"&dyears &f"}));
+						"%value% min&f",
+						"%value% &6min&f"}));
+		languageKeys.put("TimeFormat.Second", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%value% &es&f",
+						"%value% &es&f"}));
+		
+		languageKeys.put("AfkKicker.Kick", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&bDu wurdest wegen &cafk &bnach &f%time% &bgekickt!",
+						"&cYou got kicked for &cafk &bafter &f%time%&b!"}));
 		
 		languageKeys.put("Placement.Top0001",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -467,6 +464,10 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&eNun wird wieder alles normal berechnet. Du bypasst das Afk nun nicht mehr!",
 						"&eNow everything is calculated normally again. You are no longer bypassing the afk!"}));
+		languageKeys.put("CmdAfkRecord.Bypass.YouAredBypass",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&cDu bist in der Afk-Umgehung! Bitte lass die Umgehung fallen um in den /afk zu gehen!",
+						"&cYou are in the afk bypass! Please drop the bypass to go into the /afk!"}));
 		
 		languageKeys.put("CmdAfkRecord.Convert.PleaseConfirm",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

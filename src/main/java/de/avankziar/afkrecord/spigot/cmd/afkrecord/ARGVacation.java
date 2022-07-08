@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.assistance.MatchApi;
-import main.java.de.avankziar.afkrecord.spigot.assistance.TimeHandler;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.ArgumentConstructor;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.ArgumentModule;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler.Type;
@@ -48,7 +47,7 @@ public class ARGVacation extends ArgumentModule
 			} else
 			{
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.YourAreInVacation")
-						.replace("%time%", TimeHandler.getDateTime(user.getVacationTime()))));
+						.replace("%time%", plugin.getPlayerTimes().formatDate(user.getVacationTime()))));
 				return;
 			}
 		} else if(args.length == 2)
@@ -74,7 +73,7 @@ public class ARGVacation extends ArgumentModule
 			{
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.ThePlayerIsInVacation")
 						.replace("%player%", args[1])
-						.replace("%time%", TimeHandler.getDateTime(user.getVacationTime()))));
+						.replace("%time%", plugin.getPlayerTimes().formatDate(user.getVacationTime()))));
 				return;
 			}
 		} else if(args.length == 3)
@@ -125,7 +124,7 @@ public class ARGVacation extends ArgumentModule
 			user.setVacationTime(datetime);
 			plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", player.getUniqueId().toString());
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.SetVacation")
-					.replace("%time%", TimeHandler.getDateTime(datetime))));
+					.replace("%time%", plugin.getPlayerTimes().formatDate(datetime))));
 		}
 	}
 }
