@@ -207,8 +207,6 @@ public class AfkRecord extends JavaPlugin
 				i++;
 				switch(et)
 				{
-				default:
-					break;
 				case AsyncPlayerChat:
 					pm.registerEvents(pl. new AsyncChatListener(plugin, et), plugin); break;
 				case PlayerArmorStandManipulate:
@@ -255,8 +253,9 @@ public class AfkRecord extends JavaPlugin
 					pm.registerEvents(pl. new PlayerToggleSprintListener(plugin, et), plugin); break;
 				case PlayerUnleashEntity:
 					pm.registerEvents(pl. new PlayerUnleashEntityListener(plugin, et), plugin); break;
+				default:
+					break;
 				}
-				
 			}
 		}
 		log.info("Listen to "+i+" from "+j+" Events.");

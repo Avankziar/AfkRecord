@@ -1,17 +1,10 @@
 Future Build
 - Wenn man /afk <Text>, macht, wird der Text im Chat geschrieben, dass man zeigt, dass diese Person afk ist.
 - Der Spieler ist afk, im chat anzeigen, wenn man /msg macht. (Falls NUR /afk eingegeben wurde)
-- Bungee wie Spigot MysqlSetup connection und Reconnection treiber updaten, siehe Scc
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
-- Support PlaceholderApi
-- Support InterfaceHub
-
-Build xx
-- IFH Anbindung aufräumen, keine OfflinePlayer instancen abfragen.
-- Intern alles über eine SubInstance laufen lassen, die wie IFH aufgebaut ist.
 
 Build 10-0-x
- xxx Nicht vergessen, Cmd die AfkStatus anzeigen, müssen auch die RAM anzeigen. xxx
+ xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 - IFH Anbindung aufgeräumt.
 - intern aufgeräumt um struckturiert zur Performance verbesserung
 - Mehre Events können abgefragt werden. Events haben nun einen Aktivierungsboolean und einen Cooldown per Config.

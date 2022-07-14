@@ -160,6 +160,9 @@ public class YamlManager
 		configKeys.put("General.AfkChecker.AfkAfterLastActivityInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				900}));
+		configKeys.put("General.AfkKicker.IsActive"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
 		configKeys.put("General.AfkKicker.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				60}));

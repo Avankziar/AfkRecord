@@ -28,7 +28,7 @@ public class JoinQuitListener implements Listener
 		Player player = event.getPlayer();
 		final UUID uuid = player.getUniqueId();
 		final String playername = player.getName();
-		plugin.getPlayerTimes().join(player.getUniqueId(), player.getName());
+		plugin.getPlayerTimes().join(uuid, playername);
 		if(plugin.getPlayerTimes().saveRAM(uuid, null, true, false, false))
 			updatePlayerName(uuid, playername);
 	}

@@ -15,7 +15,10 @@ public class BackgroundTask
 		runRAMSave();
 		runMySQLSave();
 		runAfkCheckerTask();
-		runAfkKickerTask();
+		if(plugin.getYamlHandler().getConfig().getBoolean("General.AfkKicker.IsActive", false))
+		{
+			runAfkKickerTask();
+		}
 	}
 	
 	public void runRAMSave()
@@ -73,11 +76,11 @@ public class BackgroundTask
 		new BukkitRunnable() 
 		{
 			final long kickAfterLastActivityInSeconds = plugin.getYamlHandler().getConfig()
-					.getInt("General.AfkKick.KickAfterLastActivityInSeconds")*1000L;
+					.getInt("General.AfkKicker.KickAfterLastActivityInSeconds")*1000L;
 			final String msg = plugin.getYamlHandler().getLang().getString("AfkKicker.Kick")
 					.replace("%time%",
 									String.valueOf(plugin.getYamlHandler().getConfig()
-									.getInt("General.AfkKick.KickAfterLastActivityInSeconds")/60
+									.getInt("General.AfkKicker.KickAfterLastActivityInSeconds")/60
 									+ plugin.getYamlHandler().getConfig()
 									.getInt("General.AfkChecker.AfkAfterLastActivityInSeconds")/60)+" min"
 					);

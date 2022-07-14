@@ -52,6 +52,10 @@ public class PlayerTimesHandler
 	public void join(final UUID uuid, final String name)
 	{
 		onlinePlayers.put(uuid, name);
+		if(!hasAccount(uuid))
+		{
+			createAccount(uuid, name);
+		}
 		setOnline(uuid, true);
 	}
 	
@@ -59,6 +63,11 @@ public class PlayerTimesHandler
 	{
 		onlinePlayers.remove(uuid);
 		setOnline(uuid, false);
+	}
+	
+	private String getOnlinePlayerName(UUID uuid)
+	{
+		return onlinePlayers.get(uuid);
 	}
 	
 	private String getPlayerName(UUID uuid)
@@ -219,7 +228,7 @@ public class PlayerTimesHandler
 	{
 		if(!hasAccount(uuid))
 		{
-			String pn = getPlayerName(uuid);
+			String pn = getOnlinePlayerName(uuid);
 			if(pn == null)
 			{
 				return false;
@@ -292,16 +301,18 @@ public class PlayerTimesHandler
 		}
 		if(!activeStatus.get(uuid) //was afk
 				&& lastActivity.get(uuid)+kickAfterLastActivityInSeconds < System.currentTimeMillis())
-			saveRAM(uuid, false, false, true, true); //Save for quit
-		new BukkitRunnable()
 		{
-			@Override
-			public void run()
+			saveRAM(uuid, false, false, true, true); //Save for quit
+			new BukkitRunnable()
 			{
-				Player player = Bukkit.getPlayer(uuid);
-				player.kickPlayer(ChatApi.tl(time));
-			}
-		}.runTask(plugin);
+				@Override
+				public void run()
+				{
+					Player player = Bukkit.getPlayer(uuid);
+					player.kickPlayer(ChatApi.tl(time));
+				}
+			}.runTask(plugin);
+		}
 	}
 	
 	public boolean addActiveTime(UUID uuid, long... time)
@@ -517,6 +528,8 @@ public class PlayerTimesHandler
 	{
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
 				"`player_uuid` = ?", uuid.toString());
+		if(user == null)
+			return false;
 		user.setOnline(online);
 		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
 		return true;
@@ -526,6 +539,8 @@ public class PlayerTimesHandler
 	{
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
 				"`player_uuid` = ?", uuid.toString());
+		if(user == null)
+			return false;
 		user.setVacationTime(time);
 		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
 		return true;
