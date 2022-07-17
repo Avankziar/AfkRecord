@@ -151,10 +151,14 @@ public class PlayerTimesHandler
 			return false;
 		}
 		long nowMinus = System.currentTimeMillis()-(ramSaveCooldown*1000L);
-		if(lastTimeChecked.get(uuid) > nowMinus)
+		if(activeOrAfk == null || activeOrAfk == activeStatus.containsKey(uuid))
 		{
-			return false;
+			if(lastTimeChecked.get(uuid) > nowMinus)
+			{
+				return false;
+			}
 		}
+		
 		long now = System.currentTimeMillis();
 		long dif = now-lastTimeChecked.get(uuid);
 		final long tot = totalTime.containsKey(uuid) ? totalTime.get(uuid) : 0;
@@ -187,6 +191,12 @@ public class PlayerTimesHandler
 				if(callNotAfkEvent(uuid, isAsync))
 				{
 					return false;
+				} else
+				{
+					Player player = Bukkit.getPlayer(uuid);
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")
+							.replace("%time%", 
+									plugin.getPlayerTimes().formatDate(System.currentTimeMillis(), false, false, false, true, true, true))));
 				}
 				final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 				afkTime.put(uuid, dif+afkt);
@@ -207,6 +217,12 @@ public class PlayerTimesHandler
 				if(callAfkEvent(uuid, isAsync))
 				{
 					return false;
+				} else
+				{
+					Player player = Bukkit.getPlayer(uuid);
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
+							.replace("%time%", 
+									plugin.getPlayerTimes().formatDate(System.currentTimeMillis(), false, false, false, true, true, true))));
 				}
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 				activeTime.put(uuid, dif+act);
