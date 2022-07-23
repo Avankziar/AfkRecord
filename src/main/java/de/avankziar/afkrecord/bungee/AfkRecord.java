@@ -32,6 +32,12 @@ public class AfkRecord extends Plugin
 	{
 		plugin = this;
 		log = getLogger();
+		log.info("  █████╗ ███████╗██╗  ██╗██████╗  | API-Version: "+plugin.getDescription().getVersion());
+		log.info(" ██╔══██╗██╔════╝██║ ██╔╝██╔══██╗ | Author: "+plugin.getDescription().getAuthor());
+		log.info(" ███████║█████╗  █████╔╝ ██████╔╝ | Plugin Website: https://www.spigotmc.org/resources/afkrecord.74626/");
+		log.info(" ██╔══██║██╔══╝  ██╔═██╗ ██╔══██╗ | Depend Plugins: "+plugin.getDescription().getDepends().toString());
+		log.info(" ██║  ██║██║     ██║  ██╗██║  ██║ | SoftDepend Plugins: "+plugin.getDescription().getSoftDepends().toString());
+		log.info(" ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝ | Have Fun^^ ");
 		yamlHandler = new YamlHandler(plugin);
 		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
