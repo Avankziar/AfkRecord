@@ -2,12 +2,12 @@ Future Build
 - Wenn man /afk <Text>, macht, wird der Text im Chat geschrieben, dass man zeigt, dass diese Person afk ist.
 - Der Spieler ist afk, im chat anzeigen, wenn man /msg macht. (Falls NUR /afk eingegeben wurde)
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
+- xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
-Build 10-0-x
- xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
+Build 10-0-4
 - IFH Anbindung aufgeräumt.
 - intern aufgeräumt um struckturiert zur Performance verbesserung
-- Mehre Events können abgefragt werden. Events haben nun einen Aktivierungsboolean und einen Cooldown per Config.
+- Mehre Events (insgesamt nun 23) können abgefragt werden. Events haben nun einen Aktivierungsboolean und einen Cooldown per Config.
 - IFH PlayerChangeToAfkEvent & PlayerChangeToNotAfkEvent eingebaut.
 
 Build 9-1-0
