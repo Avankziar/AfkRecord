@@ -39,8 +39,7 @@ public class PlayerListener
 		@EventHandler
 		public void onAsyncChat(AsyncPlayerChatEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("AsyncPlayerChatEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -54,8 +53,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerArmorStandManipulate(PlayerArmorStandManipulateEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerArmorStandManipulateEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -70,8 +68,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerBedEnter(PlayerBedEnterEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerBedEnterEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -85,8 +82,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerBucketEmptyEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -100,8 +96,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerBucketFill(PlayerBucketFillEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerBucketFillEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -118,11 +113,10 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 		{
-			/*if(!event.getMessage().equalsIgnoreCase(afkcmd.strip()))
+			if(!event.getMessage().equalsIgnoreCase(afkcmd.strip()))
 			{
 				doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			}*/
-			AfkRecord.log.info("PlayerCommandPreprocessEvent");
+			}
 		}
 	}
 	
@@ -136,8 +130,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerDropItem(PlayerDropItemEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerDropItemEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -151,8 +144,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerEditBook(PlayerEditBookEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerEditBookEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -166,8 +158,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerEggThrow(PlayerEggThrowEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerEggThrowEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -181,8 +172,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerExpChange(PlayerExpChangeEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerExpChangeEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -196,8 +186,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerFish(PlayerFishEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerFishEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -211,8 +200,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerGameModeChange(PlayerGameModeChangeEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerGameModeChangeEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -226,8 +214,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerHarvestBlockEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -241,8 +228,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerInteract(PlayerInteractEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerInteractEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -256,8 +242,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerItemBreak(PlayerItemBreakEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerItemBreakEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -271,8 +256,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerItemConsume(PlayerItemConsumeEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerItemConsumeEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -286,8 +270,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerItemDamage(PlayerItemDamageEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerItemDamageEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -301,8 +284,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerLevelChange(PlayerLevelChangeEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerLevelChangeEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -316,8 +298,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerMove(PlayerMoveEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerMoveEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -331,8 +312,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerToggleFlight(PlayerToggleFlightEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerToggleFlightEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -346,8 +326,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerToggleSneak(PlayerToggleSneakEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerToggleSneakEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -361,8 +340,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerToggleSprintEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 	
@@ -376,8 +354,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerUnleashEntity(PlayerUnleashEntityEvent event)
 		{
-			//doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
-			AfkRecord.log.info("PlayerUnleashEntityEvent");
+			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
 		}
 	}
 }

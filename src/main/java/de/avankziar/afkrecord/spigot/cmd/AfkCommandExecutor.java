@@ -43,7 +43,6 @@ public class AfkCommandExecutor implements CommandExecutor
 					plugin.getPlayerTimes().saveRAM(uuid, !plugin.getPlayerTimes().isActive(uuid), false, false, true);
 				}
 			}.runTaskAsynchronously(plugin);
-			
 		}
 		return true;
 	}
