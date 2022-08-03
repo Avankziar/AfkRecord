@@ -52,6 +52,9 @@ public class PlayerTimesHandler
 	public void join(final UUID uuid, final String name)
 	{
 		onlinePlayers.put(uuid, name);
+		lastTimeChecked.put(uuid, System.currentTimeMillis());
+		lastActivity.put(uuid, System.currentTimeMillis());
+		activeStatus.put(uuid, true);
 		if(!hasAccount(uuid))
 		{
 			createAccount(uuid, name);
@@ -146,18 +149,18 @@ public class PlayerTimesHandler
 			afkTime.put(uuid, 0L);
 		}
 		if(!lastTimeChecked.containsKey(uuid)
-				|| !activeStatus.containsKey(uuid))
+				&& !activeStatus.containsKey(uuid))
 		{
 			return false;
 		}
-		long nowMinus = System.currentTimeMillis()-(ramSaveCooldown*1000L);
+		/*long nowMinus = System.currentTimeMillis()-(ramSaveCooldown*1000L);
 		if(activeOrAfk == null || activeOrAfk == activeStatus.containsKey(uuid))
 		{
 			if(lastTimeChecked.get(uuid) > nowMinus)
 			{
 				return false;
 			}
-		}
+		}*/
 		
 		long now = System.currentTimeMillis();
 		long dif = now-lastTimeChecked.get(uuid);
@@ -255,11 +258,11 @@ public class PlayerTimesHandler
 		}
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER, "`player_uuid` = ?", uuid.toString());
 		if(totalTime > 0)
-			user.setTotalTime(user.getActiveTime()+totalTime);
+			user.setTotalTime(user.getTotalTime()+totalTime);
 		if(activeTime > 0)
 			user.setActiveTime(user.getActiveTime()+activeTime);
 		if(afkTime > 0)
-			user.setAfkTime(user.getActiveTime()+afkTime);
+			user.setAfkTime(user.getAfkTime()+afkTime);
 		if(lastTimeChecked > 0)
 			user.setLastTimeCheck(lastTimeChecked);
 		if(lastActivity > 0)
@@ -545,7 +548,9 @@ public class PlayerTimesHandler
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
 				"`player_uuid` = ?", uuid.toString());
 		if(user == null)
+		{
 			return false;
+		}
 		user.setOnline(online);
 		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
 		return true;

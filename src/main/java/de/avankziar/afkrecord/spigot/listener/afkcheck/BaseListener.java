@@ -76,7 +76,7 @@ public class BaseListener implements Listener
 	}
 	
 	public AfkRecord plugin;
-	private long eventCooldown;
+	private long eventCooldown = 0;
 	private static HashMap<UUID, Long> cooldown = new HashMap<>();
 	
 	public BaseListener(AfkRecord plugin, BaseListener.EventType eType)
@@ -94,7 +94,9 @@ public class BaseListener implements Listener
 	public void doCheckAndSave(UUID uuid, boolean isAsync)
 	{
 		if(inCooldown(uuid))
+		{
 			return;
+		}
 		plugin.getPlayerTimes().saveRAM(uuid, true, false, false, isAsync);
 		addCooldown(uuid);
 	}
@@ -102,9 +104,13 @@ public class BaseListener implements Listener
 	public boolean inCooldown(UUID uuid)
 	{
 		if(!cooldown.containsKey(uuid))
+		{
 			return false;
+		}
 		if(cooldown.get(uuid) > System.currentTimeMillis())
+		{
 			return true;
+		}
 		return false;
 	}
 	
