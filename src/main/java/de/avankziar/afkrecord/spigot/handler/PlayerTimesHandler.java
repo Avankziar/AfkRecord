@@ -199,7 +199,7 @@ public class PlayerTimesHandler
 				final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 				afkTime.put(uuid, dif+afkt);
 				activeStatus.put(uuid, true);
-				setActivity(uuid, now, now, true);
+				setActivity(uuid, now, now, false);
 			}
 			lastActivity.put(uuid, now);
 		} else
