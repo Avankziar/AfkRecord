@@ -370,7 +370,7 @@ public class YamlManager
 						"%value% &ch&f"}));
 		languageKeys.put("TimeFormat.Minute", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"%value% min&f",
+						"%value% &6min&f",
 						"%value% &6min&f"}));
 		languageKeys.put("TimeFormat.Second", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

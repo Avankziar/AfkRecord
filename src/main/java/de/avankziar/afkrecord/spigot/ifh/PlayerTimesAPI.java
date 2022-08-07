@@ -219,7 +219,7 @@ public class PlayerTimesAPI implements PlayerTimes
 	@Override
 	public String formatTimePeriod(long time)
 	{
-		return plugin.getPlayerTimes().formatTimePeriod(time);
+		return plugin.getPlayerTimes().formatTimePeriod(time, true, true);
 	}
 
 	@Override

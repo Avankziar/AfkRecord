@@ -140,6 +140,8 @@ public class PlayerTimesHandler
 			totalTime.put(uuid, 0L);
 			activeTime.put(uuid, 0L);
 			afkTime.put(uuid, 0L);
+			lastTimeChecked.put(uuid, now);
+			lastActivity.put(uuid, now);
 		}
 		if(!lastTimeChecked.containsKey(uuid)
 				&& !activeStatus.containsKey(uuid))
@@ -197,6 +199,7 @@ public class PlayerTimesHandler
 				final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 				afkTime.put(uuid, dif+afkt);
 				activeStatus.put(uuid, true);
+				setActivity(uuid, now, now, true);
 			}
 			lastActivity.put(uuid, now);
 		} else
@@ -223,6 +226,7 @@ public class PlayerTimesHandler
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 				activeTime.put(uuid, dif+act);
 				activeStatus.put(uuid, false);
+				setActivity(uuid, now, now, true);
 			} else
 			{
 				// was and is afk
@@ -233,6 +237,20 @@ public class PlayerTimesHandler
 		}
 		lastTimeChecked.put(uuid, now);
 		return true;
+	}
+	
+	private void setActivity(UUID uuid, long lastTimeChecked, long lastActivity, boolean isAfk)
+	{
+		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
+				"`player_uuid` = ?", uuid.toString());
+		if(user == null)
+		{
+			return;
+		}
+		user.setLastActivity(lastActivity);
+		user.setLastTimeCheck(lastTimeChecked);
+		user.setAFK(isAfk);
+		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
 	}
 	
 	public boolean addTime(UUID uuid, long totalTime, long activeTime, long afkTime,
@@ -574,7 +592,7 @@ public class PlayerTimesHandler
 		}
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
 				"`player_uuid` = ?", uuid.toString());
-		return (user != null) ? !user.isAFK() : true;
+		return (user != null) ? !user.isAFK() : false;
 	}
 	
 	public boolean isRAMActive(UUID uuid)
@@ -675,18 +693,24 @@ public class PlayerTimesHandler
 		return t;
 	}
 	
-	public String formatTimePeriod(long time)
+	public String formatTimePeriod(long time, boolean ye, boolean da)
 	{
 		long ll = time;
 		String year = "";
-		long y = Math.floorDiv(ll, YEAR);
-		year += String.valueOf(y);
-		ll = ll - y*YEAR;
+		if(ye)
+		{
+			long y = Math.floorDiv(ll, YEAR);
+			year += String.valueOf(y);
+			ll = ll - y*YEAR;
+		}
 		
 		String day = "";
-		long d = Math.floorDiv(ll, DAY);
-		day += String.valueOf(d);
-		ll = ll - d*DAY;
+		if(da)
+		{
+			long d = Math.floorDiv(ll, DAY);
+			day += String.valueOf(d);
+			ll = ll - d*DAY;
+		}
 		
 		String hour = "";
 		long H = Math.floorDiv(ll, HOUR);
@@ -713,15 +737,34 @@ public class PlayerTimesHandler
 			sec += String.valueOf(0);
 		}
 		sec += String.valueOf(s);
-		return plugin.getYamlHandler().getLang().getString("TimeFormat.Year").replace("%value%", year)
-				+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
-				+ plugin.getYamlHandler().getLang().getString("TimeFormat.Day").replace("%value%", day)
-				+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
-				+ plugin.getYamlHandler().getLang().getString("TimeFormat.Hour").replace("%value%", hour)
-				+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
-				+ plugin.getYamlHandler().getLang().getString("TimeFormat.Minute").replace("%value%", min)
-				+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
-				+ plugin.getYamlHandler().getLang().getString("TimeFormat.Second").replace("%value%", sec);
+		if(ye && da)
+		{
+			return plugin.getYamlHandler().getLang().getString("TimeFormat.Year").replace("%value%", year)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Day").replace("%value%", day)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Hour").replace("%value%", hour)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Minute").replace("%value%", min)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Second").replace("%value%", sec);
+		} else if(da)
+		{
+			return plugin.getYamlHandler().getLang().getString("TimeFormat.Day").replace("%value%", day)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Hour").replace("%value%", hour)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Minute").replace("%value%", min)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Second").replace("%value%", sec);
+		} else
+		{
+			return plugin.getYamlHandler().getLang().getString("TimeFormat.Hour").replace("%value%", hour)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Minute").replace("%value%", min)
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Seperator")
+					+ plugin.getYamlHandler().getLang().getString("TimeFormat.Second").replace("%value%", sec);
+		}
 	}
 	
 	public String formatTimePeriod(long time, boolean useYears, boolean useDays, boolean useHours, boolean useMinutes, boolean useSeconds)

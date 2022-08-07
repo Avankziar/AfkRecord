@@ -207,7 +207,7 @@ public class CommandHelper
 						plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Top.PlaceAndTime")
 						.replace("%place%", plugin.getUtility().getPlaceColor(place))
 						.replace("%player%", user.getPlayerName())
-						.replace("%time%", plugin.getPlayerTimes().formatTimePeriod(time))));
+						.replace("%time%", plugin.getPlayerTimes().formatTimePeriod(time, true, true))));
 			}
 			a++;
 			start++;
@@ -264,9 +264,9 @@ public class CommandHelper
 			player.spigot().sendMessage(ChatApi.tctl(
 					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.GetTime.Line")
 					.replaceAll("%date%", TimeHandler.getDate(tr.getTimeStamp()))
-					.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(tr.getTotalTime()))
-					.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(tr.getActiveTime()))
-					.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(tr.getAfkTime()))));
+					.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(tr.getTotalTime(), true, true))
+					.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(tr.getActiveTime(), true, true))
+					.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(tr.getAfkTime(), true, true))));
 			start++;
 		}
 		int i = page+1;
@@ -314,19 +314,19 @@ public class CommandHelper
 				.replaceAll("%days%", String.valueOf(days))));
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.ActiveTime")
-				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act))
-				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt))
-				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt))));
+				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act, true, true))
+				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt, true, true))
+				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt, true, true))));
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.AfkTime")
-				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act))
-				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt))
-				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt))));
+				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act, true, true))
+				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt, true, true))
+				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt, true, true))));
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("CmdAfkRecord.CountTime.Alltime")
-				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act))
-				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt))
-				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt))));
+				.replaceAll("%ontime%", plugin.getPlayerTimes().formatTimePeriod(act, true, true))
+				.replaceAll("%afktime%", plugin.getPlayerTimes().formatTimePeriod(afkt, true, true))
+				.replaceAll("%alltime%", plugin.getPlayerTimes().formatTimePeriod(allt, true, true))));
 		if(player.hasPermission(Utility.PERMCOUNTTIMELASTACTIVITY))
 		{
 			PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
@@ -357,7 +357,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.Under15Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t, false, false)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -366,7 +366,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.15Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t, false, false)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -375,7 +375,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.30Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t, false, false)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -384,7 +384,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.45Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t, false, false)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND, 
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -393,7 +393,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.60Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t, false, false)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -402,7 +402,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.90Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t, false, false)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND,
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
@@ -411,7 +411,7 @@ public class CommandHelper
 				String pc = plugin.getYamlHandler().getLang()
 						.getString("CmdAfkRecord.GetAfk.PlayerColor.120Min");
 				playerlist = ChatApi.tctl(pc+user.getPlayerName()
-						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t)+" ");
+						+"&f|"+plugin.getPlayerTimes().formatTimePeriod(t, false, false)+" ");
 				playerlist.setClickEvent(new ClickEvent(
 						ClickEvent.Action.RUN_COMMAND, 
 						PluginSettings.settings.getCommands(KeyHandler.TIME)+user.getPlayerName()));
