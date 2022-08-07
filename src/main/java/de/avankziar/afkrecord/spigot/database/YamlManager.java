@@ -148,9 +148,6 @@ public class YamlManager
 		configKeys.put("General.RAMSave.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				600}));
-		configKeys.put("General.RAMSave.CooldownInSeconds"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				60}));
 		configKeys.put("General.MySQLSave.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				240}));

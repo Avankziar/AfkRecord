@@ -29,6 +29,7 @@ public class EventAfkCheck implements Listener
         try {
 			out.writeUTF("afk-softsave");
 			out.writeUTF(player.getUniqueId().toString());
+			out.writeBoolean(true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

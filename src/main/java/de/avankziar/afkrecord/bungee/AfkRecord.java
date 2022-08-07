@@ -1,8 +1,5 @@
 package main.java.de.avankziar.afkrecord.bungee;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,10 +9,7 @@ import main.java.de.avankziar.afkrecord.bungee.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlHandler;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlManager;
 import main.java.de.avankziar.afkrecord.bungee.listener.EventAfkCheck;
-import main.java.de.avankziar.afkrecord.bungee.object.PluginUser;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class AfkRecord extends Plugin
@@ -62,7 +56,6 @@ public class AfkRecord extends Plugin
 			if (mysqlSetup.getConnection() != null) 
 			{
 				//backgroundtask.onShutDownDataSave();
-				mysqlSetup.closeConnection();
 			}
 		}
 		
@@ -119,110 +112,5 @@ public class AfkRecord extends Plugin
 		ProxyServer.getInstance().getPluginManager().unregisterListeners(plugin);
 		ProxyServer.getInstance().getScheduler().cancel(plugin);
 		plugin.getExecutorService().shutdownNow();
-	}
-	
-	public boolean isAfk(ProxiedPlayer player)
-	{
-		PluginUser user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin, "`player_uuid` = ?", player.getUniqueId().toString());
-		return (user != null) ? user.isAFK() : false;
-	}
-	
-	public long lastActivity(ProxiedPlayer player)
-	{
-		PluginUser user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin, "`player_uuid` = ?", player.getUniqueId().toString());
-		return (user != null) ? user.getLastActivity() : 0;
-	}
-	
-	public void softSave(ProxiedPlayer player)
-	{
-		ServerInfo server = player.getServer().getInfo();
-		String µ = "µ";
-		String message = "softsave"+µ+player.getUniqueId().toString();
-		ByteArrayOutputStream streamout = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(streamout);
-        String msg = message;
-        try {
-			out.writeUTF(msg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	    server.sendData("afkrecord:afkrecordout", streamout.toByteArray());
-	    return;
-	}
-	
-	public boolean existOfflinePlayer(String playername)
-	{
-		if(plugin.getMysqlHandler().existI(plugin,
-				"`player_name` = ? AND `isonline` = ?", playername, false))
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean existOnlinePlayer(ProxiedPlayer player)
-	{
-		if(plugin.getMysqlHandler().existI(plugin,
-				"`player_uuid` = ? AND `isonline` = ?", player.getUniqueId().toString(), true))
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	public PluginUser getOfflineUser(String playername)
-	{
-		if(existOfflinePlayer(playername))
-		{
-			PluginUser user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin,
-					"`player_uuid` = ? AND `isonline` = ?", playername, false);
-			return user;
-		}
-		return null;
-	}
-	
-	public PluginUser getOnlineUser(ProxiedPlayer player)
-	{
-		if(player == null)
-		{
-			return null;
-		}
-		if(existOnlinePlayer(player))
-		{
-			PluginUser user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin,
-					"`player_uuid` = ? AND `online` = ?", player.getUniqueId().toString(), true);
-			return user;
-		}
-		return null;
-	}
-	
-	public long getTimes(Type type, String playername)
-	{
-		PluginUser user = null;
-		if(!existOfflinePlayer(playername))
-		{
-			return 0;
-		}
-		user = (PluginUser) plugin.getMysqlHandler().getDataI(plugin,
-				"`player_uuid` = ?", playername);
-		switch(type)
-		{
-		case ALL:
-			return user.getAllTime();
-		case ONLINE:
-			return user.getActivityTime();
-		case AFK:
-			return user.getAfkTime();
-		case LASTACTIVITY:
-			return user.getLastActivity();
-		case LASTTIMECHECK:
-			return user.getLastTimeCheck();
-		}
-		return 0;
-	}
-	
-	public enum Type
-	{
-		ONLINE, AFK, ALL, LASTACTIVITY, LASTTIMECHECK;
 	}
 }

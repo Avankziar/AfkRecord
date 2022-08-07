@@ -1,211 +1,331 @@
 package main.java.de.avankziar.afkrecord.bungee.database;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import main.java.de.avankziar.afkrecord.bungee.AfkRecord;
 import main.java.de.avankziar.afkrecord.bungee.object.PluginUser;
+import main.java.de.avankziar.afkrecord.bungee.object.TimeRecord;
+import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandable;
 
 public class MysqlHandler 
 {
 	public enum Type
 	{
-		PLUGINUSER, TIMERECORD;
+		PLUGINUSER("afkrecordPlayerData", new PluginUser()),
+		TIMERECORD("afkrecordDateList", new TimeRecord())
+		;
+		
+		private Type(String value, Object object)
+		{
+			this.value = value;
+			this.object = object;
+		}
+		
+		private final String value;
+		private final Object object;
+
+		public String getValue()
+		{
+			return value;
+		}
+		
+		public Object getObject()
+		{
+			return object;
+		}
+	}
+	
+	public enum QueryType
+	{
+		INSERT, UPDATE, DELETE, READ;
+	}
+	
+	/*
+	 * Alle Mysql Reihen, welche durch den Betrieb aufkommen.
+	 */
+	public static long startRecordTime = System.currentTimeMillis();
+	public static int inserts = 0;
+	public static int updates = 0;
+	public static int deletes = 0;
+	public static int reads = 0;
+	
+	public static void addRows(QueryType type, int amount)
+	{
+		switch(type)
+		{
+		case DELETE:
+			deletes += amount;
+			break;
+		case INSERT:
+			inserts += amount;
+		case READ:
+			reads += amount;
+			break;
+		case UPDATE:
+			updates += amount;
+			break;
+		}
+	}
+	
+	public static void resetsRows()
+	{
+		inserts = 0;
+		updates = 0;
+		reads = 0;
+		deletes = 0;
 	}
 	
 	private AfkRecord plugin;
-	public String tableNameI;
-	public String tableNameII;
 	
 	public MysqlHandler(AfkRecord plugin) 
 	{
 		this.plugin = plugin;
-		loadMysqlHandler();
 	}
 	
-	public boolean loadMysqlHandler()
+	private PreparedStatement getPreparedStatement(Connection conn, String sql, int count, Object... whereObject) throws SQLException
 	{
-		tableNameI = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameI");
-		if(tableNameI == null)
-		{
-			return false;
-		}
-		tableNameII = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameII");
-		if(tableNameII == null)
-		{
-			return false;
-		}
-		return true;
+		PreparedStatement ps = conn.prepareStatement(sql);
+		int i = count;
+        for(Object o : whereObject)
+        {
+        	ps.setObject(i, o);
+        	i++;
+        }
+        return ps;
 	}
 	
-	public boolean existI(AfkRecord plugin, String whereColumn, Object... object) 
+	public boolean exist(Type type, String whereColumn, Object... whereObject)
 	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
+		//All Object which leaves the try-block, will be closed. So conn and ps is closed after the methode
+		//No finally needed.
+		//So much as possible in async methode use
+		try (Connection conn = plugin.getMysqlSetup().getConnection();)
 		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameI 
-						+ "` WHERE "+whereColumn+" LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : object)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        
-		        result = preparedStatement.executeQuery();
-		        while (result.next()) 
-		        {
-		        	return true;
-		        }
-		    } catch (SQLException e) 
-			{
-				  AfkRecord.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
+			PreparedStatement ps = getPreparedStatement(conn,
+					"SELECT `id` FROM `" + type.getValue()+ "` WHERE "+whereColumn+" LIMIT 1",
+					1,
+					whereObject);
+	        ResultSet rs = ps.executeQuery();
+	        MysqlHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
+	        while (rs.next()) 
+	        {
+	        	return true;
+	        }
+	    } catch (SQLException e) 
+		{
+			  if(type.getObject() instanceof MysqlHandable)
+			  {
+				  MysqlHandable mh = (MysqlHandable) type.getObject();
+				  mh.log(Level.WARNING, "Could not check "+type.getObject().getClass().getName()+" Object if it exist!", e);
+			  }
 		}
 		return false;
 	}
 	
-	public boolean createI(AfkRecord plugin, Object object) 
+	public boolean create(Type type, Object object)
 	{
-		if(!(object instanceof PluginUser))
+		if(object instanceof MysqlHandable)
 		{
-			return false;
-		}
-		PluginUser cu = (PluginUser) object;
-		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) {
-			try 
+			MysqlHandable mh = (MysqlHandable) object;
+			try (Connection conn = plugin.getMysqlSetup().getConnection();)
 			{
-				String sql = "INSERT INTO `" + plugin.getMysqlHandler().tableNameI 
-						+ "`(`player_uuid`, `player_name`, `alltime`, `activitytime`, `afktime`,"
-						+ " `lastactivity`, `lasttimecheck`, `isafk`, `isonline`, `vacationtime`) " 
-						+ "VALUES("
-						+ "?, ?, ?, ?, ?,"
-						+ "?, ?, ?, ?, ?"
-						+ ")";
-				preparedStatement = conn.prepareStatement(sql);
-		        preparedStatement.setString(1, cu.getUUID().toString());
-		        preparedStatement.setString(2, cu.getPlayerName());
-		        preparedStatement.setLong(3, cu.getAllTime());
-		        preparedStatement.setLong(4, cu.getActivityTime());
-		        preparedStatement.setLong(5, cu.getAfkTime());
-		        preparedStatement.setLong(6, cu.getLastActivity());
-		        preparedStatement.setLong(7, cu.getLastTimeCheck());
-		        preparedStatement.setBoolean(8, cu.isAFK());
-		        preparedStatement.setBoolean(9, cu.isOnline());
-		        preparedStatement.setLong(10, cu.getVacationTime());
-		        
-		        preparedStatement.executeUpdate();
-		        return true;
-		    } catch (SQLException e) 
-			{
-				  AfkRecord.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return false;
-	}
-	
-	public boolean updateDataI(AfkRecord plugin, Object object, String whereColumn, Object... whereObject) 
-	{
-		if(!(object instanceof PluginUser))
-		{
-			return false;
-		}
-		if(whereObject == null)
-		{
-			return false;
-		}
-		PluginUser cu = (PluginUser) object;
-		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{
-				String data = "UPDATE `" + plugin.getMysqlHandler().tableNameI
-						+ "` SET `player_uuid` = ?, `player_name` = ?,"
-						+ " `alltime` = ?, `activitytime` = ?, `afktime` = ?,"
-						+ " `lastactivity`= ?, `lasttimecheck` = ?, `isafk`= ?, `isonline` = ?,"
-						+ " `vacationtime` = ?" 
-						+ " WHERE "+whereColumn;
-				preparedStatement = conn.prepareStatement(data);
-				preparedStatement.setString(1, cu.getUUID().toString());
-			    preparedStatement.setString(2, cu.getPlayerName());
-			    preparedStatement.setLong(3, cu.getAllTime());
-			    preparedStatement.setLong(4, cu.getActivityTime());
-			    preparedStatement.setLong(5, cu.getAfkTime());
-			    preparedStatement.setLong(6, cu.getLastActivity());
-			    preparedStatement.setLong(7, cu.getLastTimeCheck());
-		        preparedStatement.setBoolean(8, cu.isAFK());
-		        preparedStatement.setBoolean(9, cu.isOnline());
-		        preparedStatement.setLong(10, cu.getVacationTime());
-		        
-		        int i = 11;
-		        for(Object o : whereObject)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-				
-				preparedStatement.executeUpdate();
+				mh.create(conn, type.getValue());
 				return true;
-			} catch (SQLException e) {
-				AfkRecord.log.warning("Error: " + e.getMessage());
-				e.printStackTrace();
-			} finally {
-				try {
-					if (preparedStatement != null) 
-					{
-						preparedStatement.close();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			} catch (Exception e)
+			{
+				mh.log(Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
 			}
 		}
-        return false;
+		return false;
 	}
 	
-	public Object getDataI(AfkRecord plugin, String whereColumn, Object... whereObject)
+	public boolean updateData(Type type, Object object, String whereColumn, Object... whereObject)
+	{
+		if(object instanceof MysqlHandable)
+		{
+			MysqlHandable mh = (MysqlHandable) object;
+			try (Connection conn = plugin.getMysqlSetup().getConnection();)
+			{
+				mh.update(conn, type.getValue(), whereColumn, whereObject);
+				return true;
+			} catch (Exception e)
+			{
+				mh.log(Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+			}
+		}
+		return false;
+	}
+	
+	public Object getData(Type type, String whereColumn, Object... whereObject)
+	{
+		Object object = type.getObject();
+		if(object instanceof MysqlHandable)
+		{
+			MysqlHandable mh = (MysqlHandable) object;
+			try (Connection conn = plugin.getMysqlSetup().getConnection();)
+			{
+				ArrayList<Object> list = mh.get(conn, type.getValue(), "`id` ASC", " Limit 1", whereColumn, whereObject);
+				if(!list.isEmpty())
+				{
+					return list.get(0);
+				}
+			} catch (Exception e)
+			{
+				mh.log(Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+			}
+		}
+		return null;
+	}
+	
+	public int deleteData(Type type, String whereColumn, Object... whereObject)
+	{
+		try (Connection conn = plugin.getMysqlSetup().getConnection();)
+		{
+			PreparedStatement ps = getPreparedStatement(conn,
+					"DELETE FROM `" + type.getValue() + "` WHERE "+whereColumn,
+					1,
+					whereObject);
+	        int d = ps.executeUpdate();
+			MysqlHandler.addRows(QueryType.DELETE, d);
+			return d;
+	    } catch (SQLException e) 
+		{
+	    	if(type.getObject() instanceof MysqlHandable)
+			  {
+				  MysqlHandable mh = (MysqlHandable) type.getObject();
+				  mh.log(Level.WARNING, "Could not delete "+type.getObject().getClass().getName()+" Object!", e);
+			  }
+		}
+		return 0;
+	}
+	
+	public int lastID(Type type)
+	{
+		try (Connection conn = plugin.getMysqlSetup().getConnection();)
+		{
+			PreparedStatement ps = getPreparedStatement(conn,
+					"SELECT `id` FROM `" + type.getValue() + "` ORDER BY `id` DESC LIMIT 1",
+					1);
+	        ResultSet rs = ps.executeQuery();
+	        MysqlHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
+	        while (rs.next()) 
+	        {
+	        	return rs.getInt("id");
+	        }
+	    } catch (SQLException e) 
+		{
+			  if(type.getObject() instanceof MysqlHandable)
+			  {
+				  MysqlHandable mh = (MysqlHandable) type.getObject();
+				  mh.log(Level.WARNING, "Could not get last id from "+type.getObject().getClass().getName()+" Object table!", e);
+			  }
+		}
+		return 0;
+	}
+	
+	public int getCount(Type type, String whereColumn, Object... whereObject)
+	{
+		try (Connection conn = plugin.getMysqlSetup().getConnection();)
+		{
+			PreparedStatement ps = getPreparedStatement(conn,
+					" SELECT count(*) FROM `" + type.getValue() + "` WHERE "+whereColumn,
+					1,
+					whereObject);
+	        ResultSet rs = ps.executeQuery();
+	        MysqlHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
+	        while (rs.next()) 
+	        {
+	        	return rs.getInt(1);
+	        }
+	    } catch (SQLException e) 
+		{
+			  if(type.getObject() instanceof MysqlHandable)
+			  {
+				  MysqlHandable mh = (MysqlHandable) type.getObject();
+				  mh.log(Level.WARNING, "Could not count "+type.getObject().getClass().getName()+" Object!", e);
+			  }
+		}
+		return 0;
+	}
+	
+	public double getSum(Type type, String whereColumn, Object... whereObject)
+	{
+		try (Connection conn = plugin.getMysqlSetup().getConnection();)
+		{
+			PreparedStatement ps = getPreparedStatement(conn,
+					"SELECT sum("+whereColumn+") FROM `" + type.getValue() + "` WHERE 1",
+					1,
+					whereObject);
+	        ResultSet rs = ps.executeQuery();
+	        MysqlHandler.addRows(QueryType.READ, rs.getMetaData().getColumnCount());
+	        while (rs.next()) 
+	        {
+	        	return rs.getInt(1);
+	        }
+	    } catch (SQLException e) 
+		{
+			  if(type.getObject() instanceof MysqlHandable)
+			  {
+				  MysqlHandable mh = (MysqlHandable) type.getObject();
+				  mh.log(Level.WARNING, "Could not summarized "+type.getObject().getClass().getName()+" Object!", e);
+			  }
+		}
+		return 0;
+	}
+	
+	public ArrayList<Object> getList(Type type, String orderByColumn, int start, int quantity, String whereColumn, Object...whereObject)
+	{
+		Object object = type.getObject();
+		if(object instanceof MysqlHandable)
+		{
+			MysqlHandable mh = (MysqlHandable) object;
+			try (Connection conn = plugin.getMysqlSetup().getConnection();)
+			{
+				ArrayList<Object> list = mh.get(conn, type.getValue(), orderByColumn, " Limit "+start+", "+quantity, whereColumn, whereObject);
+				if(!list.isEmpty())
+				{
+					return list;
+				}
+			} catch (Exception e)
+			{
+				mh.log(Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+			}
+		}
+		return new ArrayList<>();
+	}
+	
+	public ArrayList<Object> getFullList(Type type, String orderByColumn,
+			String whereColumn, Object...whereObject) throws IOException
+	{
+		Object object = type.getObject();
+		if(object instanceof MysqlHandable)
+		{
+			MysqlHandable mh = (MysqlHandable) object;
+			try (Connection conn = plugin.getMysqlSetup().getConnection();)
+			{
+				ArrayList<Object> list = mh.get(conn, type.getValue(), orderByColumn, "", whereColumn, whereObject);
+				if(!list.isEmpty())
+				{
+					return list;
+				}
+			} catch (Exception e)
+			{
+				mh.log(Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+			}
+		}
+		return new ArrayList<>();
+	}
+	
+	//Ab hier Altlasten
+	
+	public long getSumII(AfkRecord plugin, String groupBy, String sumColumn, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -213,9 +333,9 @@ public class MysqlHandler
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI 
-						+ "` WHERE "+whereColumn+" LIMIT 1";
+			{
+				String sql = "SELECT "+groupBy+", SUM("+sumColumn+") as ergebnis FROM `" + Type.TIMERECORD.getValue()
+						+"` WHERE "+whereColumn+" GROUP BY "+groupBy;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -223,21 +343,10 @@ public class MysqlHandler
 		        	preparedStatement.setObject(i, o);
 		        	i++;
 		        }
-		        
 		        result = preparedStatement.executeQuery();
 		        while (result.next()) 
 		        {
-		        	return new PluginUser(
-		        			UUID.fromString(result.getString("player_uuid")),
-		        			result.getString("player_name"),
-		        			result.getLong("lasttimecheck"),
-		        			result.getLong("activitytime"),
-		        			result.getLong("afktime"),
-		        			result.getLong("alltime"),
-		        			result.getLong("lastactivity"),
-		        			result.getBoolean("isafk"),
-		        			result.getBoolean("isonline"),
-		        			result.getLong("vacationtime"));
+		        	return result.getLong("ergebnis");
 		        }
 		    } catch (SQLException e) 
 			{
@@ -260,7 +369,7 @@ public class MysqlHandler
 		    	  }
 		      }
 		}
-		return null;
+		return 0;
 	}
 	
 	public int getTopListPlaceI(AfkRecord plugin, String orderByColumn, String whereColumn, Object... whereObject)
@@ -273,7 +382,7 @@ public class MysqlHandler
 			try 
 			{
 				//whereColumn: for example: `afktime` > xxx
-				String sql = " SELECT count(*) FROM `"+plugin.getMysqlHandler().tableNameI
+				String sql = " SELECT count(*) FROM `" + Type.PLUGINUSER.getValue()
 						+"` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -312,40 +421,7 @@ public class MysqlHandler
 		return 0;
 	}
 	
-	public boolean deleteDataI(AfkRecord plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		try 
-		{
-			String sql = "DELETE FROM `" + plugin.getMysqlHandler().tableNameI + "` WHERE "+whereColumn;
-			preparedStatement = conn.prepareStatement(sql);
-			int i = 1;
-	        for(Object o : whereObject)
-	        {
-	        	preparedStatement.setObject(i, o);
-	        	i++;
-	        }
-			preparedStatement.execute();
-			return true;
-		} catch (Exception e) 
-		{
-			e.printStackTrace();
-		} finally 
-		{
-			try {
-				if (preparedStatement != null) 
-				{
-					preparedStatement.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
-	
-	public int lastIDI(AfkRecord plugin)
+	public int getCountII(AfkRecord plugin, String orderByColumn, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -353,136 +429,22 @@ public class MysqlHandler
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameI + "` ORDER BY `id` DESC LIMIT 1";
+			{
+				String sql = " SELECT count(*) FROM `" + Type.TIMERECORD.getValue()
+						+"` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
 		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
+		        }
 		        
 		        result = preparedStatement.executeQuery();
-		        while(result.next())
-		        {
-		        	return result.getInt("id");
-		        }
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
-	public int countWhereIDI(AfkRecord plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameI
-						+ "` WHERE "+whereColumn
-						+ " ORDER BY `id` DESC";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : whereObject)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        result = preparedStatement.executeQuery();
-		        int count = 0;
-		        while(result.next())
-		        {
-		        	count++;
-		        }
-		        return count;
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
-	public ArrayList<PluginUser> getListI(AfkRecord plugin, String orderByColumn, boolean desc,
-			int start, int end, String whereColumn, Object...whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "";
-				if(desc)
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
-				} else
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC LIMIT "+start+", "+end;
-				}
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : whereObject)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        result = preparedStatement.executeQuery();
-		        ArrayList<PluginUser> list = new ArrayList<PluginUser>();
 		        while (result.next()) 
 		        {
-		        	PluginUser ep = new PluginUser(
-		        			UUID.fromString(result.getString("player_uuid")),
-		        			result.getString("player_name"),
-		        			result.getLong("lasttimecheck"),
-		        			result.getLong("activitytime"),
-		        			result.getLong("afktime"),
-		        			result.getLong("alltime"),
-		        			result.getLong("lastactivity"),
-		        			result.getBoolean("isafk"),
-		        			result.getBoolean("isonline"),
-		        			result.getLong("vacationtime"));
-		        	list.add(ep);
+		        	return result.getInt(1);
 		        }
-		        return list;
 		    } catch (SQLException e) 
 			{
 				  AfkRecord.log.warning("Error: " + e.getMessage());
@@ -504,10 +466,10 @@ public class MysqlHandler
 		    	  }
 		      }
 		}
-		return null;
+		return 0;
 	}
 	
-	public ArrayList<PluginUser> getTopI(AfkRecord plugin, String orderByColumn, boolean desc, int start, int end)
+	public ArrayList<PluginUser> getTop(AfkRecord plugin, String orderByColumn, boolean desc, int start, int end)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -519,85 +481,16 @@ public class MysqlHandler
 				String sql = "";
 				if(desc)
 				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI 
+					sql = "SELECT * FROM `" + Type.PLUGINUSER.getValue()
 							+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 				} else
 				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI 
+					sql = "SELECT * FROM `" + Type.PLUGINUSER.getValue()
 							+ "` ORDER BY "+orderByColumn+" ASC LIMIT "+start+", "+end;
 				}
 				
 		        preparedStatement = conn.prepareStatement(sql);
 		        
-		        result = preparedStatement.executeQuery();
-		        ArrayList<PluginUser> list = new ArrayList<PluginUser>();
-		        while (result.next()) 
-		        {
-		        	PluginUser ep = new PluginUser(
-		        			UUID.fromString(result.getString("player_uuid")),
-		        			result.getString("player_name"),
-		        			result.getLong("lasttimecheck"),
-		        			result.getLong("activitytime"),
-		        			result.getLong("afktime"),
-		        			result.getLong("alltime"),
-		        			result.getLong("lastactivity"),
-		        			result.getBoolean("isafk"),
-		        			result.getBoolean("isonline"),
-		        			result.getLong("vacationtime"));
-		        	list.add(ep);
-		        }
-		        return list;
-		    } catch (SQLException e) 
-			{
-				  AfkRecord.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return null;
-	}
-	
-	public ArrayList<PluginUser> getAllListAtI(AfkRecord plugin, String orderByColumn,
-			boolean desc, String whereColumn, Object...whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "";
-				if(desc)
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
-				} else
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
-				}
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : whereObject)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
 		        result = preparedStatement.executeQuery();
 		        ArrayList<PluginUser> list = new ArrayList<PluginUser>();
 		        while (result.next()) 

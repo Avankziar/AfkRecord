@@ -1,8 +1,17 @@
 package main.java.de.avankziar.afkrecord.bungee.object;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Level;
 
-public class PluginUser
+import main.java.de.avankziar.afkrecord.bungee.database.MysqlHandable;
+import main.java.de.avankziar.afkrecord.bungee.database.MysqlHandler;
+
+public class PluginUser implements MysqlHandable
 {
 	private String playername;
 	private UUID uuid;
@@ -15,23 +24,25 @@ public class PluginUser
 	private boolean isOnline;
 	private long vacationTime;
 	
+	public PluginUser() {}
+	
 	public PluginUser(UUID uuid, String playername,
 			long lastTimeCheck,
 			long activityTime, long afkTime, long allTime,
 			long lastActivity,
 			boolean isAFK, boolean isOnline,
-			long vacationtime)
+			long vacationTime)
 	{
 		setPlayerName(playername);
 		setUUID(uuid);
 		setLastTimeCheck(lastTimeCheck);
-		setActivityTime(activityTime);
+		setActiveTime(activityTime);
 		setAfkTime(afkTime);
-		setAllTime(allTime);
+		setTotalTime(allTime);
 		setLastActivity(lastActivity);
 		setAFK(isAFK);
 		setOnline(isOnline);
-		setVacationTime(vacationtime);
+		setVacationTime(vacationTime);
 	}
 
 	public String getPlayerName()
@@ -64,12 +75,12 @@ public class PluginUser
 		this.lastTimeCheck = lastTimeCheck;
 	}
 
-	public long getActivityTime()
+	public long getActiveTime()
 	{
 		return activityTime;
 	}
 
-	public void setActivityTime(long activityTime)
+	public void setActiveTime(long activityTime)
 	{
 		this.activityTime = activityTime;
 	}
@@ -84,12 +95,12 @@ public class PluginUser
 		this.afkTime = afkTime;
 	}
 
-	public long getAllTime()
+	public long getTotalTime()
 	{
 		return allTime;
 	}
 
-	public void setAllTime(long allTime)
+	public void setTotalTime(long allTime)
 	{
 		this.allTime = allTime;
 	}
@@ -133,5 +144,128 @@ public class PluginUser
 	{
 		this.vacationTime = vacationTime;
 	}
+	
+	@Override
+	public boolean create(Connection conn, String tablename)
+	{
+		try
+		{
+			String sql = "INSERT INTO `" + tablename
+					+ "`(`player_uuid`, `player_name`, `alltime`, `activitytime`, `afktime`,"
+					+ " `lastactivity`, `lasttimecheck`, `isafk`, `isonline`, `vacationtime`) " 
+					+ "VALUES("
+					+ "?, ?, ?, ?, ?,"
+					+ "?, ?, ?, ?, ?"
+					+ ")";
+			PreparedStatement ps = conn.prepareStatement(sql);
+	        ps.setString(1, getUUID().toString());
+	        ps.setString(2, getPlayerName());
+	        ps.setLong(3, getTotalTime());
+	        ps.setLong(4, getActiveTime());
+	        ps.setLong(5, getAfkTime());
+	        ps.setLong(6, getLastActivity());
+	        ps.setLong(7, getLastTimeCheck());
+	        ps.setBoolean(8, isAFK());
+	        ps.setBoolean(9, isOnline());
+	        ps.setLong(10, getVacationTime());
+	        
+	        int i = ps.executeUpdate();
+	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
+	        return true;
+		} catch (SQLException e)
+		{
+			this.log(Level.WARNING, "SQLException! Could not create a "+this.getClass().getSimpleName()+" Object!", e);
+		}
+		return false;
+	}
 
+	@Override
+	public boolean update(Connection conn, String tablename, String whereColumn, Object... whereObject)
+	{
+		try 
+		{
+			String sql = "UPDATE `" + tablename
+					+ "` SET `player_uuid` = ?, `player_name` = ?,"
+					+ " `alltime` = ?, `activitytime` = ?, `afktime` = ?,"
+					+ " `lastactivity` = ?, `lasttimecheck` = ?, `isafk`= ?, `isonline` = ?,"
+					+ " `vacationtime` = ?" 
+					+ " WHERE "+whereColumn;
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, getUUID().toString());
+		    ps.setString(2, getPlayerName());
+		    ps.setLong(3, getTotalTime());
+		    ps.setLong(4, getActiveTime());
+		    ps.setLong(5, getAfkTime());
+		    ps.setLong(6, getLastActivity());
+		    ps.setLong(7, getLastTimeCheck());
+	        ps.setBoolean(8, isAFK());
+	        ps.setBoolean(9, isOnline());
+	        ps.setLong(10, getVacationTime());
+	        int i = 11;
+			for(Object o : whereObject)
+			{
+				ps.setObject(i, o);
+				i++;
+			}			
+			int u = ps.executeUpdate();
+			MysqlHandler.addRows(MysqlHandler.QueryType.UPDATE, u);
+			return true;
+		} catch (SQLException e)
+		{
+			this.log(Level.WARNING, "SQLException! Could not update a "+this.getClass().getSimpleName()+" Object!", e);
+		}
+		return false;
+	}
+
+	@Override
+	public ArrayList<Object> get(Connection conn, String tablename, String orderby, String limit, String whereColumn, Object... whereObject)
+	{
+		try
+		{
+			String sql = "SELECT * FROM `" + tablename + "` WHERE "+whereColumn+" ORDER BY "+orderby+limit;
+			PreparedStatement ps = conn.prepareStatement(sql);
+			int i = 1;
+			for(Object o : whereObject)
+			{
+				ps.setObject(i, o);
+				i++;
+			}
+			
+			ResultSet rs = ps.executeQuery();
+			MysqlHandler.addRows(MysqlHandler.QueryType.READ, rs.getMetaData().getColumnCount());
+			ArrayList<Object> al = new ArrayList<>();
+			while (rs.next()) 
+			{
+				al.add(new PluginUser(
+	        			UUID.fromString(rs.getString("player_uuid")),
+	        			rs.getString("player_name"),
+	        			rs.getLong("lasttimecheck"),
+	        			rs.getLong("activitytime"),
+	        			rs.getLong("afktime"),
+	        			rs.getLong("alltime"),
+	        			rs.getLong("lastactivity"),
+	        			rs.getBoolean("isafk"),
+	        			rs.getBoolean("isonline"),
+	        			rs.getLong("vacationtime")));
+			}
+			return al;
+		} catch (SQLException e)
+		{
+			this.log(Level.WARNING, "SQLException! Could not get a "+this.getClass().getSimpleName()+" Object!", e);
+		}
+		return new ArrayList<>();
+	}
+	
+	public static ArrayList<PluginUser> convert(ArrayList<Object> arrayList)
+	{
+		ArrayList<PluginUser> l = new ArrayList<>();
+		for(Object o : arrayList)
+		{
+			if(o instanceof PluginUser)
+			{
+				l.add((PluginUser) o);
+			}
+		}
+		return l;
+	}	
 }

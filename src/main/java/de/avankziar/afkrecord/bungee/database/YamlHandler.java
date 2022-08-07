@@ -4,9 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import main.java.de.avankziar.afkrecord.bungee.AfkRecord;
+import main.java.de.avankziar.afkrecord.bungee.database.Language.ISO639_2B;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -16,6 +20,10 @@ public class YamlHandler
 	private AfkRecord plugin;
 	private File config = null;
 	private Configuration cfg = new Configuration();
+	
+	private String languages;
+	private File language = null;
+	private Configuration lang = new Configuration();
 
 	public YamlHandler(AfkRecord plugin)
 	{
@@ -28,6 +36,11 @@ public class YamlHandler
 		return cfg;
 	}
 	
+	public Configuration getLang()
+	{
+		return lang;
+	}
+	
 	public boolean loadYamlHandler()
 	{
 		/*
@@ -38,6 +51,10 @@ public class YamlHandler
 		 * Load all files, which are unique, for examples config.yml, commands.yml etc.
 		 */
 		if(!mkdirStaticFiles())
+		{
+			return false;
+		}
+		if(!mkdirDynamicFiles())
 		{
 			return false;
 		}
@@ -82,6 +99,52 @@ public class YamlHandler
 		 * Make sure, you use the right linkedHashmap from the YamlManager
 		 */
 		return writeFile(config, cfg, plugin.getYamlManager().getConfigKey());
+	}
+	
+	private boolean mkdirDynamicFiles()
+	{
+		List<Language.ISO639_2B> types = new ArrayList<Language.ISO639_2B>(EnumSet.allOf(Language.ISO639_2B.class));
+		ISO639_2B languageType = ISO639_2B.ENG;
+		for(ISO639_2B type : types)
+		{
+			if(type.toString().equals(languages))
+			{
+				languageType = type;
+				break;
+			}
+		}
+		plugin.getYamlManager().setLanguageType(languageType);
+		if(!mkdirLanguage())
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean mkdirLanguage()
+	{
+		String languageString = plugin.getYamlManager().getLanguageType().toString().toLowerCase();
+		File directory = new File(plugin.getDataFolder()+"/Languages/");
+		if(!directory.exists())
+		{
+			directory.mkdir();
+		}
+		language = new File(directory.getPath(), languageString+".yml");
+		if(!language.exists()) 
+		{
+			AfkRecord.log.info("Create %lang%.yml...".replace("%lang%", languageString));
+			 try (InputStream in = plugin.getResourceAsStream("default.yml")) 
+	    	 {       
+	    		 Files.copy(in, language.toPath());
+	         } catch (IOException e) 
+	    	 {
+	        	 e.printStackTrace();
+	        	 return false;
+	         }
+		}
+		lang = loadYamlTask(language, lang);
+		writeFile(language, lang, plugin.getYamlManager().getLanguageKey());
+		return true;
 	}
 	
 	private Configuration loadYamlTask(File file, Configuration yaml)

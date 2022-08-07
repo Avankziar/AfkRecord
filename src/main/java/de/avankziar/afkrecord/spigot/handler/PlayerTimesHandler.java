@@ -33,7 +33,6 @@ public class PlayerTimesHandler
 	final static long WEEK = DAY*7;
 	final static long YEAR = DAY*365;
 	
-	private long ramSaveCooldown;
 	public ArrayList<UUID> playerWhoBypassAfkTracking = new ArrayList<>();
 	private HashMap<UUID, String> onlinePlayers = new HashMap<>();
 	private HashMap<UUID, Long> lastTimeChecked = new HashMap<>();
@@ -46,7 +45,6 @@ public class PlayerTimesHandler
 	public PlayerTimesHandler(AfkRecord plugin)
 	{
 		this.plugin = plugin;
-		this.ramSaveCooldown = plugin.getYamlHandler().getConfig().getInt("General.RAMSave.CooldownInSeconds", 30);
 	}
 	
 	public void join(final UUID uuid, final String name)
@@ -126,7 +124,7 @@ public class PlayerTimesHandler
 			final long tot = totalTime.containsKey(uuid) ? totalTime.get(uuid) : 0;
 			final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 			final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
-			final boolean isAfk = activeStatus.get(uuid);
+			final boolean isAfk = !activeStatus.get(uuid);
 			addTime(uuid, tot, act, afkt, now, now, false, isAfk);
 			lastTimeChecked.remove(uuid);
 			activeStatus.remove(uuid);
@@ -142,7 +140,7 @@ public class PlayerTimesHandler
 			final long tot = totalTime.containsKey(uuid) ? totalTime.get(uuid) : 0;
 			final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 			final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
-			boolean isAfk = activeStatus.get(uuid);
+			boolean isAfk = !activeStatus.get(uuid);
 			addTime(uuid, tot, act, afkt, now, now, true, isAfk);
 			totalTime.put(uuid, 0L);
 			activeTime.put(uuid, 0L);

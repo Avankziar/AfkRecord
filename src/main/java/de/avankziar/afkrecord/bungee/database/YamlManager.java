@@ -16,10 +16,12 @@ public class YamlManager
 	
 	//Per Flatfile a linkedhashmap.
 	private static LinkedHashMap<String, Language> configKeys = new LinkedHashMap<>();
+	private static LinkedHashMap<String, Language> languageKeys = new LinkedHashMap<>();
 	
 	public YamlManager()
 	{
 		initConfig();
+		initLanguage();
 	}
 	
 	public ISO639_2B getLanguageType()
@@ -40,6 +42,11 @@ public class YamlManager
 	public LinkedHashMap<String, Language> getConfigKey()
 	{
 		return configKeys;
+	}
+	
+	public LinkedHashMap<String, Language> getLanguageKey()
+	{
+		return languageKeys;
 	}
 	
 	/*
@@ -117,11 +124,33 @@ public class YamlManager
 		configKeys.put("Mysql.Password"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"not_0123456789"}));
-		configKeys.put("Mysql.TableNameI"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"afkrecordPlayerData"}));
-		configKeys.put("Mysql.TableNameII"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"afkrecordDateList"}));
+	}
+	
+	public void initLanguage()
+	{
+		languageKeys.put("TimeFormat.Seperator", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						" ",
+						" "}));
+		languageKeys.put("TimeFormat.Year", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%value% &dJahre&f",
+						"%value% &dYears&f"}));
+		languageKeys.put("TimeFormat.Day", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%value% &4Tage&f",
+						"%value% &4days&f"}));
+		languageKeys.put("TimeFormat.Hour", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%value% &ch&f",
+						"%value% &ch&f"}));
+		languageKeys.put("TimeFormat.Minute", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%value% min&f",
+						"%value% &6min&f"}));
+		languageKeys.put("TimeFormat.Second", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%value% &es&f",
+						"%value% &es&f"}));
 	}
 }
