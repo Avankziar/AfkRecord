@@ -12,9 +12,9 @@ import java.util.UUID;
 
 import main.java.de.avankziar.afkrecord.bungee.AfkRecord;
 import main.java.de.avankziar.afkrecord.bungee.database.MysqlHandler.Type;
-import main.java.de.avankziar.afkrecord.spigot.assistance.TimeHandler;
-import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
-import main.java.de.avankziar.afkrecord.spigot.object.TimeRecord;
+import main.java.de.avankziar.afkrecord.bungee.assistance.TimeHandler;
+import main.java.de.avankziar.afkrecord.bungee.object.PluginUser;
+import main.java.de.avankziar.afkrecord.bungee.object.TimeRecord;
 import main.java.me.avankziar.ifh.general.interfaces.PlayerTimes;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

@@ -43,11 +43,10 @@ public class JoinQuitListener implements Listener
 		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
 	}
 	
-	@EventHandler
+	@EventHandler (priority = EventPriority.LOWEST)
 	public void onLeave(PlayerQuitEvent event)
 	{
 		final UUID uuid = event.getPlayer().getUniqueId();
-		plugin.getPlayerTimes().quit(uuid);
-		plugin.getPlayerTimes().saveRAM(uuid, null, false, true, false);
+		plugin.getPlayerTimes().saveRAM(uuid, null, false, true, event.isAsynchronous());
 	}
 }

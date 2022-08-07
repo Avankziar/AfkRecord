@@ -60,12 +60,6 @@ public class PlayerTimesHandler
 		setOnline(uuid, true);
 	}
 	
-	public void quit(final UUID uuid)
-	{
-		onlinePlayers.remove(uuid);
-		setOnline(uuid, false);
-	}
-	
 	private String getOnlinePlayerName(UUID uuid)
 	{
 		return onlinePlayers.get(uuid);
@@ -132,6 +126,7 @@ public class PlayerTimesHandler
 			activeTime.remove(uuid);
 			afkTime.remove(uuid);
 			activeStatus.get(uuid);
+			onlinePlayers.remove(uuid);
 			return true;
 		} else if(join && forcedQuit)
 		{

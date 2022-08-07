@@ -161,7 +161,7 @@ public class MysqlHandler
 				return true;
 			} catch (Exception e)
 			{
-				mh.log(Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+				mh.log(Level.WARNING, "Could not update "+object.getClass().getName()+" Object!", e);
 			}
 		}
 		return false;
@@ -182,7 +182,7 @@ public class MysqlHandler
 				}
 			} catch (Exception e)
 			{
-				mh.log(Level.WARNING, "Could not create "+object.getClass().getName()+" Object!", e);
+				mh.log(Level.WARNING, "Could not getData "+object.getClass().getName()+" Object!", e);
 			}
 		}
 		return null;
