@@ -4,8 +4,13 @@ Future Build
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
+Build 10-0-7
+- Mysql umstruckturierung, eine try&catch methode weniger.
+
 Build 10-0-6
 - /afkr getafk fix
+- /afkr getafk jahre und tage rausgelassen.
+- Bei Aktivitätsänderung wird nun richtig in mysql getrackt.
 
 Build 10-0-4
 - IFH Anbindung aufgeräumt.
