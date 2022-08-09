@@ -141,7 +141,6 @@ public class PlayerTimesHandler
 			activeTime.put(uuid, 0L);
 			afkTime.put(uuid, 0L);
 			lastTimeChecked.put(uuid, now);
-			lastActivity.put(uuid, now);
 		}
 		if(!lastTimeChecked.containsKey(uuid)
 				&& !activeStatus.containsKey(uuid))
@@ -199,7 +198,7 @@ public class PlayerTimesHandler
 				final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 				afkTime.put(uuid, dif+afkt);
 				activeStatus.put(uuid, true);
-				setActivity(uuid, now, now, false);
+				setActivity(uuid, now, false);
 			}
 			lastActivity.put(uuid, now);
 		} else
@@ -226,20 +225,19 @@ public class PlayerTimesHandler
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 				activeTime.put(uuid, dif+act);
 				activeStatus.put(uuid, false);
-				setActivity(uuid, now, now, true);
+				setActivity(uuid, now, true);
 			} else
 			{
 				// was and is afk
 				final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 				afkTime.put(uuid, dif+afkt);
 			}
-			lastActivity.put(uuid, now);
 		}
 		lastTimeChecked.put(uuid, now);
 		return true;
 	}
 	
-	private void setActivity(UUID uuid, long lastTimeChecked, long lastActivity, boolean isAfk)
+	private void setActivity(UUID uuid, long lastTimeChecked, boolean isAfk)
 	{
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER,
 				"`player_uuid` = ?", uuid.toString());
@@ -247,7 +245,6 @@ public class PlayerTimesHandler
 		{
 			return;
 		}
-		user.setLastActivity(lastActivity);
 		user.setLastTimeCheck(lastTimeChecked);
 		user.setAFK(isAfk);
 		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());

@@ -6,6 +6,7 @@ Future Build
 
 Build 10-0-7
 - Mysql umstruckturierung, eine try&catch methode weniger. Connection ReConnect sollte nun korrekt ablaufen.
+- Korrekte Afktracking
 
 Build 10-0-6
 - /afkr getafk fix
