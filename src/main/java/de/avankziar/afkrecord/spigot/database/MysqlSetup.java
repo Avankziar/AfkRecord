@@ -11,7 +11,6 @@ import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 
 public class MysqlSetup 
 {
-	private Connection conn = null;
 	private String host;
 	private int port;
 	private String database;
@@ -78,8 +77,9 @@ public class MysqlSetup
             properties.setProperty("verifyServerCertificate", String.valueOf(isVerifyServerCertificate));
             properties.setProperty("useSSL", String.valueOf(isSSLEnabled));
             properties.setProperty("requireSSL", String.valueOf(isSSLEnabled));
-            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
+            Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
             AfkRecord.log.info("Database connection successful!");
+            conn.close();
         } catch (ClassNotFoundException e) 
 		{
         	AfkRecord.log.severe("Could not locate drivers for mysql! Error: " + e.getMessage());
@@ -138,11 +138,10 @@ public class MysqlSetup
 	
 	public Connection getConnection() 
 	{
-		checkConnection();
-		return conn;
+		return reConnect();
 	}
 	
-	public void checkConnection() 
+	/*public void checkConnection() 
 	{
 		try {
 			if (conn == null) 
@@ -164,9 +163,9 @@ public class MysqlSetup
 		{
 			AfkRecord.log.severe("Could not reconnect to Database! Error: " + e.getMessage());
 		}
-	}
+	}*/
 	
-	public boolean reConnect() 
+	private Connection reConnect() 
 	{
 		boolean bool = false;
 	    try
@@ -193,12 +192,12 @@ public class MysqlSetup
             properties.setProperty("useSSL", String.valueOf(isSSLEnabled));
             properties.setProperty("requireSSL", String.valueOf(isSSLEnabled));
             //Connect to database
-            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
-            return true;
+            Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
+            return conn;
 		} catch (Exception e) 
 		{
 			AfkRecord.log.severe("Error re-connecting to the database! Error: " + e.getMessage());
-			return false;
+			return null;
 		}
 	}
 }

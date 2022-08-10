@@ -58,7 +58,7 @@ public class BackgroundTask
 		new BukkitRunnable() 
 		{
 			final long afkAfterLastActivityInSeconds = plugin.getYamlHandler().getConfig()
-					.getInt("General.AfkChecker.AfkAfterLastActivityInSeconds")*1000L;
+					.getLong("General.AfkChecker.AfkAfterLastActivityInSeconds")*1000L;
 			@Override
 			public void run() 
 			{

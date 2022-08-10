@@ -312,8 +312,9 @@ public class PlayerTimesHandler
 			//If not online, activeStatus is unknow or lastActivity is unknow
 			return;
 		}
+		long tt = lastActivity.get(uuid)+afkAfterLastActivityInSeconds;
 		if(activeStatus.get(uuid) //was active
-				&& lastActivity.get(uuid)+afkAfterLastActivityInSeconds < System.currentTimeMillis())
+				&& tt < System.currentTimeMillis())
 			saveRAM(uuid, false, false, false, true);
 	}
 	

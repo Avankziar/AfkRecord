@@ -153,7 +153,7 @@ public class YamlManager
 				240}));
 		configKeys.put("General.AfkChecker.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				300}));
+				60}));
 		configKeys.put("General.AfkChecker.AfkAfterLastActivityInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				900}));
