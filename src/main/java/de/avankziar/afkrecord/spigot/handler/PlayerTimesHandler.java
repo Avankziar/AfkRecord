@@ -136,7 +136,7 @@ public class PlayerTimesHandler
 			final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 			final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 			boolean isAfk = !activeStatus.get(uuid);
-			addTime(uuid, tot, act, afkt, now, lastActivity.get(uuid), true, isAfk);
+			addTime(uuid, tot, act, afkt, now, lastActivity.containsKey(uuid) ? lastActivity.get(uuid) : -1, true, isAfk);
 			totalTime.put(uuid, 0L);
 			activeTime.put(uuid, 0L);
 			afkTime.put(uuid, 0L);
