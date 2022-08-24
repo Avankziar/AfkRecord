@@ -49,23 +49,6 @@ public class MysqlSetup
 		loadMysqlSetup();
 	}
 	
-	public boolean loadMysqlSetup()
-	{
-		if(!connectToDatabase())
-		{
-			return false;
-		}
-		if(!setupDatabaseI())
-		{
-			return false;
-		}
-		if(!setupDatabaseII())
-		{
-			return false;
-		}
-		return true;
-	}
-	
 	public boolean connectToDatabase() 
 	{
 		AfkRecord.log.info("Connecting to the database...");
@@ -73,6 +56,9 @@ public class MysqlSetup
 		if(conn != null)
 		{
 			AfkRecord.log.info("Database connection successful!");
+		} else
+		{
+			return false;
 		}
 		return true;
 	}
@@ -126,6 +112,23 @@ public class MysqlSetup
 		} catch (SQLException e) 
 		{
 			AfkRecord.log.log(Level.WARNING, "Could not build data source. Or connection is null", e);
+		}
+		return true;
+	}
+	
+	public boolean loadMysqlSetup()
+	{
+		if(!connectToDatabase())
+		{
+			return false;
+		}
+		if(!setupDatabaseI())
+		{
+			return false;
+		}
+		if(!setupDatabaseII())
+		{
+			return false;
 		}
 		return true;
 	}
