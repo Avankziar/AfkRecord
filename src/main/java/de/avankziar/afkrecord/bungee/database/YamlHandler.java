@@ -98,7 +98,12 @@ public class YamlHandler
 		 * Write all path for the configfile
 		 * Make sure, you use the right linkedHashmap from the YamlManager
 		 */
-		return writeFile(config, cfg, plugin.getYamlManager().getConfigKey());
+		writeFile(config, cfg, plugin.getYamlManager().getConfigKey());
+		
+		languages = plugin.getAdministration() == null 
+				? cfg.getString("Language", "ENG").toUpperCase() 
+				: plugin.getAdministration().getLanguage();
+		return true;
 	}
 	
 	private boolean mkdirDynamicFiles()

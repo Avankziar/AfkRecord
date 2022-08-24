@@ -1,5 +1,6 @@
 package main.java.de.avankziar.afkrecord.bungee;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,8 +10,13 @@ import main.java.de.avankziar.afkrecord.bungee.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlHandler;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlManager;
 import main.java.de.avankziar.afkrecord.bungee.listener.EventAfkCheck;
+import main.java.me.avankziar.ifh.bungee.InterfaceHub;
+import main.java.me.avankziar.ifh.bungee.administration.Administration;
+import main.java.me.avankziar.ifh.bungee.plugin.RegisteredServiceProvider;
+import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 public class AfkRecord extends Plugin
 {
@@ -21,6 +27,9 @@ public class AfkRecord extends Plugin
 	private YamlManager yamlManager;
 	private MysqlSetup mysqlSetup;
 	private MysqlHandler mysqlHandler;
+	private static Administration administrationConsumer;
+	
+	private ScheduledTask administrationRun;
 	
 	public void onEnable() 
 	{
@@ -32,6 +41,9 @@ public class AfkRecord extends Plugin
 		log.info(" ██╔══██║██╔══╝  ██╔═██╗ ██╔══██╗ | Depend Plugins: "+plugin.getDescription().getDepends().toString());
 		log.info(" ██║  ██║██║     ██║  ██╗██║  ██║ | SoftDepend Plugins: "+plugin.getDescription().getSoftDepends().toString());
 		log.info(" ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝ | Have Fun^^ ");
+		
+		setupIFHAdministration();
+		
 		yamlHandler = new YamlHandler(plugin);
 		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
@@ -112,5 +124,47 @@ public class AfkRecord extends Plugin
 		ProxyServer.getInstance().getPluginManager().unregisterListeners(plugin);
 		ProxyServer.getInstance().getScheduler().cancel(plugin);
 		plugin.getExecutorService().shutdownNow();
+	}
+	
+	private void setupIFHAdministration()
+	{ 
+		Plugin plugin = BungeeCord.getInstance().getPluginManager().getPlugin("InterfaceHub");
+        if (plugin == null) 
+        {
+            return;
+        }
+        InterfaceHub ifh = (InterfaceHub) plugin;
+        administrationRun = plugin.getProxy().getScheduler().schedule(plugin, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					RegisteredServiceProvider<Administration> rsp = ifh
+			        		.getServicesManager()
+			        		.getRegistration(Administration.class);
+			        if (rsp == null) 
+			        {
+			            return;
+			        }
+			        administrationConsumer = rsp.getProvider();
+			        if(administrationConsumer != null)
+			        {
+			    		log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+			    		administrationRun.cancel();
+			        }
+				} catch(NoClassDefFoundError e)
+				{
+					administrationRun.cancel();
+				}
+			}
+		}, 15L*1000, 25L, TimeUnit.MILLISECONDS);
+        return;
+	}
+	
+	public Administration getAdministration()
+	{
+		return administrationConsumer;
 	}
 }

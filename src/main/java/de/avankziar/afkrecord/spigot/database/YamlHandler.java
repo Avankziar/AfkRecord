@@ -157,7 +157,9 @@ public class YamlHandler
 		/*
 		 * Define the language
 		 */
-		languages = cfg.getString("Language", "ENG").toUpperCase();
+		languages = plugin.getAdministration() == null 
+				? cfg.getString("Language", "ENG").toUpperCase() 
+				: plugin.getAdministration().getLanguage();
 		/*
 		 * Repeat for all other single flatfiles.
 		 */

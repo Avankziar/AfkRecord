@@ -20,6 +20,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.de.avankziar.afkrecord.spigot.assistance.BackgroundTask;
 import main.java.de.avankziar.afkrecord.spigot.assistance.Utility;
@@ -58,6 +59,7 @@ import main.java.de.avankziar.afkrecord.spigot.object.PluginSettings;
 import main.java.de.avankziar.afkrecord.spigot.papi.Expansion;
 import main.java.de.avankziar.afkrecord.spigot.permission.BypassPermission;
 import main.java.de.avankziar.afkrecord.spigot.permission.KeyHandler;
+import main.java.me.avankziar.ifh.spigot.administration.Administration;
 import net.milkbowl.vault.permission.Permission;
 
 public class AfkRecord extends JavaPlugin
@@ -77,6 +79,8 @@ public class AfkRecord extends JavaPlugin
 	
 	private static Permission perms = null;
 	private static PlayerTimesAPI ptapi;
+	
+	private static Administration administrationConsumer;
 	
 	private ArrayList<BaseConstructor> helpList = new ArrayList<>();
 	private ArrayList<CommandConstructor> commandTree = new ArrayList<>();
@@ -104,6 +108,8 @@ public class AfkRecord extends JavaPlugin
 		log.info(" ██╔══██║██╔══╝  ██╔═██╗ ██╔══██╗ | Depend Plugins: "+plugin.getDescription().getDepend().toString());
 		log.info(" ██║  ██║██║     ██║  ██╗██║  ██║ | SoftDepend Plugins: "+plugin.getDescription().getSoftDepend().toString());
 		log.info(" ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝ | LoadBefore: "+plugin.getDescription().getLoadBefore().toString());
+		
+		setupIFHAdministration();
 		
 		yamlHandler = new YamlHandler(plugin);
 		
@@ -531,5 +537,47 @@ public class AfkRecord extends JavaPlugin
             return;
 		}
 		return;
+	}
+	
+	private void setupIFHAdministration()
+	{ 
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+		new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+				cancel();
+				return;
+			    }
+			    try
+			    {
+			    	RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.administration.Administration> rsp = 
+	                         getServer().getServicesManager().getRegistration(Administration.class);
+				    if (rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    administrationConsumer = rsp.getProvider();
+				    log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+			    } catch(NoClassDefFoundError e) 
+			    {
+			    	cancel();
+			    }		    
+			    cancel();
+			}
+        }.runTaskTimer(plugin,  0L, 20*2);
+	}
+	
+	public Administration getAdministration()
+	{
+		return administrationConsumer;
 	}
 }
