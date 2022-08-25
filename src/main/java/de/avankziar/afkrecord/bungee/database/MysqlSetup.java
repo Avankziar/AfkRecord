@@ -12,23 +12,23 @@ import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler;
 
 public class MysqlSetup 
 {
-	private String host;
-	private int port;
-	private String database;
-	private String user;
-	private String password;
-	private boolean isAutoConnect;
-	private boolean isVerifyServerCertificate;
-	private boolean isSSLEnabled;
+	final private String host;
+	final private int port;
+	final private String database;
+	final private String user;
+	final private String password;
+	final private boolean isAutoConnect;
+	final private boolean isVerifyServerCertificate;
+	final private boolean isSSLEnabled;
 	
 	public MysqlSetup(AfkRecord plugin) 
 	{
 		boolean adm = plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration", false);
-		if(plugin.getAdministration() == null)
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		if(plugin.getAdministration() == null || plugin.getAdministration().getHost(path) == null)
 		{
 			adm = false;
 		}
-		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
 		
 		host = adm ? plugin.getAdministration().getHost(path)
 				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
