@@ -158,7 +158,6 @@ public class YamlHandler
 		try 
 		{
 			yaml = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
-			AfkRecord.log.info("File "+file.getName()+" loaded!");
 		} catch (IOException e) 
 		{
 			AfkRecord.log.severe(
@@ -186,7 +185,6 @@ public class YamlHandler
 		try
 		{
 			 ConfigurationProvider.getProvider(YamlConfiguration.class).save(yml, file);
-			 AfkRecord.log.info("File "+file.getName()+" saved!");
 		} catch (IOException e)
 		{
 			e.printStackTrace();
