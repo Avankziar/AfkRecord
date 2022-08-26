@@ -20,7 +20,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.de.avankziar.afkrecord.spigot.assistance.BackgroundTask;
 import main.java.de.avankziar.afkrecord.spigot.assistance.Utility;
@@ -116,7 +115,9 @@ public class AfkRecord extends JavaPlugin
 		utility = new Utility(plugin);
 		commandHelper = new CommandHelper(plugin);
 		backgroundtask = new BackgroundTask(plugin);
-		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		boolean check = plugin.getAdministration() != null && plugin.getAdministration().getHost(path) != null;
+		if(check || yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
 			mysqlHandler = new MysqlHandler(plugin);
 			mysqlSetup = new MysqlSetup(plugin);
@@ -545,35 +546,18 @@ public class AfkRecord extends JavaPlugin
 	    {
 	    	return;
 	    }
-		new BukkitRunnable()
-        {
-        	int i = 0;
-			@Override
-			public void run()
-			{
-			    if(i == 20)
-			    {
-				cancel();
-				return;
-			    }
-			    try
-			    {
-			    	RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.administration.Administration> rsp = 
-	                         getServer().getServicesManager().getRegistration(Administration.class);
-				    if (rsp == null) 
-				    {
-				    	i++;
-				        return;
-				    }
-				    administrationConsumer = rsp.getProvider();
-				    log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
-			    } catch(NoClassDefFoundError e) 
-			    {
-			    	cancel();
-			    }		    
-			    cancel();
-			}
-        }.runTaskTimer(plugin,  0L, 20*2);
+		try
+	    {
+	    	RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.administration.Administration> rsp = 
+                     getServer().getServicesManager().getRegistration(Administration.class);
+		    if (rsp == null) 
+		    {
+		        return;
+		    }
+		    administrationConsumer = rsp.getProvider();
+		    log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+	    } catch(NoClassDefFoundError e) 
+	    {}
 	}
 	
 	public Administration getAdministration()

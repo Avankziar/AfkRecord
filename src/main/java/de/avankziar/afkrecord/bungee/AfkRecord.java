@@ -1,6 +1,5 @@
 package main.java.de.avankziar.afkrecord.bungee;
 
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +15,6 @@ import main.java.me.avankziar.ifh.bungee.plugin.RegisteredServiceProvider;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 public class AfkRecord extends Plugin
 {
@@ -28,8 +26,6 @@ public class AfkRecord extends Plugin
 	private MysqlSetup mysqlSetup;
 	private MysqlHandler mysqlHandler;
 	private static Administration administrationConsumer;
-	
-	private ScheduledTask administrationRun;
 	
 	public void onEnable() 
 	{
@@ -45,7 +41,9 @@ public class AfkRecord extends Plugin
 		setupIFHAdministration();
 		
 		yamlHandler = new YamlHandler(plugin);
-		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		boolean check = plugin.getAdministration() != null && plugin.getAdministration().getHost(path) != null;
+		if(check || yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
 			mysqlHandler = new MysqlHandler(plugin);
 			mysqlSetup = new MysqlSetup(plugin);
@@ -134,32 +132,22 @@ public class AfkRecord extends Plugin
             return;
         }
         InterfaceHub ifh = (InterfaceHub) plugin;
-        administrationRun = plugin.getProxy().getScheduler().schedule(plugin, new Runnable()
+        try
 		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					RegisteredServiceProvider<Administration> rsp = ifh
-			        		.getServicesManager()
-			        		.getRegistration(Administration.class);
-			        if (rsp == null) 
-			        {
-			            return;
-			        }
-			        administrationConsumer = rsp.getProvider();
-			        if(administrationConsumer != null)
-			        {
-			    		log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
-			    		administrationRun.cancel();
-			        }
-				} catch(NoClassDefFoundError e)
-				{
-					administrationRun.cancel();
-				}
-			}
-		}, 15L*1000, 25L, TimeUnit.MILLISECONDS);
+			RegisteredServiceProvider<Administration> rsp = ifh
+	        		.getServicesManager()
+	        		.getRegistration(Administration.class);
+	        if (rsp == null) 
+	        {
+	            return;
+	        }
+	        administrationConsumer = rsp.getProvider();
+	        if(administrationConsumer != null)
+	        {
+	    		log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+	        }
+		} catch(NoClassDefFoundError e)
+		{}
         return;
 	}
 	

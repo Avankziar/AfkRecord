@@ -23,12 +23,15 @@ public class MysqlSetup
 	public MysqlSetup(AfkRecord plugin) 
 	{
 		boolean adm = plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration", false);
-		if(plugin.getAdministration() == null)
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		if(plugin.getAdministration() == null || plugin.getAdministration().getHost(path) == null)
 		{
 			adm = false;
 		}
-		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
-		
+		if(adm)
+		{
+			AfkRecord.log.log(Level.INFO, "Using IFH Administration");
+		}
 		host = adm ? plugin.getAdministration().getHost(path)
 				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
 		port = adm ? plugin.getAdministration().getPort(path)
