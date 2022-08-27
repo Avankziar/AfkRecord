@@ -42,11 +42,13 @@ public class AfkRecord extends Plugin
 		
 		yamlHandler = new YamlHandler(plugin);
 		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
-		boolean check = plugin.getAdministration() != null && plugin.getAdministration().getHost(path) != null;
-		if(check || yamlHandler.getConfig().getBoolean("Mysql.Status", false))
+		boolean adm = plugin.getAdministration() != null 
+				&& plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration")
+				&& plugin.getAdministration().isMysqlPathActive(path);
+		if(adm ||  yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
 			mysqlHandler = new MysqlHandler(plugin);
-			mysqlSetup = new MysqlSetup(plugin);
+			mysqlSetup = new MysqlSetup(plugin, adm, path);
 		} else
 		{
 			disablePlugin();

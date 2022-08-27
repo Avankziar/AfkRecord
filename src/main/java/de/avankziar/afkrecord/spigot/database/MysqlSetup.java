@@ -20,14 +20,8 @@ public class MysqlSetup
 	private boolean isVerifyServerCertificate;
 	private boolean isSSLEnabled;
 	
-	public MysqlSetup(AfkRecord plugin) 
+	public MysqlSetup(AfkRecord plugin, boolean adm, String path) 
 	{
-		boolean adm = plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration", false);
-		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
-		if(plugin.getAdministration() == null || plugin.getAdministration().getHost(path) == null)
-		{
-			adm = false;
-		}
 		if(adm)
 		{
 			AfkRecord.log.log(Level.INFO, "Using IFH Administration");
