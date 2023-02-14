@@ -38,7 +38,7 @@ public class PlayerTimesHandler
 	private HashMap<UUID, Long> lastTimeChecked = new HashMap<>();
 	private HashMap<UUID, Long> lastActivity = new HashMap<>();
 	private HashMap<UUID, Boolean> activeStatus = new HashMap<>();
-	private HashMap<UUID, Long> totalTime = new HashMap<>();
+	//private HashMap<UUID, Long> totalTime = new HashMap<>();
 	private HashMap<UUID, Long> activeTime = new HashMap<>();
 	private HashMap<UUID, Long> afkTime = new HashMap<>();
 	
@@ -49,6 +49,7 @@ public class PlayerTimesHandler
 	
 	public void join(final UUID uuid, final String name)
 	{
+		final long now = System.currentTimeMillis();
 		onlinePlayers.put(uuid, name);
 		lastTimeChecked.put(uuid, System.currentTimeMillis());
 		lastActivity.put(uuid, System.currentTimeMillis());
@@ -58,6 +59,8 @@ public class PlayerTimesHandler
 			createAccount(uuid, name);
 		}
 		setOnline(uuid, true);
+		setActive(uuid);
+		setLastActivity(uuid, now);
 	}
 	
 	private String getOnlinePlayerName(UUID uuid)
@@ -100,7 +103,7 @@ public class PlayerTimesHandler
 		{
 			//Join per Event
 			final long now = System.currentTimeMillis();
-			addTime(uuid, 0, 0, 0, now, now, true, false);
+			addTime(uuid, 0, 0, now, now, true, false);
 			lastTimeChecked.put(uuid, now);
 			lastActivity.put(uuid, now);
 			activeStatus.put(uuid, true);
@@ -109,20 +112,21 @@ public class PlayerTimesHandler
 		{
 			//Quit per ServerDown or QuitEvent
 			if(!lastTimeChecked.containsKey(uuid)
-					|| !activeStatus.containsKey(uuid))
+					&& !activeStatus.containsKey(uuid))
 			{
 				//Check if the the server going down. And so the player already is save out.
 				return false;
 			}
 			final long now = System.currentTimeMillis();
-			final long tot = totalTime.containsKey(uuid) ? totalTime.get(uuid) : 0;
 			final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 			final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 			final boolean isAfk = !activeStatus.get(uuid);
-			addTime(uuid, tot, act, afkt, now, now, false, isAfk);
+			addTime(uuid, act, afkt, now, now, false, isAfk);
+			setActive(uuid);
+			setLastActivity(uuid, now);
+			setOnline(uuid, false);
 			lastTimeChecked.remove(uuid);
 			activeStatus.remove(uuid);
-			totalTime.remove(uuid);
 			activeTime.remove(uuid);
 			afkTime.remove(uuid);
 			activeStatus.get(uuid);
@@ -132,12 +136,10 @@ public class PlayerTimesHandler
 		{
 			//MySQL Save Run
 			final long now = System.currentTimeMillis();
-			final long tot = totalTime.containsKey(uuid) ? totalTime.get(uuid) : 0;
 			final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 			final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
-			boolean isAfk = !activeStatus.get(uuid);
-			addTime(uuid, tot, act, afkt, now, lastActivity.containsKey(uuid) ? lastActivity.get(uuid) : -1, true, isAfk);
-			totalTime.put(uuid, 0L);
+			boolean isAfk = !(activeStatus.get(uuid) == null ? false : activeStatus.get(uuid));
+			addTime(uuid, act, afkt, now, lastActivity.containsKey(uuid) ? lastActivity.get(uuid) : -1, true, isAfk);
 			activeTime.put(uuid, 0L);
 			afkTime.put(uuid, 0L);
 			lastTimeChecked.put(uuid, now);
@@ -147,23 +149,15 @@ public class PlayerTimesHandler
 		{
 			return false;
 		}
-		/*long nowMinus = System.currentTimeMillis()-(ramSaveCooldown*1000L);
-		if(activeOrAfk == null || activeOrAfk == activeStatus.containsKey(uuid))
-		{
-			if(lastTimeChecked.get(uuid) > nowMinus)
-			{
-				return false;
-			}
-		}*/
-		
-		long now = System.currentTimeMillis();
-		long dif = now-lastTimeChecked.get(uuid);
-		final long tot = totalTime.containsKey(uuid) ? totalTime.get(uuid) : 0;
-		totalTime.put(uuid, dif+tot);
+		final long now = System.currentTimeMillis();
+		final long then = lastTimeChecked.get(uuid);
+		final long dif = now-then;
+		lastTimeChecked.put(uuid, now);
+		boolean activestatus = activeStatus.containsKey(uuid) ? activeStatus.get(uuid) : false;
 		if(activeOrAfk == null)
 		{
 			//no Info if active or afk
-			if(activeStatus.get(uuid))
+			if(activestatus)
 			{
 				// is/was active
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
@@ -177,7 +171,7 @@ public class PlayerTimesHandler
 		} else if(activeOrAfk)
 		{
 			//is now Active
-			if(activeStatus.get(uuid))
+			if(activestatus)
 			{
 				// was and is active
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
@@ -193,7 +187,7 @@ public class PlayerTimesHandler
 					Player player = Bukkit.getPlayer(uuid);
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")
 							.replace("%time%", 
-									plugin.getPlayerTimes().formatDate(System.currentTimeMillis(), false, false, false, true, true, true))));
+									plugin.getPlayerTimes().formatTimePeriod(System.currentTimeMillis(), false, false))));
 				}
 				final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 				afkTime.put(uuid, dif+afkt);
@@ -204,12 +198,12 @@ public class PlayerTimesHandler
 		} else
 		{
 			//is now Afk
-			if(activeStatus.get(uuid) && playerWhoBypassAfkTracking.contains(uuid))
+			if(activestatus && playerWhoBypassAfkTracking.contains(uuid))
 			{
 				// was active, were now afk, but bypass that
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 				activeTime.put(uuid, dif+act);
-			} else if(activeStatus.get(uuid))
+			} else if(activestatus)
 			{
 				// was active, is now afk
 				if(callAfkEvent(uuid, isAsync))
@@ -220,7 +214,7 @@ public class PlayerTimesHandler
 					Player player = Bukkit.getPlayer(uuid);
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
 							.replace("%time%", 
-									plugin.getPlayerTimes().formatDate(System.currentTimeMillis(), false, false, false, true, true, true))));
+									plugin.getPlayerTimes().formatTimePeriod(System.currentTimeMillis(), false, false))));
 				}
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 				activeTime.put(uuid, dif+act);
@@ -250,7 +244,7 @@ public class PlayerTimesHandler
 		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
 	}
 	
-	public boolean addTime(UUID uuid, long totalTime, long activeTime, long afkTime,
+	public boolean addTime(UUID uuid, long activeTime, long afkTime,
 			long lastTimeChecked, long lastActivity, boolean isOnline, boolean isAfk)
 	{
 		if(!hasAccount(uuid))
@@ -265,8 +259,7 @@ public class PlayerTimesHandler
 				return false;
 		}
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER, "`player_uuid` = ?", uuid.toString());
-		if(totalTime > 0)
-			user.setTotalTime(user.getTotalTime()+totalTime);
+		user.setTotalTime(user.getTotalTime()+activeTime+afkTime);
 		if(activeTime > 0)
 			user.setActiveTime(user.getActiveTime()+activeTime);
 		if(afkTime > 0)
@@ -278,22 +271,21 @@ public class PlayerTimesHandler
 		user.setOnline(isOnline);
 		user.setAFK(isAfk);
 		plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
-		return addTimeRecord(uuid, totalTime, activeTime, afkTime);		
+		return addTimeRecord(uuid, activeTime, afkTime);		
 	}
 	
-	public boolean addTimeRecord(UUID uuid, long totalTime, long activeTime, long afkTime)
+	public boolean addTimeRecord(UUID uuid, long activeTime, long afkTime)
 	{
 		long today = TimeHandler.getDate(TimeHandler.getDate(System.currentTimeMillis()));
 		TimeRecord tr = (TimeRecord) plugin.getMysqlHandler().getData(Type.TIMERECORD, "`player_uuid` = ? AND `timestamp_unix` = ?",
 				uuid.toString(), today);
 		if(tr == null)
 		{
-			tr = new TimeRecord(uuid, getPlayerName(uuid), today, totalTime, activeTime, afkTime);
+			tr = new TimeRecord(uuid, getPlayerName(uuid), today, activeTime+afkTime, activeTime, afkTime);
 			plugin.getMysqlHandler().create(Type.TIMERECORD, tr);
 			return true;
 		}
-		if(totalTime > 0)
-			tr.setTotalTime(tr.getTotalTime()+totalTime);
+		tr.setTotalTime(tr.getTotalTime()+activeTime+afkTime);
 		if(activeTime > 0)
 			tr.setActiveTime(tr.getActiveTime()+activeTime);
 		if(afkTime > 0)
@@ -701,7 +693,6 @@ public class PlayerTimesHandler
 			year += String.valueOf(y);
 			ll = ll - y*YEAR;
 		}
-		
 		String day = "";
 		if(da)
 		{

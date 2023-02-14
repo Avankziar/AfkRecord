@@ -224,10 +224,10 @@ public class YamlManager
 				"/afkr counttime <tage> [Spieler]", "/afkr counttime ",
 				"&c/afkr counttime <tage> [Spieler] &f| Zählt alle Zeiten in einem Zeitraum.",
 				"&c/afkr counttime <days> [player] &f| Counts all times in a period.");
-		argumentInput("afkr_counttimeperm", "counttimeperm", basePermission,
-				"/afkr counttimeperm <tage> <Permission>", "/afkr counttime ",
-				"&c/afkr counttimeperm <tage> <Permission> &f| Zählt alle Spieler mit dieser Permission auf, und zeigt ihre Zeiten.",
-				"&c/afkr counttimeperm <days> <Permission> &f| Enumerates all players with this permission, and shows their times.");
+		argumentInput("afkr_permcounttime", "permcounttime", basePermission,
+				"/afkr permcounttime <tage> <Permission>", "/afkr permcounttime ",
+				"&c/afkr permcounttime <tage> <Permission> &f| Zählt alle Spieler mit dieser Permission auf, und zeigt ihre Zeiten.",
+				"&c/afkr permcounttime <days> <Permission> &f| Enumerates all players with this permission, and shows their times.");
 		argumentInput("afkr_getafk", "getafk", basePermission,
 				"/afkr getafk", "/afkr getafk ",
 				"&c/afkr getafk &f| Zeigt alle afk Spieler auf dem Netzwerk an.",
@@ -257,9 +257,9 @@ public class YamlManager
 				"&c/afkr top afktime [number] &f| Zeigt die Topliste an, 10 Plätze pro Seite.",
 				"&c/afkr top afktime [number] &f| Displays the top list, 10 places per page.");
 		argumentInput("afkr_vacation", "vacation", basePermission,
-				"/afkr vacation [<player> || <<dd.MM.yyyy> <HH:mm>>]", "/afkr vacation ",
-				"&c/afkr vacation [<player> || <<dd.MM.yyyy> <HH:mm>>] &f| Zeigt an ob und bis wielange der Spieler in Urlaub ist oder setzt die Zeit, bis wann man in Urlaub ist.",
-				"&c/afkr vacation [<player> || <<dd.MM.yyyy> <HH:mm>>] &f| Shows if and until how long the player is on vacation or sets the time until when you are on vacation.");
+				"/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>]", "/afkr vacation ",
+				"&c/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>] &f| Zeigt an ob und bis wielange der Spieler in Urlaub ist oder setzt die Zeit, bis wann man in Urlaub ist.",
+				"&c/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>] &f| Shows if and until how long the player is on vacation or sets the time until when you are on vacation.");
 		commandsInput("afk", "afk", "afkrecord.cmd.afk", 
 				"/afk", "/afk ",
 				"&c/afk &f| Toggelt den Afk-Zustand.",
@@ -679,6 +679,10 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&6Du bist nun bist zum &f%time% &6im Urlaub!",
 						"&6You are now on vacation for the &f%time%&6!"}));
+		languageKeys.put("CmdAfkRecord.Vacation.NowNotInVacation",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDu bist nun nicht mehr im Urlaub!",
+						"&6You are now no longer on vacation!"}));
 		
 		languageKeys.put("CmdAfk.SetAfk",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

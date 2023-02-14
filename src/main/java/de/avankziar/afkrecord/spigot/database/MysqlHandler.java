@@ -1,6 +1,5 @@
 package main.java.de.avankziar.afkrecord.spigot.database;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -306,7 +305,7 @@ public class MysqlHandler
 	}
 	
 	public ArrayList<Object> getFullList(Type type, String orderByColumn,
-			String whereColumn, Object...whereObject) throws IOException
+			String whereColumn, Object...whereObject)
 	{
 		Object object = type.getObject();
 		if(object instanceof MysqlHandable)

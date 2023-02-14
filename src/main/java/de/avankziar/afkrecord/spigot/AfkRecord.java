@@ -48,6 +48,7 @@ import main.java.de.avankziar.afkrecord.spigot.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.spigot.database.YamlHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.YamlManager;
 import main.java.de.avankziar.afkrecord.spigot.handler.PlayerTimesHandler;
+import main.java.de.avankziar.afkrecord.spigot.hook.PAPIHook;
 import main.java.de.avankziar.afkrecord.spigot.ifh.PlayerTimesAPI;
 import main.java.de.avankziar.afkrecord.spigot.listener.JoinQuitListener;
 import main.java.de.avankziar.afkrecord.spigot.listener.ServerListener;
@@ -55,7 +56,7 @@ import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.BaseListener;
 import main.java.de.avankziar.afkrecord.spigot.listener.afkcheck.PlayerListener;
 import main.java.de.avankziar.afkrecord.spigot.metrics.Metrics;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginSettings;
-import main.java.de.avankziar.afkrecord.spigot.papi.Expansion;
+import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
 import main.java.de.avankziar.afkrecord.spigot.permission.BypassPermission;
 import main.java.de.avankziar.afkrecord.spigot.permission.KeyHandler;
 import main.java.me.avankziar.ifh.spigot.administration.Administration;
@@ -130,6 +131,7 @@ public class AfkRecord extends JavaPlugin
 			return;
 		}
 		PluginSettings.initSettings(plugin);
+		setPlayers();
 		setupCommandTree();
 		ListenerSetup();
 		pth = new PlayerTimesHandler(plugin);
@@ -152,46 +154,6 @@ public class AfkRecord extends JavaPlugin
 		}
 		
 		log.info(pluginName + " is disabled!");
-	}
-	
-	public YamlHandler getYamlHandler() 
-	{
-		return yamlHandler;
-	}
-	
-	public YamlManager getYamlManager()
-	{
-		return yamlManager;
-	}
-	
-	public void setYamlManager(YamlManager yamlManager)
-	{
-		plugin.yamlManager = yamlManager;
-	}
-	
-	public MysqlSetup getMysqlSetup() 
-	{
-		return mysqlSetup;
-	}
-	
-	public MysqlHandler getMysqlHandler()
-	{
-		return mysqlHandler;
-	}
-	
-	public BackgroundTask getBackgroundTask()
-	{
-		return backgroundtask;
-	}
-	
-	public CommandHelper getCommandHelper()
-	{
-		return commandHelper;
-	}
-	
-	public Utility getUtility()
-	{
-		return utility;
 	}
 	
 	public PlayerTimesHandler getPlayerTimes()
@@ -293,12 +255,12 @@ public class AfkRecord extends JavaPlugin
 		
 		ArgumentConstructor bypass = new ArgumentConstructor(baseCommandI+"_bypass", 0, 0, 0, false, null);
 		ArgumentConstructor convert = new ArgumentConstructor(baseCommandI+"_convert", 0, 0, 1, false, null);
-		ArgumentConstructor counttime = new ArgumentConstructor(baseCommandI+"_counttime", 0, 1, 2, false, null);
+		ArgumentConstructor counttime = new ArgumentConstructor(baseCommandI+"_counttime", 0, 1, 2, false, playerMapII);
 		PluginSettings.settings.addCommands(KeyHandler.COUNTTIME, counttime.getCommandString());
-		ArgumentConstructor counttimeperm = new ArgumentConstructor(baseCommandI+"_counttimeperm", 0, 2, 2, false, null);
+		ArgumentConstructor permcounttime = new ArgumentConstructor(baseCommandI+"_permcounttime", 0, 2, 2, false, null);
 		ArgumentConstructor getafk = new ArgumentConstructor(baseCommandI+"_getafk", 0, 0, 0, false, null);
-		ArgumentConstructor gettime = new ArgumentConstructor(baseCommandI+"_gettime", 0, 0, 2, false, null);
-		ArgumentConstructor time = new ArgumentConstructor(baseCommandI+"_time", 0, 0, 1, false, null);
+		ArgumentConstructor gettime = new ArgumentConstructor(baseCommandI+"_gettime", 0, 0, 2, false, playerMapII);
+		ArgumentConstructor time = new ArgumentConstructor(baseCommandI+"_time", 0, 0, 1, false, playerMapI);
 		PluginSettings.settings.addCommands(KeyHandler.TIME, time.getCommandString());
 		
 		ArgumentConstructor top_onlinetime = new ArgumentConstructor(baseCommandI+"_top_onlinetime", 1, 1, 3, false, null);
@@ -309,9 +271,9 @@ public class AfkRecord extends JavaPlugin
 		PluginSettings.settings.addCommands(KeyHandler.TOP_AFKTIME, top_afktime.getCommandString());
 		ArgumentConstructor top = new ArgumentConstructor(baseCommandI+"_top", 0, 0, 0, false, null,
 				top_onlinetime, top_alltime, top_afktime);
-		ArgumentConstructor vacation = new ArgumentConstructor(baseCommandI+"_vacation", 0, 0, 3, false, playerMapII);	
+		ArgumentConstructor vacation = new ArgumentConstructor(baseCommandI+"_vacation", 0, 0, 3, false, playerMapI);	
 		CommandConstructor afkr = new CommandConstructor(baseCommandIName, false,
-				bypass, convert, counttime, counttimeperm, getafk, gettime, time, top, vacation);
+				bypass, convert, counttime, permcounttime, getafk, gettime, time, top, vacation);
 		
 		registerCommand(afkr.getPath(), afkr.getName());
 		getCommand(afkr.getName()).setExecutor(new AfkRCommandExecutor(plugin, afkr));
@@ -324,14 +286,14 @@ public class AfkRecord extends JavaPlugin
 		getCommand(afk.getName()).setTabCompleter(new TABCompletion(plugin));
 		
 		addingHelps(afkr,
-						convert, bypass, counttime, counttimeperm, getafk, gettime, time, top,
+						convert, bypass, counttime, permcounttime, getafk, gettime, time, top,
 							top_onlinetime, top_alltime, top_afktime, vacation,
 					afk);
 		
 		new ARGConvert(plugin, convert);
 		new ARGBypass(plugin, bypass);
 		new ARGCountTime(plugin, counttime);
-		new ARGCountTimePermission(plugin, counttimeperm);
+		new ARGCountTimePermission(plugin, permcounttime);
 		//new ARGCountTimeList(plugin);
 		new ARGGetAfk(plugin, getafk);
 		new ARGGetTime(plugin, gettime);
@@ -482,12 +444,30 @@ public class AfkRecord extends JavaPlugin
 
 	public void setMysqlPlayers(ArrayList<String> players)
 	{
+		if(players == null)
+		{
+			plugin.players = new ArrayList<>();
+			return;
+		}
 		plugin.players = players;
 	}
 	
 	public static AfkRecord getPlugin()
 	{
 		return plugin;
+	}
+	
+	public void setPlayers()
+	{
+		ArrayList<PluginUser> l = PluginUser.convert(plugin.getMysqlHandler().getFullList(MysqlHandler.Type.PLUGINUSER,
+				"`player_name` ASC", "1"));
+		ArrayList<String> li = new ArrayList<>();
+		for(PluginUser pu : l)
+		{
+			li.add(pu.getPlayerName());
+		}
+		Collections.sort(li);
+		plugin.players = li;
 	}
 	
 	public ArrayList<String> getPlayers()
@@ -536,7 +516,7 @@ public class AfkRecord extends JavaPlugin
 	{
 		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
 		{
-            new Expansion(plugin).register();
+            new PAPIHook(plugin).register();
             return;
 		}
 		return;
@@ -565,5 +545,45 @@ public class AfkRecord extends JavaPlugin
 	public Administration getAdministration()
 	{
 		return administrationConsumer;
+	}
+	
+	public YamlHandler getYamlHandler() 
+	{
+		return yamlHandler;
+	}
+	
+	public YamlManager getYamlManager()
+	{
+		return yamlManager;
+	}
+	
+	public void setYamlManager(YamlManager yamlManager)
+	{
+		plugin.yamlManager = yamlManager;
+	}
+	
+	public MysqlSetup getMysqlSetup() 
+	{
+		return mysqlSetup;
+	}
+	
+	public MysqlHandler getMysqlHandler()
+	{
+		return mysqlHandler;
+	}
+	
+	public BackgroundTask getBackgroundTask()
+	{
+		return backgroundtask;
+	}
+	
+	public CommandHelper getCommandHelper()
+	{
+		return commandHelper;
+	}
+	
+	public Utility getUtility()
+	{
+		return utility;
 	}
 }

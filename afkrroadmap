@@ -4,6 +4,15 @@ Future Build
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
+Build 10-2-0
+- Mathematische Diskrepanz zwischend der Gesamtzeit und der Aktiven + Afkzeit gefixt!
+- /afkr counttimeperm wurde zu /afkr permcounttime
+- /afkr getafk fix. Spieler welche nicht online sind, sollten nun nicht mehr angezeigt werden.
+- Verschiedene Tabs sind für die Spieler eingerichtet.
+- /afkr vacation, kann nun neben dem Spielername, und dem Zeitformat, nun auch eine normale Zahl angegeben werden.
+  Diese Zahl wird als Tageszahl genutzt um zu determinieren wieviele Tage man im Urlaub ist. Wenn die Zahl 0 ist, wird man aus dem Urlaub geholt.
+- 3 NullPointerException saveRam fix
+
 Build 10-1-1
 - IFH Administration aktualisiert
 

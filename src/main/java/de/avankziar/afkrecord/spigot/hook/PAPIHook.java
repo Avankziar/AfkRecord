@@ -1,4 +1,4 @@
-package main.java.de.avankziar.afkrecord.spigot.papi;
+package main.java.de.avankziar.afkrecord.spigot.hook;
 
 import org.bukkit.entity.Player;
 
@@ -8,11 +8,11 @@ import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler.Type;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
-public class Expansion extends PlaceholderExpansion
+public class PAPIHook extends PlaceholderExpansion
 {
 	private AfkRecord plugin;
 	
-	public Expansion(AfkRecord plugin)
+	public PAPIHook(AfkRecord plugin)
 	{
 		this.plugin = plugin;
 	}

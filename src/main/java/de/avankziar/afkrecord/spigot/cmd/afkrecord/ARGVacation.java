@@ -64,18 +64,41 @@ public class ARGVacation extends ArgumentModule
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 				return;
 			}
-			if(System.currentTimeMillis() > user.getVacationTime())
+			if(MatchApi.isNumber(args[1]))
 			{
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.ThePlayerNotInVacation")
-						.replace("%player%", args[1])));
-				return;
+				long days = Long.parseLong(args[1]);
+				if(days == 0)
+				{
+					user.setVacationTime(0);
+					plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", player.getUniqueId().toString());
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.NowNotInVacation")));
+					return;
+				}
+				final long datetime = days*24*60*60*1000 + System.currentTimeMillis();
+				if(datetime < System.currentTimeMillis())
+				{
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.NoVacationInThePast")));
+					return;
+				}
+				user.setVacationTime(datetime);
+				plugin.getMysqlHandler().updateData(Type.PLUGINUSER, user, "`player_uuid` = ?", player.getUniqueId().toString());
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.SetVacation")
+						.replace("%time%", plugin.getPlayerTimes().formatDate(datetime))));
 			} else
 			{
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.ThePlayerIsInVacation")
-						.replace("%player%", args[1])
-						.replace("%time%", plugin.getPlayerTimes().formatDate(user.getVacationTime()))));
-				return;
-			}
+				if(System.currentTimeMillis() > user.getVacationTime())
+				{
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.ThePlayerNotInVacation")
+							.replace("%player%", args[1])));
+					return;
+				} else
+				{
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Vacation.ThePlayerIsInVacation")
+							.replace("%player%", args[1])
+							.replace("%time%", plugin.getPlayerTimes().formatDate(user.getVacationTime()))));
+					return;
+				}
+			}			
 		} else if(args.length == 3)
 		{
 			String[] date = args[1].split("\\.");
