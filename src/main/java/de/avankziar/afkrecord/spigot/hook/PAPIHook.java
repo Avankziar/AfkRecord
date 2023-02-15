@@ -38,7 +38,7 @@ public class PAPIHook extends PlaceholderExpansion
 	@Override
 	public String getIdentifier()
 	{
-		return AfkRecord.pluginName.toLowerCase();
+		return "afkr";
 	}
 	
 	@Override

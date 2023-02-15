@@ -5,6 +5,7 @@ Future Build
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
 Build 10-2-1
+- Placeholder %afkrecord_....% in %afkr_...% umbenannt
 - PlacerholderApi Language fix
 
 Build 10-2-0
