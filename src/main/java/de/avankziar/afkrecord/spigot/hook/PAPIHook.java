@@ -59,7 +59,9 @@ public class PAPIHook extends PlaceholderExpansion
 		{
 			return "";
 		}
-		String format = "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") +
+		String format = 
+				"&fyyyy"+plugin.getYamlHandler().getLang().getString("Time.Years") +
+				"&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") +
 				"&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") +
 				"&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") +
 				"&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds");

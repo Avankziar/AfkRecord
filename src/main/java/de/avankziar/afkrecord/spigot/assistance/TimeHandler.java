@@ -58,12 +58,12 @@ public class TimeHandler
 	public static String getRepeatingTime(long l, String timeformat) // yyyy-dd-HH:mm
 	{
 		long ll = l;
-		/*String year = "";
+		String year = "";
 		long y = Math.floorDiv(ll, yyyy);
 		year += String.valueOf(y);
 		ll = ll - y*yyyy;
 		
-		String month = "";
+		/*String month = "";
 		long M = Math.floorDiv(ll, MM);
 		month += String.valueOf(M);
 		ll = ll - M*MM;*/
@@ -98,7 +98,7 @@ public class TimeHandler
 			sec += String.valueOf(0);
 		}
 		sec += String.valueOf(s);
-		String time = timeformat//.replace("yyyy", year)
+		String time = timeformat.replace("yyyy", year)
 								//.replace("MM", month)
 								.replace("dd", day)
 								.replace("HH", hour)

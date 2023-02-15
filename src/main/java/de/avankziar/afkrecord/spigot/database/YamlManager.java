@@ -382,6 +382,26 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%value% &es&f",
 						"%value% &es&f"}));
+		languageKeys.put("Time.Years", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&dJahre&f ",
+						"&dYears&f "}));
+		languageKeys.put("Time.Days", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&4Tage&f ",
+						"&4days&f "}));
+		languageKeys.put("Time.Hours", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&ch&f ",
+						"&ch&f "}));
+		languageKeys.put("Time.Minutes", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&6min&f ",
+						"&6min&f "}));
+		languageKeys.put("Time.Seconds", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&es&f",
+						"&es&f"}));
 		
 		languageKeys.put("AfkKicker.Kick", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
