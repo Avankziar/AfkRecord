@@ -4,6 +4,9 @@ Future Build
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
+Build 10-2-1
+- PlacerholderApi Language fix
+
 Build 10-2-0
 - Mathematische Diskrepanz zwischend der Gesamtzeit und der Aktiven + Afkzeit gefixt!
 - /afkr counttimeperm wurde zu /afkr permcounttime

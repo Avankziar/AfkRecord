@@ -59,20 +59,29 @@ public class PAPIHook extends PlaceholderExpansion
 		{
 			return "";
 		}
-		String format = 
-				"&fyyyy"+plugin.getYamlHandler().getLang().getString("Time.Years") +
-				"&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") +
-				"&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") +
-				"&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") +
-				"&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds");
-		
+		String format = "";
 		switch(identifier)
 		{
 		case "user_total_alltime":
+			format = 
+			(user.getTotalTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
+			(user.getTotalTime() > 1000*60*60*5L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getTotalTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
+			(user.getTotalTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
 			return TimeHandler.getRepeatingTime(user.getTotalTime(), format);
 		case "user_total_activitytime":
+			format = 
+			(user.getActiveTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
+			(user.getActiveTime() > 1000*60*60*5L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getActiveTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
+			(user.getActiveTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
 			return TimeHandler.getRepeatingTime(user.getActiveTime(), format);
 		case "user_total_afktime":
+			format = 
+			(user.getAfkTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
+			(user.getAfkTime() > 1000*60*60*5L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getAfkTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
+			(user.getAfkTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
 			return TimeHandler.getRepeatingTime(user.getAfkTime(), format);
 		case "user_lastactivity":
 			return plugin.getPlayerTimes().formatDate(user.getLastActivity());
