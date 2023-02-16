@@ -47,7 +47,7 @@ public class PlayerTimesHandler
 		this.plugin = plugin;
 	}
 	
-	public void join(final UUID uuid, final String name)
+	public void join(final UUID uuid, final String name, boolean isAsync)
 	{
 		final long now = System.currentTimeMillis();
 		onlinePlayers.put(uuid, name);
@@ -59,7 +59,7 @@ public class PlayerTimesHandler
 			createAccount(uuid, name);
 		}
 		setOnline(uuid, true);
-		setActive(uuid);
+		setActive(uuid, isAsync);
 		setLastActivity(uuid, now);
 	}
 	
@@ -83,18 +83,16 @@ public class PlayerTimesHandler
 		return addUp;
 	}
 	
-	private boolean callAfkEvent(UUID uuid, boolean isAsync)
+	private void callAfkEvent(UUID uuid, boolean isAsync)
 	{
 		PlayerChangeToAfkEvent event = new PlayerChangeToAfkEvent(Bukkit.getPlayer(uuid), isAsync);
 		Bukkit.getPluginManager().callEvent(event);
-		return event.isCancelled();
 	}
 	
-	private boolean callNotAfkEvent(UUID uuid, boolean isAsync)
+	private void callNotAfkEvent(UUID uuid, boolean isAsync)
 	{
 		PlayerChangeToNotAfkEvent event = new PlayerChangeToNotAfkEvent(Bukkit.getPlayer(uuid), isAsync);
 		Bukkit.getPluginManager().callEvent(event);
-		return event.isCancelled();
 	}
 	
 	public boolean saveRAM(UUID uuid, Boolean activeOrAfk, boolean join, boolean forcedQuit, boolean isAsync)
@@ -122,7 +120,7 @@ public class PlayerTimesHandler
 			final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 			final boolean isAfk = !activeStatus.get(uuid);
 			addTime(uuid, act, afkt, now, now, false, isAfk);
-			setActive(uuid);
+			setActive(uuid, isAsync);
 			setLastActivity(uuid, now);
 			setOnline(uuid, false);
 			lastTimeChecked.remove(uuid);
@@ -179,16 +177,12 @@ public class PlayerTimesHandler
 			} else
 			{
 				// was afk, is now active
-				if(callNotAfkEvent(uuid, isAsync))
-				{
-					return false;
-				} else
-				{
-					Player player = Bukkit.getPlayer(uuid);
-					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")
-							.replace("%time%", 
-									plugin.getPlayerTimes().formatTimePeriod(System.currentTimeMillis(), false, false))));
-				}
+				callNotAfkEvent(uuid, isAsync);
+				Player player = Bukkit.getPlayer(uuid);
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")
+						.replace("%time%",
+								LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+								.format(DateTimeFormatter.ofPattern("HH:mm:ss")))));
 				final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 				afkTime.put(uuid, dif+afkt);
 				activeStatus.put(uuid, true);
@@ -206,16 +200,12 @@ public class PlayerTimesHandler
 			} else if(activestatus)
 			{
 				// was active, is now afk
-				if(callAfkEvent(uuid, isAsync))
-				{
-					return false;
-				} else
-				{
-					Player player = Bukkit.getPlayer(uuid);
-					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
-							.replace("%time%", 
-									plugin.getPlayerTimes().formatTimePeriod(System.currentTimeMillis(), false, false))));
-				}
+				callAfkEvent(uuid, isAsync);
+				Player player = Bukkit.getPlayer(uuid);
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
+						.replace("%time%", 
+								LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+								.format(DateTimeFormatter.ofPattern("HH:mm:ss")))));
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 				activeTime.put(uuid, dif+act);
 				activeStatus.put(uuid, false);
@@ -295,7 +285,7 @@ public class PlayerTimesHandler
 		return true;
 	}
 	
-	public void afkChecker(UUID uuid, long afkAfterLastActivityInSeconds)
+	public void afkChecker(UUID uuid, long afkAfterLastActivityInSeconds, boolean isAsync)
 	{
 		if(!onlinePlayers.containsKey(uuid)
 				|| !activeStatus.containsKey(uuid)
@@ -307,10 +297,10 @@ public class PlayerTimesHandler
 		long tt = lastActivity.get(uuid)+afkAfterLastActivityInSeconds;
 		if(activeStatus.get(uuid) //was active
 				&& tt < System.currentTimeMillis())
-			saveRAM(uuid, false, false, false, true);
+			saveRAM(uuid, false, false, false, isAsync);
 	}
 	
-	public void afkKicker(final UUID uuid, final String time, long kickAfterLastActivityInSeconds)
+	public void afkKicker(final UUID uuid, final String time, long kickAfterLastActivityInSeconds, boolean isAsync)
 	{
 		if(!onlinePlayers.containsKey(uuid)
 				|| !activeStatus.containsKey(uuid)
@@ -322,7 +312,7 @@ public class PlayerTimesHandler
 		if(!activeStatus.get(uuid) //was afk
 				&& lastActivity.get(uuid)+kickAfterLastActivityInSeconds < System.currentTimeMillis())
 		{
-			saveRAM(uuid, false, false, true, true); //Save for quit
+			saveRAM(uuid, false, false, true, isAsync); //Save for quit
 			new BukkitRunnable()
 			{
 				@Override
@@ -534,14 +524,14 @@ public class PlayerTimesHandler
 		return (user != null) ? user.isOnline() : false;
 	}
 
-	public boolean setActive(UUID uuid)
+	public boolean setActive(UUID uuid, boolean isAsync)
 	{
-		return saveRAM(uuid, true, false, false, false);
+		return saveRAM(uuid, true, false, false, isAsync);
 	}
 
-	public boolean setInactive(UUID uuid)
+	public boolean setInactive(UUID uuid, boolean isAsync)
 	{
-		return saveRAM(uuid, false, false, false, false);
+		return saveRAM(uuid, false, false, false, isAsync);
 	}
 
 	public boolean setOnline(UUID uuid, boolean online)

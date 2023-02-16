@@ -64,7 +64,7 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getPlayerTimes().afkChecker(player.getUniqueId(), afkAfterLastActivityInSeconds);
+					plugin.getPlayerTimes().afkChecker(player.getUniqueId(), afkAfterLastActivityInSeconds, true);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
@@ -89,7 +89,7 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getPlayerTimes().afkKicker(player.getUniqueId(), msg, kickAfterLastActivityInSeconds);
+					plugin.getPlayerTimes().afkKicker(player.getUniqueId(), msg, kickAfterLastActivityInSeconds, true);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,

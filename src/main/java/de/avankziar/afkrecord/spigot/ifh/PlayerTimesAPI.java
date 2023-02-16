@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import org.bukkit.scheduler.BukkitRunnable;
+
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.me.avankziar.ifh.general.interfaces.PlayerTimes;
 
@@ -127,13 +129,30 @@ public class PlayerTimesAPI implements PlayerTimes
 	@Override
 	public boolean setActive(UUID uuid)
 	{
-		return plugin.getPlayerTimes().setActive(uuid);
+		new BukkitRunnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				plugin.getPlayerTimes().setActive(uuid, true);
+			}
+		}.runTaskAsynchronously(plugin);
+		return true;
 	}
 
 	@Override
 	public boolean setInactive(UUID uuid)
 	{
-		return plugin.getPlayerTimes().setInactive(uuid);
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				plugin.getPlayerTimes().setInactive(uuid, false);
+			}
+		}.runTaskAsynchronously(plugin);
+		return true;
 	}
 
 	@Override
