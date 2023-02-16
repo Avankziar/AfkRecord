@@ -65,21 +65,21 @@ public class PAPIHook extends PlaceholderExpansion
 		case "user_total_alltime":
 			format = 
 			(user.getTotalTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
-			(user.getTotalTime() > 1000*60*60*5L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getTotalTime() > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
 			(user.getTotalTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
 			(user.getTotalTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
 			return TimeHandler.getRepeatingTime(user.getTotalTime(), format);
 		case "user_total_activitytime":
 			format = 
 			(user.getActiveTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
-			(user.getActiveTime() > 1000*60*60*5L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getActiveTime() > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
 			(user.getActiveTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
 			(user.getActiveTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
 			return TimeHandler.getRepeatingTime(user.getActiveTime(), format);
 		case "user_total_afktime":
 			format = 
 			(user.getAfkTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
-			(user.getAfkTime() > 1000*60*60*5L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getAfkTime() > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
 			(user.getAfkTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
 			(user.getAfkTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
 			return TimeHandler.getRepeatingTime(user.getAfkTime(), format);
@@ -148,7 +148,10 @@ public class PAPIHook extends PlaceholderExpansion
 	
 	private String getLanguageBoolean(boolean boo)
 	{
-		if(plugin.getYamlHandler().getConfig().getString("Language").equals("GER"))
+		String lang = plugin.getAdministration() == null 
+				? plugin.getYamlHandler().getConfig().getString("Language", "ENG").toUpperCase() 
+				: plugin.getAdministration().getLanguage().toUpperCase();
+		if(lang.equals("GER"))
 		{
 			if(boo)
 			{
