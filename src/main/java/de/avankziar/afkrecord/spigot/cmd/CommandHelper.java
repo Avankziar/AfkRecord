@@ -12,6 +12,7 @@ import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.assistance.TimeHandler;
 import main.java.de.avankziar.afkrecord.spigot.assistance.Utility;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler.Type;
+import main.java.de.avankziar.afkrecord.spigot.handler.PlayerTimesHandler;
 import main.java.de.avankziar.afkrecord.spigot.object.ConvertHandler;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginSettings;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
@@ -36,15 +37,17 @@ public class CommandHelper
 	public void time(Player player, OfflinePlayer target)
 	{
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER, "`player_uuid` = ?", target.getUniqueId().toString());
-		int acplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`activitytime`", "`activitytime` > ?", user.getActiveTime());
-		int afkplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`afktime`", "`afktime` > ?", user.getAfkTime());
-		int allplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`alltime`", "`alltime` > ?", user.getTotalTime());
+		long act = (PlayerTimesHandler.activeTime.containsKey(target.getUniqueId()) ? PlayerTimesHandler.activeTime.get(target.getUniqueId()) : 0);
+		long afk = (PlayerTimesHandler.afkTime.containsKey(target.getUniqueId()) ? PlayerTimesHandler.afkTime.get(target.getUniqueId()) : 0);
+		int acplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`activitytime`", "`activitytime` > ?", user.getActiveTime()+act);
+		int afkplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`afktime`", "`afktime` > ?", user.getAfkTime()+afk);
+		int allplace = plugin.getMysqlHandler().getTopListPlaceI(plugin, "`alltime`", "`alltime` > ?", user.getTotalTime()+act+afk);
 		boolean b = true;
-		String afktime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getAfkTime(), false, b, b, b, b) : "0";
+		String afktime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getAfkTime()+afk, false, b, b, b, b) : "0";
 				//TimeHandler.getRepeatingTime(user.getAfkTime(), format) : 0);
-		String ontime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getActiveTime(), false, b, b, b, b) : "0";
+		String ontime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getActiveTime()+act, false, b, b, b, b) : "0";
 				//TimeHandler.getRepeatingTime(user.getActiveTime(), format) : "0";
-		String alltime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getTotalTime(), false, b, b, b, b) : "0";
+		String alltime = (user != null) ? plugin.getPlayerTimes().formatTimePeriod(user.getTotalTime()+act+afk, false, b, b, b, b) : "0";
 				//TimeHandler.getRepeatingTime(user.getTotalTime(), format) : 0);
 		String lastactivity = String.valueOf((user != null) ? plugin.getPlayerTimes().formatDate(user.getLastActivity()) : 0);
 		

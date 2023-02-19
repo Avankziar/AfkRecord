@@ -33,14 +33,16 @@ public class PlayerTimesHandler
 	final static long WEEK = DAY*7;
 	final static long YEAR = DAY*365;
 	
-	public ArrayList<UUID> playerWhoBypassAfkTracking = new ArrayList<>();
-	private HashMap<UUID, String> onlinePlayers = new HashMap<>();
-	private HashMap<UUID, Long> lastTimeChecked = new HashMap<>();
-	private HashMap<UUID, Long> lastActivity = new HashMap<>();
-	private HashMap<UUID, Boolean> activeStatus = new HashMap<>();
+	public static ArrayList<UUID> playerWhoBypassAfkTracking = new ArrayList<>();
+	private static HashMap<UUID, String> onlinePlayers = new HashMap<>();
+	public static HashMap<UUID, Long> lastTimeChecked = new HashMap<>();
+	public static HashMap<UUID, Long> lastActivity = new HashMap<>();
+	public static HashMap<UUID, Boolean> activeStatus = new HashMap<>();
 	//private HashMap<UUID, Long> totalTime = new HashMap<>();
-	private HashMap<UUID, Long> activeTime = new HashMap<>();
-	private HashMap<UUID, Long> afkTime = new HashMap<>();
+	public static HashMap<UUID, Long> activeTime = new HashMap<>();
+	public static HashMap<UUID, Long> afkTime = new HashMap<>();
+	
+	public static boolean isShutDown = false;
 	
 	public PlayerTimesHandler(AfkRecord plugin)
 	{
@@ -51,16 +53,23 @@ public class PlayerTimesHandler
 	{
 		final long now = System.currentTimeMillis();
 		onlinePlayers.put(uuid, name);
-		lastTimeChecked.put(uuid, System.currentTimeMillis());
-		lastActivity.put(uuid, System.currentTimeMillis());
+		lastTimeChecked.put(uuid, now);
+		lastActivity.put(uuid, now);
 		activeStatus.put(uuid, true);
 		if(!hasAccount(uuid))
 		{
 			createAccount(uuid, name);
 		}
-		setOnline(uuid, true);
-		setActive(uuid, isAsync);
-		setLastActivity(uuid, now);
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				setOnline(uuid, true);
+				setActive(uuid, true);
+				setLastActivity(uuid, now);
+			}
+		}.runTaskLaterAsynchronously(plugin, 20L*4);
 	}
 	
 	private String getOnlinePlayerName(UUID uuid)
@@ -95,58 +104,78 @@ public class PlayerTimesHandler
 		Bukkit.getPluginManager().callEvent(event);
 	}
 	
-	public boolean saveRAM(UUID uuid, Boolean activeOrAfk, boolean join, boolean forcedQuit, boolean isAsync)
+	public boolean saveRAM(UUID uuid, Boolean activeOrAfk,
+			boolean join, boolean forcedQuit, boolean isAsync)
 	{
+		//Player p = Bukkit.getPlayer(uuid);
 		if(join && !forcedQuit)
 		{
 			//Join per Event
 			final long now = System.currentTimeMillis();
 			addTime(uuid, 0, 0, now, now, true, false);
-			lastTimeChecked.put(uuid, now);
-			lastActivity.put(uuid, now);
-			activeStatus.put(uuid, true);
+			/*AfkRecord.log.info("0");
+			p.sendMessage(LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+					.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+" >> 0"); */
 			return true;
 		} else if(!join && forcedQuit)
 		{
 			//Quit per ServerDown or QuitEvent
-			if(!lastTimeChecked.containsKey(uuid)
-					&& !activeStatus.containsKey(uuid))
+			if(isShutDown)
 			{
+				//AfkRecord.log.info("1-0");
 				//Check if the the server going down. And so the player already is save out.
 				return false;
 			}
 			final long now = System.currentTimeMillis();
-			final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
-			final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
-			final boolean isAfk = !activeStatus.get(uuid);
-			addTime(uuid, act, afkt, now, now, false, isAfk);
+			final long then = lastTimeChecked.get(uuid);
+			final long dif = now-then;
+			final boolean isAfk = !(activeStatus.containsKey(uuid) ? activeStatus.get(uuid) : true);
+			final long act = (activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0)
+					+ (isAfk ? 0 : dif);
+			final long afkt = (afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0)
+					+ (isAfk ? dif : 0);
+			/*AfkRecord.log.info("now : "+now);
+			AfkRecord.log.info("then : "+then);
+			AfkRecord.log.info("dif : "+dif);
+			AfkRecord.log.info("now - dif = ? : "+(now-dif));
+			AfkRecord.log.info("act : "+act);
+			AfkRecord.log.info("afk : "+afkt);*/
+			addTime(uuid, act, afkt, now, now, false, false);
 			setActive(uuid, isAsync);
 			setLastActivity(uuid, now);
 			setOnline(uuid, false);
-			lastTimeChecked.remove(uuid);
 			activeStatus.remove(uuid);
 			activeTime.remove(uuid);
 			afkTime.remove(uuid);
 			activeStatus.get(uuid);
 			onlinePlayers.remove(uuid);
+			/*AfkRecord.log.info("1-1");
+			p.sendMessage(LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+					.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+" >> 1"); //*/
 			return true;
 		} else if(join && forcedQuit)
 		{
 			//MySQL Save Run
 			final long now = System.currentTimeMillis();
-			final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
-			final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
-			boolean isAfk = !(activeStatus.get(uuid) == null ? false : activeStatus.get(uuid));
+			final long then = lastTimeChecked.get(uuid);
+			final long dif = now-then;
+			boolean isAfk = !(activeStatus.containsKey(uuid) ? activeStatus.get(uuid) : true);
+			final long act = (activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0)
+					+ (isAfk ? 0 : dif);
+			final long afkt = (afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0)
+					+ (isAfk ? dif : 0);
 			addTime(uuid, act, afkt, now, lastActivity.containsKey(uuid) ? lastActivity.get(uuid) : -1, true, isAfk);
 			activeTime.put(uuid, 0L);
 			afkTime.put(uuid, 0L);
 			lastTimeChecked.put(uuid, now);
+			/*AfkRecord.log.info("2");
+			p.sendMessage(LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+					.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+" >> 2"); */
+			return true;
 		}
-		if(!lastTimeChecked.containsKey(uuid)
-				&& !activeStatus.containsKey(uuid))
-		{
-			return false;
-		}
+		/*AfkRecord.log.info("3");
+		p.sendMessage(LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+				.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+" >> 3"); */
 		final long now = System.currentTimeMillis();
 		final long then = lastTimeChecked.get(uuid);
 		final long dif = now-then;
@@ -174,6 +203,7 @@ public class PlayerTimesHandler
 				// was and is active
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 				activeTime.put(uuid, dif+act);
+				lastActivity.put(uuid, now);
 			} else
 			{
 				// was afk, is now active
@@ -187,8 +217,8 @@ public class PlayerTimesHandler
 				afkTime.put(uuid, dif+afkt);
 				activeStatus.put(uuid, true);
 				setActivity(uuid, now, false);
+				lastActivity.put(uuid, now);
 			}
-			lastActivity.put(uuid, now);
 		} else
 		{
 			//is now Afk
@@ -217,7 +247,6 @@ public class PlayerTimesHandler
 				afkTime.put(uuid, dif+afkt);
 			}
 		}
-		lastTimeChecked.put(uuid, now);
 		return true;
 	}
 	
@@ -250,12 +279,9 @@ public class PlayerTimesHandler
 		}
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(Type.PLUGINUSER, "`player_uuid` = ?", uuid.toString());
 		user.setTotalTime(user.getTotalTime()+activeTime+afkTime);
-		if(activeTime > 0)
-			user.setActiveTime(user.getActiveTime()+activeTime);
-		if(afkTime > 0)
-			user.setAfkTime(user.getAfkTime()+afkTime);
-		if(lastTimeChecked > 0)
-			user.setLastTimeCheck(lastTimeChecked);
+		user.setActiveTime(user.getActiveTime()+activeTime);
+		user.setAfkTime(user.getAfkTime()+afkTime);
+		user.setLastTimeCheck(lastTimeChecked);
 		if(lastActivity > 0)
 			user.setLastActivity(lastActivity);
 		user.setOnline(isOnline);
@@ -276,10 +302,8 @@ public class PlayerTimesHandler
 			return true;
 		}
 		tr.setTotalTime(tr.getTotalTime()+activeTime+afkTime);
-		if(activeTime > 0)
-			tr.setActiveTime(tr.getActiveTime()+activeTime);
-		if(afkTime > 0)
-			tr.setAfkTime(tr.getAfkTime()+afkTime);
+		tr.setActiveTime(tr.getActiveTime()+activeTime);
+		tr.setAfkTime(tr.getAfkTime()+afkTime);
 		plugin.getMysqlHandler().updateData(Type.TIMERECORD, tr, "`player_uuid` = ? AND `timestamp_unix` = ?",
 				uuid.toString(), today);
 		return true;
@@ -643,34 +667,6 @@ public class PlayerTimesHandler
 	{
 		return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault())
 				.format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"));
-	}
-	
-	public String formatDate(long time, boolean useYears, boolean useMonths, boolean useDays,
-			boolean useHours, boolean useMinutes, boolean useSeconds)
-	{
-		String t = "";
-		if(useDays)
-			t += "dd";
-		if(useDays && useMonths)
-			t += ".";
-		if(useMonths)
-			t += "MM";
-		if(useMonths && useYears)
-			t += ".";
-		if((useDays || useMonths || useYears) && (useHours || useMinutes || useSeconds))
-			t += " ";
-		if(useHours)
-			t += "HH";
-		if(useHours && useMinutes)
-			t += ":";
-		if(useMinutes)
-			t += "mm";
-		if(useMinutes && useSeconds)
-			t += ":";
-		if(useSeconds)
-			t += "ss";
-		t = t.strip();
-		return t;
 	}
 	
 	public String formatTimePeriod(long time, boolean ye, boolean da)

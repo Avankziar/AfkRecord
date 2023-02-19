@@ -1,10 +1,13 @@
 package main.java.de.avankziar.afkrecord.spigot.hook;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.assistance.TimeHandler;
 import main.java.de.avankziar.afkrecord.spigot.database.MysqlHandler.Type;
+import main.java.de.avankziar.afkrecord.spigot.handler.PlayerTimesHandler;
 import main.java.de.avankziar.afkrecord.spigot.object.PluginUser;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
@@ -59,36 +62,42 @@ public class PAPIHook extends PlaceholderExpansion
 		{
 			return "";
 		}
+		UUID uuid = player.getUniqueId();
 		String format = "";
+		long act = (PlayerTimesHandler.activeTime.containsKey(uuid) ? PlayerTimesHandler.activeTime.get(uuid) : 0);
+		long afk = (PlayerTimesHandler.afkTime.containsKey(uuid) ? PlayerTimesHandler.afkTime.get(uuid) : 0);
 		switch(identifier)
 		{
 		case "user_total_alltime":
 			format = 
-			(user.getTotalTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
-			(user.getTotalTime() > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
-			(user.getTotalTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
-			(user.getTotalTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
-			return TimeHandler.getRepeatingTime(user.getTotalTime(), format);
+			(user.getTotalTime()+act+afk > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
+			(user.getTotalTime()+act+afk > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getTotalTime()+act+afk > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
+			"&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds");
+			return TimeHandler.getRepeatingTime(user.getTotalTime()+act+afk, format);
 		case "user_total_activitytime":
 			format = 
-			(user.getActiveTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
-			(user.getActiveTime() > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
-			(user.getActiveTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
-			(user.getActiveTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
-			return TimeHandler.getRepeatingTime(user.getActiveTime(), format);
+			(user.getActiveTime()+act > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
+			(user.getActiveTime()+act > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getActiveTime()+act > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
+			"&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds");
+			return TimeHandler.getRepeatingTime(user.getActiveTime()+act, format);
 		case "user_total_afktime":
 			format = 
-			(user.getAfkTime() > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
-			(user.getAfkTime() > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
-			(user.getAfkTime() > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
-			(user.getAfkTime() > 1000L ? "&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds") : "");
-			return TimeHandler.getRepeatingTime(user.getAfkTime(), format);
+			(user.getAfkTime()+afk > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
+			(user.getAfkTime()+afk > 1000*60*60L ? "&fHH"+plugin.getYamlHandler().getLang().getString("Time.Hours") : "") +
+			(user.getAfkTime()+afk > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
+			"&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds");
+			return TimeHandler.getRepeatingTime(user.getAfkTime()+afk, format);
 		case "user_lastactivity":
-			return plugin.getPlayerTimes().formatDate(user.getLastActivity());
+			return plugin.getPlayerTimes().formatDate(
+					PlayerTimesHandler.lastActivity.containsKey(uuid) ? PlayerTimesHandler.lastActivity.get(uuid)  : user.getLastActivity());
 		case "user_lasttimechecked":
-			return plugin.getPlayerTimes().formatDate(user.getLastTimeCheck());
+			return plugin.getPlayerTimes().formatDate(
+					PlayerTimesHandler.lastTimeChecked.containsKey(uuid) ? PlayerTimesHandler.lastTimeChecked.get(uuid) : user.getLastTimeCheck());
 		case "user_isafk":
-			return getLanguageBoolean(user.isAFK());
+			return getLanguageBoolean(
+					PlayerTimesHandler.activeStatus.containsKey(uuid) ? !PlayerTimesHandler.activeStatus.get(uuid) : user.isAFK());
 		case "user_isonline":
 			return getLanguageBoolean(user.isOnline());
 		case "user_30days_activitytime":

@@ -232,7 +232,7 @@ public class PlayerTimesAPI implements PlayerTimes
 	public String formatDate(long time, boolean useYears, boolean useMonths, boolean useDays,
 			boolean useHours, boolean useMinutes, boolean useSeconds)
 	{
-		return plugin.getPlayerTimes().formatDate(time, useYears, useMonths, useDays, useHours, useMinutes, useSeconds);
+		return plugin.getPlayerTimes().formatTimePeriod(time, useYears, useDays, useHours, useMinutes, useSeconds);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
+import main.java.de.avankziar.afkrecord.spigot.handler.PlayerTimesHandler;
 
 public class BackgroundTask 
 {
@@ -102,5 +103,6 @@ public class BackgroundTask
 		{
 			plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, false, true, false);
 		}
+		PlayerTimesHandler.isShutDown = true;
 	}
 }

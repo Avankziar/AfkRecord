@@ -97,8 +97,8 @@ public class BaseListener implements Listener
 		{
 			return;
 		}
-		plugin.getPlayerTimes().saveRAM(uuid, true, false, false, isAsync);
 		addCooldown(uuid);
+		plugin.getPlayerTimes().saveRAM(uuid, true, false, false, isAsync);
 	}
 	
 	public boolean inCooldown(UUID uuid)

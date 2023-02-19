@@ -153,7 +153,7 @@ public class YamlManager
 		
 		configKeys.put("General.RAMSave.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				600}));
+				120}));
 		configKeys.put("General.MySQLSave.InSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				240}));
@@ -162,7 +162,7 @@ public class YamlManager
 				60}));
 		configKeys.put("General.AfkChecker.AfkAfterLastActivityInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				900}));
+				600}));
 		configKeys.put("General.AfkKicker.IsActive"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
