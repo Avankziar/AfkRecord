@@ -349,6 +349,44 @@ public class PlayerTimesHandler
 		}
 	}
 	
+	public void afkTeleport(final UUID uuid, long teleportAfterLastActivityInSeconds, boolean isAsync)
+	{
+		if(!onlinePlayers.containsKey(uuid)
+				|| !activeStatus.containsKey(uuid)
+				|| !lastActivity.containsKey(uuid))
+		{
+			return;
+		}
+		if(!activeStatus.get(uuid) //was afk
+				&& lastActivity.get(uuid)+teleportAfterLastActivityInSeconds < System.currentTimeMillis())
+		{
+			saveRAM(uuid, false, false, false, isAsync); //Save for quit
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					Player player = Bukkit.getPlayer(uuid);
+					for(String s : plugin.getYamlHandler().getConfig().getStringList(""))
+					{
+						String[] split = s.split(";");
+						if(split.length != 2)
+						{
+							continue;
+						}
+						if(split[0].equalsIgnoreCase("console"))
+						{
+							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), split[1].replace("%player%", player.getName()));
+						} else if(split[0].equalsIgnoreCase("player"))
+						{
+							Bukkit.dispatchCommand(player, split[1].replace("%player%", player.getName()));
+						}
+					}
+				}
+			}.runTask(plugin);
+		}
+	}
+	
 	public boolean addActiveTime(UUID uuid, long... time)
 	{
 		if(!hasAccount(uuid))

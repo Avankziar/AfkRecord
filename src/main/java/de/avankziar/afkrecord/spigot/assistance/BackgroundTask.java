@@ -20,6 +20,10 @@ public class BackgroundTask
 		{
 			runAfkKickerTask();
 		}
+		if(plugin.getYamlHandler().getConfig().getBoolean("General.AfkTeleport.IsActive", false))
+		{
+			runAfkTeleportTask();
+		}
 	}
 	
 	public void runRAMSave()
@@ -95,6 +99,24 @@ public class BackgroundTask
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
 				plugin.getYamlHandler().getConfig().getInt("General.AfkKicker.InSeconds")*20L);
+	}
+	
+	public void runAfkTeleportTask()
+	{
+		new BukkitRunnable() 
+		{
+			final long doCommandAfterLastActivityInSeconds = plugin.getYamlHandler().getConfig()
+					.getInt("General.AfkTeleport.DoCommandAfterLastActivityInSeconds")*1000L;
+			@Override
+			public void run() 
+			{
+				for(Player player : plugin.getServer().getOnlinePlayers())
+				{
+					plugin.getPlayerTimes().afkTeleport(player.getUniqueId(), doCommandAfterLastActivityInSeconds, true);
+				}
+			}
+		}.runTaskTimerAsynchronously(plugin, 0L,
+				plugin.getYamlHandler().getConfig().getInt("General.AfkTeleport.InSeconds")*20L);
 	}
 	
 	public void onShutDownDataSave()

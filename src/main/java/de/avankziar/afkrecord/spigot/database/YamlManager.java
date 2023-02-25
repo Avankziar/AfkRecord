@@ -172,6 +172,19 @@ public class YamlManager
 		configKeys.put("General.AfkKicker.KickAfterLastActivityInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				600}));
+		configKeys.put("General.AfkTeleport.IsActive"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
+		configKeys.put("General.AfkTeleport.UseCommand"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"console;warp afk",
+				"player;warp afk"}));
+		configKeys.put("General.AfkTeleport.InSeconds"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				60}));
+		configKeys.put("General.AfkTeleport.DoCommandAfterLastActivityInSeconds"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				600}));
 		//--------Above finish
 		for(BaseListener.EventType et : new ArrayList<BaseListener.EventType>(EnumSet.allOf(BaseListener.EventType.class)))
 		{

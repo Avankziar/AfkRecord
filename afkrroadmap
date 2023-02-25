@@ -4,6 +4,14 @@ Future Build
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
+Build 10-3-0
+- AfkTeleport hinzugefügt.
+  - Funktioniert gleich wie der Afkkicker, jedoch lässt dieser Befehle ausführen.
+
+Build 10-2-2
+- Logikfehler fix
+- /afkr time, zeigt nun auch die Zeiten, welche noch im RAM sind, auch an.
+
 Build 10-2-1
 - Placeholder %afkrecord_....% in %afkr_...% umbenannt
 - PlacerholderApi Language fix
