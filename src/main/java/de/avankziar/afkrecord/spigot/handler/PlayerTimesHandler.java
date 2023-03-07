@@ -209,10 +209,13 @@ public class PlayerTimesHandler
 				// was afk, is now active
 				callNotAfkEvent(uuid, isAsync);
 				Player player = Bukkit.getPlayer(uuid);
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")
-						.replace("%time%",
-								LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
-								.format(DateTimeFormatter.ofPattern("HH:mm:ss")))));
+				if(player != null)
+				{
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.NoMoreAfk")
+							.replace("%time%",
+									LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+									.format(DateTimeFormatter.ofPattern("HH:mm:ss")))));
+				}
 				final long afkt = afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0;
 				afkTime.put(uuid, dif+afkt);
 				activeStatus.put(uuid, true);
@@ -232,10 +235,13 @@ public class PlayerTimesHandler
 				// was active, is now afk
 				callAfkEvent(uuid, isAsync);
 				Player player = Bukkit.getPlayer(uuid);
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
-						.replace("%time%", 
-								LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
-								.format(DateTimeFormatter.ofPattern("HH:mm:ss")))));
+				if(player != null)
+				{
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfk.SetAfk")
+							.replace("%time%", 
+									LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+									.format(DateTimeFormatter.ofPattern("HH:mm:ss")))));
+				}				
 				final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 				activeTime.put(uuid, dif+act);
 				activeStatus.put(uuid, false);

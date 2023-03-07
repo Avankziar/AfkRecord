@@ -4,6 +4,9 @@ Future Build
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
+Build 10-3-1
+- NPE Fix
+
 Build 10-3-0
 - AfkTeleport hinzugefügt.
   - Funktioniert gleich wie der Afkkicker, jedoch lässt dieser Befehle ausführen.
