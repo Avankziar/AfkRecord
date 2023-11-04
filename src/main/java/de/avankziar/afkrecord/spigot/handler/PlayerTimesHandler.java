@@ -94,14 +94,29 @@ public class PlayerTimesHandler
 	
 	private void callAfkEvent(UUID uuid, boolean isAsync)
 	{
-		PlayerChangeToAfkEvent event = new PlayerChangeToAfkEvent(Bukkit.getPlayer(uuid), isAsync);
-		Bukkit.getPluginManager().callEvent(event);
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				PlayerChangeToAfkEvent event = new PlayerChangeToAfkEvent(Bukkit.getPlayer(uuid), true);
+				Bukkit.getPluginManager().callEvent(event);
+			}
+		}.runTaskAsynchronously(plugin);
+		
 	}
 	
 	private void callNotAfkEvent(UUID uuid, boolean isAsync)
 	{
-		PlayerChangeToNotAfkEvent event = new PlayerChangeToNotAfkEvent(Bukkit.getPlayer(uuid), isAsync);
-		Bukkit.getPluginManager().callEvent(event);
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				PlayerChangeToNotAfkEvent event = new PlayerChangeToNotAfkEvent(Bukkit.getPlayer(uuid), true);
+				Bukkit.getPluginManager().callEvent(event);
+			}
+		}.runTaskAsynchronously(plugin);
 	}
 	
 	public boolean saveRAM(UUID uuid, Boolean activeOrAfk,
