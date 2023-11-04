@@ -126,32 +126,30 @@ public class PlayerTimesHandler
 				//Check if the the server going down. And so the player already is save out.
 				return false;
 			}
-			final long now = System.currentTimeMillis();
-			final long then = lastTimeChecked.get(uuid);
-			final long dif = now-then;
-			final boolean isAfk = !(activeStatus.containsKey(uuid) ? activeStatus.get(uuid) : true);
-			final long act = (activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0)
-					+ (isAfk ? 0 : dif);
-			final long afkt = (afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0)
-					+ (isAfk ? dif : 0);
-			/*AfkRecord.log.info("now : "+now);
-			AfkRecord.log.info("then : "+then);
-			AfkRecord.log.info("dif : "+dif);
-			AfkRecord.log.info("now - dif = ? : "+(now-dif));
-			AfkRecord.log.info("act : "+act);
-			AfkRecord.log.info("afk : "+afkt);*/
-			addTime(uuid, act, afkt, now, now, false, false);
-			setActive(uuid, isAsync);
-			setLastActivity(uuid, now);
-			setOnline(uuid, false);
-			activeStatus.remove(uuid);
-			activeTime.remove(uuid);
-			afkTime.remove(uuid);
-			activeStatus.get(uuid);
-			onlinePlayers.remove(uuid);
-			/*AfkRecord.log.info("1-1");
-			p.sendMessage(LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
-					.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+" >> 1"); //*/
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					final long now = System.currentTimeMillis();
+					final long then = lastTimeChecked.get(uuid);
+					final long dif = now-then;
+					final boolean isAfk = !(activeStatus.containsKey(uuid) ? activeStatus.get(uuid) : true);
+					final long act = (activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0)
+							+ (isAfk ? 0 : dif);
+					final long afkt = (afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0)
+							+ (isAfk ? dif : 0);
+					addTime(uuid, act, afkt, now, now, false, false);
+					setActive(uuid, isAsync);
+					setLastActivity(uuid, now);
+					setOnline(uuid, false);
+					activeStatus.remove(uuid);
+					activeTime.remove(uuid);
+					afkTime.remove(uuid);
+					activeStatus.get(uuid);
+					onlinePlayers.remove(uuid);
+				}
+			}.runTaskAsynchronously(plugin);
 			return true;
 		} else if(join && forcedQuit)
 		{
@@ -164,18 +162,19 @@ public class PlayerTimesHandler
 					+ (isAfk ? 0 : dif);
 			final long afkt = (afkTime.containsKey(uuid) ? afkTime.get(uuid) : 0)
 					+ (isAfk ? dif : 0);
-			addTime(uuid, act, afkt, now, lastActivity.containsKey(uuid) ? lastActivity.get(uuid) : -1, true, isAfk);
-			activeTime.put(uuid, 0L);
-			afkTime.put(uuid, 0L);
-			lastTimeChecked.put(uuid, now);
-			/*AfkRecord.log.info("2");
-			p.sendMessage(LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
-					.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+" >> 2"); */
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					addTime(uuid, act, afkt, now, lastActivity.containsKey(uuid) ? lastActivity.get(uuid) : -1, true, isAfk);
+					activeTime.put(uuid, 0L);
+					afkTime.put(uuid, 0L);
+					lastTimeChecked.put(uuid, now);
+				}
+			}.runTaskAsynchronously(plugin);
 			return true;
 		}
-		/*AfkRecord.log.info("3");
-		p.sendMessage(LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
-				.format(DateTimeFormatter.ofPattern("HH:mm:ss"))+" >> 3"); */
 		final long now = System.currentTimeMillis();
 		final long then = lastTimeChecked.get(uuid);
 		final long dif = now-then;
