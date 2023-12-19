@@ -10,6 +10,7 @@ import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.ArgumentConstructor;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.ArgumentModule;
+import main.java.de.avankziar.afkrecord.spigot.handler.PlayerTimesHandler;
 
 public class ARGBypass extends ArgumentModule
 {
@@ -26,13 +27,13 @@ public class ARGBypass extends ArgumentModule
 	{
 		Player player = (Player) sender;
 		UUID uuid = player.getUniqueId();
-		if(plugin.getPlayerTimes().playerWhoBypassAfkTracking.contains(uuid))
+		if(PlayerTimesHandler.playerWhoBypassAfkTracking.contains(uuid))
 		{
-			plugin.getPlayerTimes().playerWhoBypassAfkTracking.remove(uuid);
+			PlayerTimesHandler.playerWhoBypassAfkTracking.remove(uuid);
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Bypass.YouDontBypass")));
 		} else
 		{
-			plugin.getPlayerTimes().playerWhoBypassAfkTracking.add(uuid);
+			PlayerTimesHandler.playerWhoBypassAfkTracking.add(uuid);
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Bypass.YouBypass")));
 		}
 	}

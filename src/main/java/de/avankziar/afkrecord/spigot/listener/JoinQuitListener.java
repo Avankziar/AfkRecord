@@ -46,6 +46,6 @@ public class JoinQuitListener implements Listener
 	public void onLeave(PlayerQuitEvent event)
 	{
 		final UUID uuid = event.getPlayer().getUniqueId();
-		plugin.getPlayerTimes().saveRAM(uuid, null, false, true, event.isAsynchronous());
+		plugin.getPlayerTimes().saveRAM(uuid, null, false, true);
 	}
 }

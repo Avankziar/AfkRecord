@@ -32,7 +32,7 @@ public class ServerListener  implements PluginMessageListener
             	{
 		        	String playerUUID = in.readUTF();
 		        	boolean active = in.readBoolean();
-		    		plugin.getPlayerTimes().saveRAM(UUID.fromString(playerUUID), active, false, false, false);
+		    		plugin.getPlayerTimes().saveRAM(UUID.fromString(playerUUID), active, false, false);
             	}
             } catch (IOException e) 
             {

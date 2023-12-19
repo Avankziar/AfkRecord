@@ -91,14 +91,14 @@ public class BaseListener implements Listener
 		return AfkRecord.getPlugin().getYamlHandler().getConfig().getBoolean("EventListener."+eType.toString()+".isActive", true);
 	}
 	
-	public void doCheckAndSave(UUID uuid, boolean isAsync)
+	public void doCheckAndSave(UUID uuid)
 	{
 		if(inCooldown(uuid))
 		{
 			return;
 		}
 		addCooldown(uuid);
-		plugin.getPlayerTimes().saveRAM(uuid, true, false, false, isAsync);
+		plugin.getPlayerTimes().saveRAM(uuid, true, false, false);
 	}
 	
 	public boolean inCooldown(UUID uuid)

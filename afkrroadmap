@@ -4,10 +4,15 @@ Future Build
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
-! Es gibt eine Abhängigkeit zu IFH die 2 fehler verursacht. irgendwo im SaveRam Methode. Prüfen!
+Build 10-6-0
+- Spigot 1.20.4 support
 
 Build 10-5-0
-- Player Quit Events Async Verhalten eingebaut.
+- Async Verhalten in einer vielzahl von Dingen eingebaut.
+- PlaceHolderApi Werte hinzugefügt:
+  - raw_user_total_alltime >> Gibt als Long wert die Gesamtzeit in Millisekunden raus
+  - raw_user_total_activitytime >> Gibt als Long wert die Onlinezeit in Millisekunden raus
+  - raw_user_total_afktime >> Gibt als Long wert die Afkzeit in Millisekunden raus
 
 Build 10-4-0
 - Spigot 1.20.1 support

@@ -68,6 +68,8 @@ public class PAPIHook extends PlaceholderExpansion
 		long afk = (PlayerTimesHandler.afkTime.containsKey(uuid) ? PlayerTimesHandler.afkTime.get(uuid) : 0);
 		switch(identifier)
 		{
+		case "raw_user_total_alltime":
+			return String.valueOf(user.getTotalTime()+act+afk);
 		case "user_total_alltime":
 			format = 
 			(user.getTotalTime()+act+afk > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
@@ -75,6 +77,8 @@ public class PAPIHook extends PlaceholderExpansion
 			(user.getTotalTime()+act+afk > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
 			"&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds");
 			return TimeHandler.getRepeatingTime(user.getTotalTime()+act+afk, format);
+		case "raw_user_total_activitytime":
+			return String.valueOf(user.getActiveTime()+act);
 		case "user_total_activitytime":
 			format = 
 			(user.getActiveTime()+act > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +
@@ -82,6 +86,8 @@ public class PAPIHook extends PlaceholderExpansion
 			(user.getActiveTime()+act > 1000*60L ? "&fmm"+plugin.getYamlHandler().getLang().getString("Time.Minutes") : "") +
 			"&fss"+plugin.getYamlHandler().getLang().getString("Time.Seconds");
 			return TimeHandler.getRepeatingTime(user.getActiveTime()+act, format);
+		case "raw_user_total_afktime":
+			return String.valueOf(user.getAfkTime()+afk);
 		case "user_total_afktime":
 			format = 
 			(user.getAfkTime()+afk > 1000*60*60*24L ? "&fdd"+plugin.getYamlHandler().getLang().getString("Time.Days") : "") +

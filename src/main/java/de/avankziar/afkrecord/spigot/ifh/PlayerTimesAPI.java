@@ -135,7 +135,7 @@ public class PlayerTimesAPI implements PlayerTimes
 			@Override
 			public void run()
 			{
-				plugin.getPlayerTimes().setActive(uuid, true);
+				plugin.getPlayerTimes().setActive(uuid);
 			}
 		}.runTaskAsynchronously(plugin);
 		return true;
@@ -149,7 +149,7 @@ public class PlayerTimesAPI implements PlayerTimes
 			@Override
 			public void run()
 			{
-				plugin.getPlayerTimes().setInactive(uuid, false);
+				plugin.getPlayerTimes().setInactive(uuid);
 			}
 		}.runTaskAsynchronously(plugin);
 		return true;

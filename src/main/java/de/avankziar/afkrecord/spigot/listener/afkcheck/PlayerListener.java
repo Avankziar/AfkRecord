@@ -39,7 +39,7 @@ public class PlayerListener
 		@EventHandler
 		public void onAsyncChat(AsyncPlayerChatEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -53,7 +53,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerArmorStandManipulate(PlayerArmorStandManipulateEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerBedEnter(PlayerBedEnterEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -82,7 +82,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -96,7 +96,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerBucketFill(PlayerBucketFillEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -115,7 +115,7 @@ public class PlayerListener
 		{
 			if(!event.getMessage().equalsIgnoreCase(afkcmd.strip()))
 			{
-				doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+				doCheckAndSave(event.getPlayer().getUniqueId());
 			}
 		}
 	}
@@ -130,7 +130,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerDropItem(PlayerDropItemEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -144,7 +144,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerEditBook(PlayerEditBookEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -158,7 +158,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerEggThrow(PlayerEggThrowEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -172,7 +172,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerExpChange(PlayerExpChangeEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -186,7 +186,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerFish(PlayerFishEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -200,7 +200,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerGameModeChange(PlayerGameModeChangeEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -214,7 +214,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -228,7 +228,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerInteract(PlayerInteractEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -242,7 +242,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerItemBreak(PlayerItemBreakEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -256,7 +256,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerItemConsume(PlayerItemConsumeEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -270,7 +270,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerItemDamage(PlayerItemDamageEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -284,7 +284,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerLevelChange(PlayerLevelChangeEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -298,7 +298,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerMove(PlayerMoveEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -312,7 +312,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerToggleFlight(PlayerToggleFlightEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -326,7 +326,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerToggleSneak(PlayerToggleSneakEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -340,7 +340,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 	
@@ -354,7 +354,7 @@ public class PlayerListener
 		@EventHandler
 		public void onPlayerUnleashEntity(PlayerUnleashEntityEvent event)
 		{
-			doCheckAndSave(event.getPlayer().getUniqueId(), event.isAsynchronous());
+			doCheckAndSave(event.getPlayer().getUniqueId());
 		}
 	}
 }

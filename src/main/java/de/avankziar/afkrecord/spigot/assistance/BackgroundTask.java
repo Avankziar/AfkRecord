@@ -35,7 +35,7 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, false, false, true);
+					plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, false, false);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
@@ -51,7 +51,7 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, true, true, true);
+					plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, true, true);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
@@ -69,7 +69,7 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getPlayerTimes().afkChecker(player.getUniqueId(), afkAfterLastActivityInSeconds, true);
+					plugin.getPlayerTimes().afkChecker(player.getUniqueId(), afkAfterLastActivityInSeconds);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
@@ -94,7 +94,7 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getPlayerTimes().afkKicker(player.getUniqueId(), msg, kickAfterLastActivityInSeconds, true);
+					plugin.getPlayerTimes().afkKicker(player.getUniqueId(), msg, kickAfterLastActivityInSeconds);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
@@ -112,7 +112,7 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
-					plugin.getPlayerTimes().afkTeleport(player.getUniqueId(), doCommandAfterLastActivityInSeconds, true);
+					plugin.getPlayerTimes().afkTeleport(player.getUniqueId(), doCommandAfterLastActivityInSeconds);
 				}
 			}
 		}.runTaskTimerAsynchronously(plugin, 0L,
@@ -123,7 +123,7 @@ public class BackgroundTask
 	{
 		for(Player player : plugin.getServer().getOnlinePlayers())
 		{
-			plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, false, true, false);
+			plugin.getPlayerTimes().saveRAM(player.getUniqueId(), null, false, true);
 		}
 		PlayerTimesHandler.isShutDown = true;
 	}

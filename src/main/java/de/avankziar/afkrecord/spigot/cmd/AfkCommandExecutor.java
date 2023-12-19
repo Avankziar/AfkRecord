@@ -6,11 +6,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.de.avankziar.afkrecord.spigot.AfkRecord;
 import main.java.de.avankziar.afkrecord.spigot.assistance.ChatApi;
 import main.java.de.avankziar.afkrecord.spigot.cmd.tree.CommandConstructor;
+import main.java.de.avankziar.afkrecord.spigot.handler.PlayerTimesHandler;
 
 public class AfkCommandExecutor implements CommandExecutor
 {
@@ -30,19 +30,12 @@ public class AfkCommandExecutor implements CommandExecutor
 		}
 		final Player player = (Player) sender;
 		final UUID uuid = player.getUniqueId();
-		if(plugin.getPlayerTimes().playerWhoBypassAfkTracking.contains(uuid))
+		if(PlayerTimesHandler.playerWhoBypassAfkTracking.contains(uuid))
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Bypass.YouAredBypass")));
 		} else
 		{
-			new BukkitRunnable()
-			{
-				@Override
-				public void run()
-				{
-					plugin.getPlayerTimes().saveRAM(uuid, !plugin.getPlayerTimes().isActive(uuid), false, false, true);
-				}
-			}.runTaskAsynchronously(plugin);
+			plugin.getPlayerTimes().saveRAM(uuid, !plugin.getPlayerTimes().isActive(uuid), false, false);
 		}
 		return true;
 	}
