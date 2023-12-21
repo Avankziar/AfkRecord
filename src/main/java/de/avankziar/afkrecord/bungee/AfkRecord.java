@@ -8,10 +8,12 @@ import main.java.de.avankziar.afkrecord.bungee.database.MysqlHandler;
 import main.java.de.avankziar.afkrecord.bungee.database.MysqlSetup;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlHandler;
 import main.java.de.avankziar.afkrecord.bungee.database.YamlManager;
+import main.java.de.avankziar.afkrecord.bungee.ifh.PlayerTimesProvider;
 import main.java.de.avankziar.afkrecord.bungee.listener.EventAfkCheck;
 import main.java.me.avankziar.ifh.bungee.InterfaceHub;
 import main.java.me.avankziar.ifh.bungee.administration.Administration;
 import main.java.me.avankziar.ifh.bungee.plugin.RegisteredServiceProvider;
+import main.java.me.avankziar.ifh.bungee.plugin.ServicePriority;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -57,6 +59,7 @@ public class AfkRecord extends Plugin
 		getProxy().registerChannel("afkr:afkrecordout");
 		getProxy().registerChannel("afkrecord:afkrecordin");
 		getProxy().getPluginManager().registerListener(plugin, new EventAfkCheck());
+		setupIFHProvider();
 	}
 	
 	public void onDisable()
@@ -156,5 +159,24 @@ public class AfkRecord extends Plugin
 	public Administration getAdministration()
 	{
 		return administrationConsumer;
+	}
+	
+	private void setupIFHProvider()
+	{
+		Plugin ifhp = BungeeCord.getInstance().getPluginManager().getPlugin("InterfaceHub");
+        if (ifhp == null) 
+        {
+            return;
+        }
+        main.java.me.avankziar.ifh.bungee.InterfaceHub ifh = (InterfaceHub) ifhp;
+        try
+        {
+    		PlayerTimesProvider cp = new PlayerTimesProvider(this);
+            ifh.getServicesManager().register(
+             		main.java.me.avankziar.ifh.general.interfaces.PlayerTimes.class,
+             		cp, plugin, ServicePriority.Normal);
+            log.info(pluginName + " detected InterfaceHub >>> PlayerTimes.class is provided!");
+    		
+        } catch(NoClassDefFoundError e) {}
 	}
 }
