@@ -1,5 +1,7 @@
 package main.java.de.avankziar.afkrecord.spigot.assistance;
 
+import java.util.List;
+
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -103,6 +105,7 @@ public class BackgroundTask
 	
 	public void runAfkTeleportTask()
 	{
+		List<String> excludedWorlds = plugin.getYamlHandler().getConfig().getStringList("General.AfkTeleport.ExcludedWorlds");
 		new BukkitRunnable() 
 		{
 			final long doCommandAfterLastActivityInSeconds = plugin.getYamlHandler().getConfig()
@@ -112,6 +115,10 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
+					if(player != null && excludedWorlds.contains(player.getWorld().getName()))
+					{
+						continue;
+					}
 					plugin.getPlayerTimes().afkTeleport(player.getUniqueId(), doCommandAfterLastActivityInSeconds);
 				}
 			}

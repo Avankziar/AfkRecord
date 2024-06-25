@@ -185,6 +185,10 @@ public class YamlManager
 		configKeys.put("General.AfkTeleport.DoCommandAfterLastActivityInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				600}));
+		configKeys.put("General.AfkTeleport.ExcludedWorlds"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"worldnamedummy",
+				"worldnamedumme2"}));
 		//--------Above finish
 		for(BaseListener.EventType et : new ArrayList<BaseListener.EventType>(EnumSet.allOf(BaseListener.EventType.class)))
 		{

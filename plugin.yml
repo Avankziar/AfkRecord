@@ -5,5 +5,6 @@ author: Avankziar
 website: https://www.spigotmc.org/resources/authors/avankziar.332028/
 api-version: 1.17
 description: Afk Tracker Plugin
-softdepend: [Vault, PlaceholderAPI, InterfaceHub]
+depend: [InterfaceHub]
+softdepend: [Vault, PlaceholderAPI]
 prefix: AFKR

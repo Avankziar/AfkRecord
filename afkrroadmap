@@ -4,6 +4,11 @@ Future Build
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
 
+Build 10-7-0
+- Java 21 Dependency
+- Afkteleport fix
+- Afkteleport Excluded Words in der Config hinzugefügt.
+
 Build 10-6-0
 - Spigot 1.20.4 support
 - PlayerTimes Interface auf Bungeecord registriert. (Es wurde tatsächlich ne lange Zeit vergessen)

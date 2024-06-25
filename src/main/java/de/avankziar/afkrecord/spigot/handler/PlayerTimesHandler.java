@@ -44,6 +44,8 @@ public class PlayerTimesHandler
 	
 	public static boolean isShutDown = false;
 	
+	public static ArrayList<UUID> alreadyAfkTeleported = new ArrayList<>();
+	
 	public PlayerTimesHandler(AfkRecord plugin)
 	{
 		this.plugin = plugin;
@@ -142,6 +144,7 @@ public class PlayerTimesHandler
 					afkTime.remove(uuid);
 					activeStatus.get(uuid);
 					onlinePlayers.remove(uuid);
+					alreadyAfkTeleported.remove(uuid);
 					return;
 				} else if(join && forcedQuit)
 				{
@@ -186,6 +189,7 @@ public class PlayerTimesHandler
 						final long act = activeTime.containsKey(uuid) ? activeTime.get(uuid) : 0;
 						activeTime.put(uuid, dif+act);
 						lastActivity.put(uuid, now);
+						alreadyAfkTeleported.remove(uuid);
 					} else
 					{
 						// was afk, is now active
@@ -203,6 +207,7 @@ public class PlayerTimesHandler
 						activeStatus.put(uuid, true);
 						setActivity(uuid, now, false);
 						lastActivity.put(uuid, now);
+						alreadyAfkTeleported.add(uuid);
 					}
 				} else
 				{
@@ -350,14 +355,19 @@ public class PlayerTimesHandler
 		if(!activeStatus.get(uuid) //was afk
 				&& lastActivity.get(uuid)+teleportAfterLastActivityInSeconds < System.currentTimeMillis())
 		{
-			saveRAM(uuid, false, false, false); //Save for quit
+			if(alreadyAfkTeleported.contains(uuid))
+			{
+				return;
+			}
+			saveRAM(uuid, false, false, false); //Save for quit/teleport
+			alreadyAfkTeleported.add(uuid);
 			new BukkitRunnable()
 			{
 				@Override
 				public void run()
 				{
 					Player player = Bukkit.getPlayer(uuid);
-					for(String s : plugin.getYamlHandler().getConfig().getStringList(""))
+					for(String s : plugin.getYamlHandler().getConfig().getStringList("General.AfkTeleport.UseCommand"))
 					{
 						String[] split = s.split(";");
 						if(split.length != 2)
