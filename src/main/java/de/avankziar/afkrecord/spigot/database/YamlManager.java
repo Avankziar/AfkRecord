@@ -172,6 +172,10 @@ public class YamlManager
 		configKeys.put("General.AfkKicker.KickAfterLastActivityInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				600}));
+		configKeys.put("General.AfkKicker.ExcludedWorlds"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"worldnamedummy",
+				"worldnamedumme2"}));
 		configKeys.put("General.AfkTeleport.IsActive"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));

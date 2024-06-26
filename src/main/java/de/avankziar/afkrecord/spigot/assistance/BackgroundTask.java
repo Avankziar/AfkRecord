@@ -80,6 +80,7 @@ public class BackgroundTask
 	
 	public void runAfkKickerTask()
 	{
+		List<String> excludedWorlds = plugin.getYamlHandler().getConfig().getStringList("General.AfkKicker.ExcludedWorlds");
 		new BukkitRunnable() 
 		{
 			final long kickAfterLastActivityInSeconds = plugin.getYamlHandler().getConfig()
@@ -96,6 +97,10 @@ public class BackgroundTask
 			{
 				for(Player player : plugin.getServer().getOnlinePlayers())
 				{
+					if(player != null && excludedWorlds.contains(player.getWorld().getName()))
+					{
+						continue;
+					}
 					plugin.getPlayerTimes().afkKicker(player.getUniqueId(), msg, kickAfterLastActivityInSeconds);
 				}
 			}
