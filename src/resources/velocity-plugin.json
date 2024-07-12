@@ -1,0 +1,8 @@
+{"id":"afkrecord",
+"name":"AfkRecord",
+"version":"10-7-0",
+"description":"Afk Tracker Plugin",
+"authors":["Avankziar"],
+"url":"https://www.spigotmc.org/resources/authors/avankziar.332028/",
+"dependencies":[{id='interfacehub', version='null', optional=false}],
+"main":"main.java.me.avankziar.afkr.velocity.AfkR"}

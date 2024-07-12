@@ -1,0 +1,121 @@
+Future Build
+- Wenn man /afk <Text>, macht, wird der Text im Chat geschrieben, dass man zeigt, dass diese Person afk ist.
+- Der Spieler ist afk, im chat anzeigen, wenn man /msg macht. (Falls NUR /afk eingegeben wurde)
+- Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
+- xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
+
+Build 10-7-0
+- Java 21 Dependency
+- Afkteleport fix
+- Afkteleport Excluded Words in der Config hinzugefügt.
+- AfkKicker Excluded Words in der Config hinzugefügt.
+- Befehl /afkr convert, entfernt
+- Packages Namen standartisiert
+
+Build 10-6-0
+- Spigot 1.20.4 support
+- PlayerTimes Interface auf Bungeecord registriert. (Es wurde tatsächlich ne lange Zeit vergessen)
+
+Build 10-5-0
+- Async Verhalten in einer vielzahl von Dingen eingebaut.
+- PlaceHolderApi Werte hinzugefügt:
+  - raw_user_total_alltime >> Gibt als Long wert die Gesamtzeit in Millisekunden raus
+  - raw_user_total_activitytime >> Gibt als Long wert die Onlinezeit in Millisekunden raus
+  - raw_user_total_afktime >> Gibt als Long wert die Afkzeit in Millisekunden raus
+
+Build 10-4-0
+- Spigot 1.20.1 support
+
+Build 10-3-1
+- NPE Fix
+
+Build 10-3-0
+- AfkTeleport hinzugefügt.
+  - Funktioniert gleich wie der Afkkicker, jedoch lässt dieser Befehle ausführen.
+
+Build 10-2-2
+- Logikfehler fix
+- /afkr time, zeigt nun auch die Zeiten, welche noch im RAM sind, auch an.
+
+Build 10-2-1
+- Placeholder %afkrecord_....% in %afkr_...% umbenannt
+- PlacerholderApi Language fix
+
+Build 10-2-0
+- Mathematische Diskrepanz zwischend der Gesamtzeit und der Aktiven + Afkzeit gefixt!
+- /afkr counttimeperm wurde zu /afkr permcounttime
+- /afkr getafk fix. Spieler welche nicht online sind, sollten nun nicht mehr angezeigt werden.
+- Verschiedene Tabs sind für die Spieler eingerichtet.
+- /afkr vacation, kann nun neben dem Spielername, und dem Zeitformat, nun auch eine normale Zahl angegeben werden.
+  Diese Zahl wird als Tageszahl genutzt um zu determinieren wieviele Tage man im Urlaub ist. Wenn die Zahl 0 ist, wird man aus dem Urlaub geholt.
+- 3 NullPointerException saveRam fix
+
+Build 10-1-1
+- IFH Administration aktualisiert
+
+Build 10-1-0
+- MC 1.19.2 support
+- IFH Administration support
+- MysqlSetup aktualisiert
+
+Build 10-0-9
+- /afkr getafk, Lastactivity save fix
+
+Build 10-0-8
+- Mysql wieder umstruckturiert. Nun wird jede Mysql Abfrage eine Conncection aufgebaut.
+
+Build 10-0-7
+- Mysql umstruckturierung, eine try&catch methode weniger. Connection ReConnect sollte nun korrekt ablaufen.
+- Korrekte Afktracking
+
+Build 10-0-6
+- /afkr getafk fix
+- /afkr getafk jahre und tage rausgelassen.
+- Bei Aktivitätsänderung wird nun richtig in mysql getrackt.
+
+Build 10-0-4
+- IFH Anbindung aufgeräumt.
+- intern aufgeräumt um struckturiert zur Performance verbesserung
+- Mehre Events (insgesamt nun 23) können abgefragt werden. Events haben nun einen Aktivierungsboolean und einen Cooldown per Config.
+- IFH PlayerChangeToAfkEvent & PlayerChangeToNotAfkEvent eingebaut.
+
+Build 9-1-0
+- MC 1.19 support
+
+Build 9
+- +Java 17 & Mc 1.18.1 support
+- +ChatEvent Afk fix
+- +/afk counttimeperm fix
+- +/afk counttime fix
+
+Build 7
+- /afkr counttimeperm <Zahl> <Permission>
+- /afkr vacation [Spieler] | Zeigt an ob der Spieler  oder man selbst, im Urlaub ist
+- /afkr vacation <dd.MM.yyyy> <HH:mm> | Setz sich selber bis zum xx in Urlaub. Beispiel: 05.04.2021 15:00 (In Worten der 5. April 2021 Fünfzehn Uhr)
+- Mysql neue Column:
+  - TableI: lasttimecheck BIGINT, isonline boolean, vacationtime BIGINT
+  - ALTER TABLE `YourPlayerDataTable` ADD `lasttimecheck` BIGINT NOT NULL DEFAULT '0' AFTER `lastactivity`,
+     ADD `isonline` TINYINT(1) NOT NULL DEFAULT '0' AFTER `lasttimecheck`, ADD `vacationtime` BIGINT NOT NULL DEFAULT '0' AFTER `isonline`; 
+  - TableII: timestamp_unix BIGINT
+  - ALTER TABLE `YourDateTable` ADD `timestamp_unix` BIGINT NOT NULL DEFAULT '0' AFTER `datum`;
+
+Build 6
+- +softSave methode für die Api hinzugefügt
+- +kleine Fehler verbessert
+- +namens update in mysql einbauen
+- +Column Value von Mediumtext nach Bigint gewechselt
+- +Neuer Config Boolean eingebaut => SccIsActive
+- +ChatEvent umgebaut, sodass bei SccIsActive=true nur noch Command registriert werden. Bei false alles.
+
+Build 5
+- +in config.yml bungee: 'false' hinzugefügt
+
+Build 4
+- +afkr time player anzeige fehler fix
+- +nun ist wird man auch entafkt wenn man command eingibt.
+
+Build 3
+- +/afkr getafk, zeigt alle Afk spieler afktime desc an. Klickbarer name mit befehl /afkr time <Spieler>
+- +/convertdata mit einen letzten args machen, true false, um alte werte zu löschen
+- bei top liste unten die "nächste Seite" zusätzlich auch vorherige Seite angeben und klickbar machen.
+   Und dazu den befehl sofort ausführen.

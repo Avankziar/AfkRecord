@@ -1,0 +1,5 @@
+name: AfkRecord
+main: main.java.me.avankziar.afkr.bungee.AfkR
+version: 9
+author: Avankziar
+softDepends: [InterfaceHub, RootAdministration]
