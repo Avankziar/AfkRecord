@@ -5,11 +5,11 @@ import java.io.IOException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import main.java.de.avankziar.afkrecord.spigot.permission.KeyHandler;
 import main.java.me.avankziar.afkr.general.commands.tree.ArgumentConstructor;
 import main.java.me.avankziar.afkr.spigot.AfkR;
 import main.java.me.avankziar.afkr.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.afkr.spigot.object.PluginSettings;
+import main.java.me.avankziar.afkr.spigot.permission.KeyHandler;
 
 public class ARGTop extends ArgumentModule
 {

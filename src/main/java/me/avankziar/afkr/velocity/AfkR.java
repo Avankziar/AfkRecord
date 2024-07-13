@@ -22,6 +22,7 @@ import main.java.me.avankziar.afkr.general.database.YamlManager;
 import main.java.me.avankziar.afkr.spigot.database.YamlHandler;
 import main.java.me.avankziar.afkr.velocity.database.MysqlHandler;
 import main.java.me.avankziar.afkr.velocity.database.MysqlSetup;
+import main.java.me.avankziar.afkr.velocity.ifh.PlayerTimesProvider;
 import main.java.me.avankziar.afkr.velocity.listener.EventAfkCheck;
 import main.java.me.avankziar.ifh.velocity.IFH;
 import main.java.me.avankziar.ifh.velocity.administration.Administration;
@@ -193,7 +194,7 @@ public class AfkR
 	
 	private void registerChannels()
     {
-    	server.getEventManager().register(plugin, new EventAfkCheck(plugin));
+    	server.getEventManager().register(plugin, new EventAfkCheck());
     	ChannelRegistrar cr = server.getChannelRegistrar();
     	cr.register(MinecraftChannelIdentifier.from("afkr:afkrecordout"));
         cr.register(MinecraftChannelIdentifier.from("afkrecord:afkrecordin"));

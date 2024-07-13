@@ -22,8 +22,6 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import main.java.de.avankziar.afkrecord.spigot.permission.BypassPermission;
-import main.java.de.avankziar.afkrecord.spigot.permission.KeyHandler;
 import main.java.me.avankziar.afkr.general.commands.tree.ArgumentConstructor;
 import main.java.me.avankziar.afkr.general.commands.tree.BaseConstructor;
 import main.java.me.avankziar.afkr.general.commands.tree.CommandConstructor;
@@ -60,6 +58,8 @@ import main.java.me.avankziar.afkr.spigot.listener.afkcheck.BaseListener;
 import main.java.me.avankziar.afkr.spigot.listener.afkcheck.PlayerListener;
 import main.java.me.avankziar.afkr.spigot.metrics.Metrics;
 import main.java.me.avankziar.afkr.spigot.object.PluginSettings;
+import main.java.me.avankziar.afkr.spigot.permission.BypassPermission;
+import main.java.me.avankziar.afkr.spigot.permission.KeyHandler;
 import main.java.me.avankziar.ifh.spigot.administration.Administration;
 import net.milkbowl.vault.permission.Permission;
 

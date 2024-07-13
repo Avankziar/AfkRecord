@@ -1,4 +1,4 @@
-package main.java.de.avankziar.afkrecord.spigot.permission;
+package main.java.me.avankziar.afkr.spigot.permission;
 
 public class BypassPermission
 {

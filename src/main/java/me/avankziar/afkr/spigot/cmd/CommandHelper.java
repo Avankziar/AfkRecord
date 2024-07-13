@@ -7,7 +7,6 @@ import java.util.List;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import main.java.de.avankziar.afkrecord.spigot.permission.KeyHandler;
 import main.java.me.avankziar.afkr.general.database.MysqlType;
 import main.java.me.avankziar.afkr.general.objects.PluginUser;
 import main.java.me.avankziar.afkr.general.objects.TimeRecord;
@@ -18,6 +17,7 @@ import main.java.me.avankziar.afkr.spigot.assistance.Utility;
 import main.java.me.avankziar.afkr.spigot.handler.PlayerTimesHandler;
 import main.java.me.avankziar.afkr.spigot.object.ConvertHandler;
 import main.java.me.avankziar.afkr.spigot.object.PluginSettings;
+import main.java.me.avankziar.afkr.spigot.permission.KeyHandler;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;

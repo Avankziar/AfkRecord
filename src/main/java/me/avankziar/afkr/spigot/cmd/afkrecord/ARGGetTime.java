@@ -7,12 +7,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import main.java.de.avankziar.afkrecord.spigot.permission.BypassPermission;
 import main.java.me.avankziar.afkr.general.commands.tree.ArgumentConstructor;
 import main.java.me.avankziar.afkr.general.database.MysqlType;
 import main.java.me.avankziar.afkr.spigot.AfkR;
 import main.java.me.avankziar.afkr.spigot.assistance.ChatApi;
 import main.java.me.avankziar.afkr.spigot.cmd.tree.ArgumentModule;
+import main.java.me.avankziar.afkr.spigot.permission.BypassPermission;
 
 public class ARGGetTime extends ArgumentModule
 {

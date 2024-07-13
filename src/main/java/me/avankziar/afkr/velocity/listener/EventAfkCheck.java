@@ -4,25 +4,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.ChatEvent;
-import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.event.EventPriority;
+import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.player.PlayerChatEvent;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 
-public class EventAfkCheck implements Listener
-{	
-	@EventHandler (priority = EventPriority.LOWEST)
-	public void onChat(ChatEvent event)
+public class EventAfkCheck
+{
+	@Subscribe
+	public void onChat(PlayerChatEvent event)
 	{
 		if(event.getMessage().startsWith("/afk"))
 		{
 			return;
 		}
-		softsave((ProxiedPlayer) event.getSender());
+		softsave(event.getPlayer());
 	}
 	
-	private void softsave(ProxiedPlayer player)
+	private void softsave(Player player)
 	{
 		ByteArrayOutputStream streamout = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(streamout);
@@ -33,7 +32,8 @@ public class EventAfkCheck implements Listener
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        player.getServer().getInfo().sendData("afkr:afkrecordout", streamout.toByteArray());
+        player.getCurrentServer().get().sendPluginMessage(
+        		MinecraftChannelIdentifier.from("afkr:afkrecordout"), streamout.toByteArray());
 	    return;
 	}
 }
