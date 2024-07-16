@@ -60,7 +60,7 @@ import main.java.me.avankziar.afkr.spigot.metrics.Metrics;
 import main.java.me.avankziar.afkr.spigot.object.PluginSettings;
 import main.java.me.avankziar.afkr.spigot.permission.BypassPermission;
 import main.java.me.avankziar.afkr.spigot.permission.KeyHandler;
-import main.java.me.avankziar.ifh.spigot.administration.Administration;
+import me.avankziar.ifh.spigot.administration.Administration;
 import net.milkbowl.vault.permission.Permission;
 
 public class AfkR extends JavaPlugin
@@ -499,7 +499,7 @@ public class AfkR extends JavaPlugin
 		{
 			ptapi = new PlayerTimesAPI(this);
             plugin.getServer().getServicesManager().register(
-            		main.java.me.avankziar.ifh.general.interfaces.PlayerTimes.class,
+            		me.avankziar.ifh.general.interfaces.PlayerTimes.class,
             		ptapi,
             		this,
                     ServicePriority.Normal);
@@ -531,7 +531,7 @@ public class AfkR extends JavaPlugin
 	    }
 		try
 	    {
-	    	RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.administration.Administration> rsp = 
+	    	RegisteredServiceProvider<me.avankziar.ifh.spigot.administration.Administration> rsp = 
                      getServer().getServicesManager().getRegistration(Administration.class);
 		    if (rsp == null) 
 		    {

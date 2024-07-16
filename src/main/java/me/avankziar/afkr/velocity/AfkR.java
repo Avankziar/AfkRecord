@@ -24,10 +24,10 @@ import main.java.me.avankziar.afkr.velocity.database.MysqlHandler;
 import main.java.me.avankziar.afkr.velocity.database.MysqlSetup;
 import main.java.me.avankziar.afkr.velocity.ifh.PlayerTimesProvider;
 import main.java.me.avankziar.afkr.velocity.listener.EventAfkCheck;
-import main.java.me.avankziar.ifh.velocity.IFH;
-import main.java.me.avankziar.ifh.velocity.administration.Administration;
-import main.java.me.avankziar.ifh.velocity.plugin.RegisteredServiceProvider;
-import main.java.me.avankziar.ifh.velocity.plugin.ServicePriority;
+import me.avankziar.ifh.velocity.IFH;
+import me.avankziar.ifh.velocity.administration.Administration;
+import me.avankziar.ifh.velocity.plugin.RegisteredServiceProvider;
+import me.avankziar.ifh.velocity.plugin.ServicePriority;
 
 @Plugin(
 		id = "afkrecord", 
@@ -151,12 +151,12 @@ public class AfkR
         	logger.info(pluginname + " dont find InterfaceHub!");
             return;
         }
-        main.java.me.avankziar.ifh.velocity.IFH ifh = IFH.getPlugin();
+        me.avankziar.ifh.velocity.IFH ifh = IFH.getPlugin();
         try
         {
         	PlayerTimesProvider cp = new PlayerTimesProvider(this);
             ifh.getServicesManager().register(
-            		main.java.me.avankziar.ifh.general.interfaces.PlayerTimes.class,
+            		me.avankziar.ifh.general.interfaces.PlayerTimes.class,
              		cp, plugin.get(), ServicePriority.Normal);
             logger.info(pluginname + " detected InterfaceHub >>> PlayerTimes.class is provided!");
     		
@@ -171,7 +171,7 @@ public class AfkR
         	logger.info(pluginname + " dont find InterfaceHub!");
             return;
         }
-        main.java.me.avankziar.ifh.velocity.IFH ifh = IFH.getPlugin();
+        me.avankziar.ifh.velocity.IFH ifh = IFH.getPlugin();
         RegisteredServiceProvider<Administration> rsp = ifh
         		.getServicesManager()
         		.getRegistration(Administration.class);

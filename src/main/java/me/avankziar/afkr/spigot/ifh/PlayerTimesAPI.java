@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.afkr.spigot.AfkR;
-import main.java.me.avankziar.ifh.general.interfaces.PlayerTimes;
+import me.avankziar.ifh.general.interfaces.PlayerTimes;
 
 public class PlayerTimesAPI implements PlayerTimes
 {

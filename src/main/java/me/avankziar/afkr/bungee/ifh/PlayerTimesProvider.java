@@ -15,7 +15,7 @@ import main.java.me.avankziar.afkr.general.assistance.TimeHandler;
 import main.java.me.avankziar.afkr.general.database.MysqlType;
 import main.java.me.avankziar.afkr.general.objects.PluginUser;
 import main.java.me.avankziar.afkr.general.objects.TimeRecord;
-import main.java.me.avankziar.ifh.general.interfaces.PlayerTimes;
+import me.avankziar.ifh.general.interfaces.PlayerTimes;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class PlayerTimesProvider implements PlayerTimes

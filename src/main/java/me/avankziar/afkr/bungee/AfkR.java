@@ -11,10 +11,10 @@ import main.java.me.avankziar.afkr.bungee.ifh.PlayerTimesProvider;
 import main.java.me.avankziar.afkr.bungee.listener.EventAfkCheck;
 import main.java.me.avankziar.afkr.general.database.YamlManager;
 import main.java.me.avankziar.afkr.spigot.database.YamlHandler;
-import main.java.me.avankziar.ifh.bungee.IFH;
-import main.java.me.avankziar.ifh.bungee.administration.Administration;
-import main.java.me.avankziar.ifh.bungee.plugin.RegisteredServiceProvider;
-import main.java.me.avankziar.ifh.bungee.plugin.ServicePriority;
+import me.avankziar.ifh.bungee.IFH;
+import me.avankziar.ifh.bungee.administration.Administration;
+import me.avankziar.ifh.bungee.plugin.RegisteredServiceProvider;
+import me.avankziar.ifh.bungee.plugin.ServicePriority;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -173,12 +173,12 @@ public class AfkR extends Plugin
         {
             return;
         }
-        main.java.me.avankziar.ifh.bungee.IFH ifh = (IFH) ifhp;
+        me.avankziar.ifh.bungee.IFH ifh = (IFH) ifhp;
         try
         {
     		PlayerTimesProvider cp = new PlayerTimesProvider(this);
             ifh.getServicesManager().register(
-             		main.java.me.avankziar.ifh.general.interfaces.PlayerTimes.class,
+             		me.avankziar.ifh.general.interfaces.PlayerTimes.class,
              		cp, plugin, ServicePriority.Normal);
             logger.info(pluginName + " detected InterfaceHub >>> PlayerTimes.class is provided!");
     		

@@ -19,8 +19,8 @@ import main.java.me.avankziar.afkr.general.objects.TimeRecord;
 import main.java.me.avankziar.afkr.spigot.AfkR;
 import main.java.me.avankziar.afkr.spigot.assistance.ChatApi;
 import main.java.me.avankziar.afkr.spigot.assistance.TimeHandler;
-import main.java.me.avankziar.ifh.spigot.event.player.PlayerChangeToAfkEvent;
-import main.java.me.avankziar.ifh.spigot.event.player.PlayerChangeToNotAfkEvent;
+import me.avankziar.ifh.spigot.event.player.PlayerChangeToAfkEvent;
+import me.avankziar.ifh.spigot.event.player.PlayerChangeToNotAfkEvent;
 
 public class PlayerTimesHandler
 {
