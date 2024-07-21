@@ -5,8 +5,8 @@ import java.util.LinkedHashMap;
 
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.afkr.general.database.YamlHandler;
 import main.java.me.avankziar.afkr.spigot.AfkR;
-import main.java.me.avankziar.afkr.spigot.database.YamlHandler;
 
 public class PluginSettings
 {

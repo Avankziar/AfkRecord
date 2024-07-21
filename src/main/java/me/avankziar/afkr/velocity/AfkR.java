@@ -18,8 +18,8 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.ChannelRegistrar;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 
+import main.java.me.avankziar.afkr.general.database.YamlHandler;
 import main.java.me.avankziar.afkr.general.database.YamlManager;
-import main.java.me.avankziar.afkr.spigot.database.YamlHandler;
 import main.java.me.avankziar.afkr.velocity.database.MysqlHandler;
 import main.java.me.avankziar.afkr.velocity.database.MysqlSetup;
 import main.java.me.avankziar.afkr.velocity.ifh.PlayerTimesProvider;
