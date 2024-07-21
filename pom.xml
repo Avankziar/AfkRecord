@@ -90,6 +90,12 @@
 		</plugins>
 	</build>
 	<repositories>
+		<!-- InterfaceHub -->
+		<repository>
+	        <id>github</id>
+      		<name>GitHub Avankziar Apache Maven Packages</name>
+	        <url>https://maven.pkg.github.com/Avankziar/InterfaceHub</url>
+	    </repository>
 		<!-- Spigot -->
 		<repository>
 			<id>spigot-repo</id>
