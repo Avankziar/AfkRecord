@@ -1,5 +1,5 @@
 name: AfkRecord
-main: main.java.de.avankziar.afkr.spigot.AfkR
+main: main.java.me.avankziar.afkr.spigot.AfkR
 version: 10
 author: Avankziar
 website: https://www.spigotmc.org/resources/authors/avankziar.332028/

@@ -131,6 +131,7 @@ public class AfkR extends JavaPlugin
 			return;
 		}
 		PluginSettings.initSettings(plugin);
+		BaseConstructor.init(yamlHandler);
 		setPlayers();
 		setupCommandTree();
 		ListenerSetup();
