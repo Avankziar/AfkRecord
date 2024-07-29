@@ -69,8 +69,8 @@ public class AfkR
     	logger = Logger.getLogger(pluginname);
     	PluginDescription pd = server.getPluginManager().getPlugin(pluginname.toLowerCase()).get().getDescription();
         List<String> dependencies = new ArrayList<>();
-        pd.getDependencies().stream().allMatch(x -> dependencies.add(x.toString()));
-        //https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=SCC
+        pd.getDependencies().stream().allMatch(x -> dependencies.add(x.getId()));
+        //https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=AFKR
 		logger.info("  █████╗ ███████╗██╗  ██╗██████╗  | Id: "+pd.getId());
 		logger.info(" ██╔══██╗██╔════╝██║ ██╔╝██╔══██╗ | Version: "+pd.getVersion().get());
 		logger.info(" ███████║█████╗  █████╔╝ ██████╔╝ | Author: ["+String.join(", ", pd.getAuthors())+"]");
