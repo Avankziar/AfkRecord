@@ -16,6 +16,7 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import main.java.me.avankziar.afkr.general.database.Language.ISO639_2B;
+import main.java.me.avankziar.afkr.general.database.YamlManager.Type;
 
 public class YamlHandler implements YamlHandling
 {
@@ -96,13 +97,16 @@ public class YamlHandler implements YamlHandling
 			{
 				return false;
 			}
-			f = "commands";
-			commands = YamlDocument.create(new File(directory,"%f%.yml".replace("%f%", f)),
-					getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
-			if(!setupStaticFile(f, commands, yamlManager.getCommandsKey()))
+			if(type == Type.SPIGOT)
 			{
-				return false;
-			}
+				f = "commands";
+				commands = YamlDocument.create(new File(directory,"%f%.yml".replace("%f%", f)),
+						getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
+				if(!setupStaticFile(f, commands, yamlManager.getCommandsKey()))
+				{
+					return false;
+				}
+			}			
 		} catch(Exception e)
 		{
 			logger.severe("Could not create/load %f%.yml file! Plugin will shut down!".replace("%f%", f));

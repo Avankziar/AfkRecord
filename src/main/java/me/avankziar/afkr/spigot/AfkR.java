@@ -109,7 +109,7 @@ public class AfkR extends JavaPlugin
 		
 		setupIFHAdministration();
 		
-		yamlHandler = new YamlHandler(YamlManager.Type.VELO, pluginName, logger, plugin.getDataFolder().toPath(),
+		yamlHandler = new YamlHandler(YamlManager.Type.SPIGOT, pluginName, logger, plugin.getDataFolder().toPath(),
         		(plugin.getAdministration() == null ? null : plugin.getAdministration().getLanguage()));
         setYamlManager(yamlHandler.getYamlManager());
 		

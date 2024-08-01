@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>main.java.me.avankziar</groupId>
 	<artifactId>afkrecord</artifactId>
-	<version>10-7-0</version>
+	<version>10-7-1</version>
 	<name>AfkRecord</name>
 	<url>https://github.com/${repository-owner}/${repository-name}.git</url>
     <scm>
