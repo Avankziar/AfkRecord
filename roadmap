@@ -3,6 +3,12 @@ Future Build
 - Der Spieler ist afk, im chat anzeigen, wenn man /msg macht. (Falls NUR /afk eingegeben wurde)
 - Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
 - xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
+- Serial1990 | SecretCraft — heute um 15:05 Uhr
+	Neuen Befehl:
+	/afkr top onlinetime/afktime/alltime 30
+	Die 30 steht für Tage.
+	Mit den Befehl soll ein Ranking ausgegeben werden der aktivsten Spieler der letzten 30 Tage.
+	(Zeit kann natürlich variable sein.)
 
 Build 10-7-1
 - YamlHandler and create and load file fix
