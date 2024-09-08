@@ -569,7 +569,7 @@ public class PlayerTimesProvider implements PlayerTimes
 	
 	private void softsave(boolean active)
 	{
-		for(Player player : plugin.getServer().getAllPlayers())
+		for(Player player : plugin.getProxy().getAllPlayers())
 		{
 			if(player == null)
 			{

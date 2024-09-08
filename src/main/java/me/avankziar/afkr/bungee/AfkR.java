@@ -5,6 +5,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import main.java.me.avankziar.afkr.bungee.assistance.BackgroundTask;
 import main.java.me.avankziar.afkr.bungee.database.MysqlHandler;
 import main.java.me.avankziar.afkr.bungee.database.MysqlSetup;
 import main.java.me.avankziar.afkr.bungee.ifh.PlayerTimesProvider;
@@ -62,6 +63,7 @@ public class AfkR extends Plugin
 		getProxy().registerChannel("afkrecord:afkrecordin");
 		getProxy().getPluginManager().registerListener(plugin, new EventAfkCheck());
 		setupIFHProvider();
+		new BackgroundTask(plugin);
 	}
 	
 	public void onDisable()

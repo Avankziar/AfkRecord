@@ -20,6 +20,7 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 
 import main.java.me.avankziar.afkr.general.database.YamlHandler;
 import main.java.me.avankziar.afkr.general.database.YamlManager;
+import main.java.me.avankziar.afkr.velocity.assistance.BackgroundTask;
 import main.java.me.avankziar.afkr.velocity.database.MysqlHandler;
 import main.java.me.avankziar.afkr.velocity.database.MysqlSetup;
 import main.java.me.avankziar.afkr.velocity.ifh.PlayerTimesProvider;
@@ -95,6 +96,7 @@ public class AfkR
 		
         registerChannels();
         setupIFHProvider();
+        new BackgroundTask(plugin);
     }
     
     public static AfkR getPlugin()
@@ -102,7 +104,7 @@ public class AfkR
     	return AfkR.plugin;
     }
     
-    public ProxyServer getServer()
+    public ProxyServer getProxy()
     {
     	return server;
     }
@@ -144,8 +146,8 @@ public class AfkR
     
 	private void setupIFHProvider()
 	{
-		Optional<PluginContainer> ifhp = getServer().getPluginManager().getPlugin("interfacehub");
-		Optional<PluginContainer> plugin = getServer().getPluginManager().getPlugin(pluginname.toLowerCase());
+		Optional<PluginContainer> ifhp = getProxy().getPluginManager().getPlugin("interfacehub");
+		Optional<PluginContainer> plugin = getProxy().getPluginManager().getPlugin(pluginname.toLowerCase());
         if (ifhp.isEmpty()) 
         {
         	logger.info(pluginname + " dont find InterfaceHub!");
@@ -165,7 +167,7 @@ public class AfkR
 	
 	private void setupIFHAdministration()
 	{ 
-		Optional<PluginContainer> ifhp = plugin.getServer().getPluginManager().getPlugin("interfacehub");
+		Optional<PluginContainer> ifhp = plugin.getProxy().getPluginManager().getPlugin("interfacehub");
         if (ifhp.isEmpty()) 
         {
         	logger.info(pluginname + " dont find InterfaceHub!");

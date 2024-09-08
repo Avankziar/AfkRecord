@@ -545,6 +545,26 @@ public class YamlManager
 			configKeys.put("Seperator.HoverNewLine"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"~!~"}));
+		} else if(type != Type.SPIGOT)
+		{
+			addConfig("Proxy.Scheduler.CheckIfOfflineAndAfk.Active",
+					new Object[] {
+					true},
+					new Object[] {
+					"",
+					"Wenn 'true' wird ein im Hintergrundlaufender Task periodisch checken,",
+					"ob Spieler welche noch Afk sind, welche aber schon offline sind. Und diese austragen.",
+					"",
+					"",
+					""});
+			addConfig("Proxy.Scheduler.CheckIfOfflineAndAfk.LoopInMinutes",
+					new Object[] {
+					5},
+					new Object[] {
+					"",
+					"Wie oft in Minuten der Task sich wiederholen soll.",
+					"",
+					""});
 		}
 	}
 	

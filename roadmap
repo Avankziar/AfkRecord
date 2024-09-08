@@ -10,6 +10,10 @@ Future Build
 	Mit den Befehl soll ein Ranking ausgegeben werden der aktivsten Spieler der letzten 30 Tage.
 	(Zeit kann natürlich variable sein.)
 
+
+Build 10-8-0
+- Proxy BackgroundTask, welcher Periodisch checkt, ob Spieler die noch afk sind nicht schon offline sind.
+
 Build 10-7-1
 - YamlHandler and create and load file fix
 
