@@ -509,7 +509,8 @@ public class MysqlBaseHandler
 		        			result.getLong("lastactivity"),
 		        			result.getBoolean("isafk"),
 		        			result.getBoolean("isonline"),
-		        			result.getLong("vacationtime"));
+		        			result.getLong("vacationtime"),
+		        			result.getString("afkreason"));
 		        	list.add(ep);
 		        }
 		        return list;

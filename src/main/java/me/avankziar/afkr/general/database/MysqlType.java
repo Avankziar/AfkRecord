@@ -17,7 +17,8 @@ public enum MysqlType
     		+ " lasttimecheck BIGINT NULL DEFAULT '0',"
     		+ " isafk boolean,"
     		+ " isonline boolean,"
-    		+ " vacationtime BIGINT NULL DEFAULT '0');"),
+    		+ " vacationtime BIGINT NULL DEFAULT '0',"
+    		+ " afkreason text);"),
 	TIMERECORD("afkrecordDateList", new TimeRecord(), "ALL",
 			"CREATE TABLE IF NOT EXISTS `%%tablename%%"
 			+ "` (id int AUTO_INCREMENT PRIMARY KEY,"

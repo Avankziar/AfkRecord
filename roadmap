@@ -1,18 +1,17 @@
 Future Build
-- Wenn man /afk <Text>, macht, wird der Text im Chat geschrieben, dass man zeigt, dass diese Person afk ist.
-- Der Spieler ist afk, im chat anzeigen, wenn man /msg macht. (Falls NUR /afk eingegeben wurde)
-- Befehl hinzufügen um Spieler spezifische Zeit auf ihr Konto zu hinzuzufügen
-- xxx Mysql auf dem Bungee bauen && Ifh Anbindung im Bungee einbinden.
-- Serial1990 | SecretCraft — heute um 15:05 Uhr
-	Neuen Befehl:
-	/afkr top onlinetime/afktime/alltime 30
-	Die 30 steht für Tage.
-	Mit den Befehl soll ein Ranking ausgegeben werden der aktivsten Spieler der letzten 30 Tage.
-	(Zeit kann natürlich variable sein.)
 
 
 Build 10-8-0
+- Spigot 1.21.1 Support
 - Proxy BackgroundTask, welcher Periodisch checkt, ob Spieler die noch afk sind nicht schon offline sind.
+- Den Befehlen /afkr top [onlinetime/afktime/alltime] [Seitenzahl], wurde ein neues optionales Argument hinzugefügt.
+  /afkr top [onlinetime/afktime/alltime] [Seitenzahl] [letzte x Tage], dieses zeigt nun alle Spieler in Toplisten an, in Bezug auf die letzten x Tage an.
+  Befehl, wenn ausgeführt mit diesem neuen Argument, erhält neue BypassPermission.
+- Befehl hinzugefügt: /afk add <Spielername> <alltime|afktime|onlinetime> <dd:HH:mm:ss Zeitformat> | Addiert/Subtrahiert Zeit auf das Zeitkonto des Spielers.
+- Befehl /afk, erlaubt nun eine Nachricht in Form von /afk [Nachricht], anzuhängen um zu beschreiben, warum man Afk ist.
+  Langzeit sollte somit ermöglich werden, dass andere Plugins über IFH diese Info auslesen können und darstellen können.
+- Dateien Version auf 2 angehoben.
+
 
 Build 10-7-1
 - YamlHandler and create and load file fix

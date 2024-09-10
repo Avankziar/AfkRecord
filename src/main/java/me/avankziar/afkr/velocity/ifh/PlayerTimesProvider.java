@@ -136,7 +136,7 @@ public class PlayerTimesProvider implements PlayerTimes
 	public boolean createAccount(UUID uuid, String playername)
 	{
 		long now = System.currentTimeMillis();
-		PluginUser user = new PluginUser(uuid, playername, now, 0, 0, 0, now, false, false, 0);
+		PluginUser user = new PluginUser(uuid, playername, now, 0, 0, 0, now, false, false, 0, null);
 		plugin.getMysqlHandler().create(MysqlType.PLUGINUSER, user);
 		return true;
 	}
@@ -588,5 +588,12 @@ public class PlayerTimesProvider implements PlayerTimes
 	        		MinecraftChannelIdentifier.from("afkr:afkrecordout"), streamout.toByteArray());
 		    return;
 		}
+	}
+	
+	@Override
+	public String getAfkReason(UUID uuid)
+	{
+		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlType.PLUGINUSER, "`player_uuid` = ?", uuid.toString());
+		return user != null ? user.getAfkReason() : null;
 	}
 }

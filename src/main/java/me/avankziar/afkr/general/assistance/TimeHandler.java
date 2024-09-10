@@ -50,10 +50,10 @@ public class TimeHandler
 		return new Time(l).toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 	}
 	
-	/*public static long getTime(String l)
+	public static String getTime(long l, String format)
 	{
-		
-	}*/
+		return new Time(l).toLocalTime().format(DateTimeFormatter.ofPattern(format));
+	}
 	
 	public static String getRepeatingTime(long l, String timeformat) // yyyy-dd-HH:mm
 	{

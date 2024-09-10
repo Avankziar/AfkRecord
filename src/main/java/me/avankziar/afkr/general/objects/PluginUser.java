@@ -24,6 +24,7 @@ public class PluginUser implements MysqlHandable
 	private boolean isAFK;
 	private boolean isOnline;
 	private long vacationTime;
+	private String afkreason;
 	
 	public PluginUser() {}
 	
@@ -32,7 +33,8 @@ public class PluginUser implements MysqlHandable
 			long activityTime, long afkTime, long allTime,
 			long lastActivity,
 			boolean isAFK, boolean isOnline,
-			long vacationTime)
+			long vacationTime,
+			String afkreason)
 	{
 		setPlayerName(playername);
 		setUUID(uuid);
@@ -44,6 +46,7 @@ public class PluginUser implements MysqlHandable
 		setAFK(isAFK);
 		setOnline(isOnline);
 		setVacationTime(vacationTime);
+		setAfkReason(afkreason);
 	}
 
 	public String getPlayerName()
@@ -146,6 +149,16 @@ public class PluginUser implements MysqlHandable
 		this.vacationTime = vacationTime;
 	}
 	
+	public String getAfkReason()
+	{
+		return afkreason;
+	}
+
+	public void setAfkReason(String afkreason)
+	{
+		this.afkreason = afkreason;
+	}
+
 	@Override
 	public boolean create(Connection conn, String tablename)
 	{
@@ -153,10 +166,12 @@ public class PluginUser implements MysqlHandable
 		{
 			String sql = "INSERT INTO `" + tablename
 					+ "`(`player_uuid`, `player_name`, `alltime`, `activitytime`, `afktime`,"
-					+ " `lastactivity`, `lasttimecheck`, `isafk`, `isonline`, `vacationtime`) " 
+					+ " `lastactivity`, `lasttimecheck`, `isafk`, `isonline`, `vacationtime`,"
+					+ " `afkreason`) " 
 					+ "VALUES("
 					+ "?, ?, ?, ?, ?,"
-					+ "?, ?, ?, ?, ?"
+					+ "?, ?, ?, ?, ?,"
+					+ "?"
 					+ ")";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, getUUID().toString());
@@ -169,6 +184,7 @@ public class PluginUser implements MysqlHandable
 	        ps.setBoolean(8, isAFK());
 	        ps.setBoolean(9, isOnline());
 	        ps.setLong(10, getVacationTime());
+	        ps.setString(11, getAfkReason());
 	        
 	        int i = ps.executeUpdate();
 	        MysqlBaseHandler.addRows(QueryType.INSERT, i);
@@ -189,7 +205,7 @@ public class PluginUser implements MysqlHandable
 					+ "` SET `player_uuid` = ?, `player_name` = ?,"
 					+ " `alltime` = ?, `activitytime` = ?, `afktime` = ?,"
 					+ " `lastactivity` = ?, `lasttimecheck` = ?, `isafk`= ?, `isonline` = ?,"
-					+ " `vacationtime` = ?" 
+					+ " `vacationtime` = ?, `afkreason` = ?" 
 					+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, getUUID().toString());
@@ -202,7 +218,8 @@ public class PluginUser implements MysqlHandable
 	        ps.setBoolean(8, isAFK());
 	        ps.setBoolean(9, isOnline());
 	        ps.setLong(10, getVacationTime());
-	        int i = 11;
+	        ps.setString(11, getAfkReason());
+	        int i = 12;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -247,7 +264,8 @@ public class PluginUser implements MysqlHandable
 	        			rs.getLong("lastactivity"),
 	        			rs.getBoolean("isafk"),
 	        			rs.getBoolean("isonline"),
-	        			rs.getLong("vacationtime")));
+	        			rs.getLong("vacationtime"),
+	        			rs.getString("afkreason")));
 			}
 			return al;
 		} catch (SQLException e)

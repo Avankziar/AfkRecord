@@ -1,8 +1,15 @@
 package main.java.me.avankziar.afkr.spigot.cmd;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -159,7 +166,7 @@ public class CommandHelper
 	}
 	
 	public void top(Player player, String orderByColumn, int page,
-			String headpath, String subcmd) throws IOException
+			String headpath, String subcmd)
 	{
 		int start = 0;
 		int quantity = 9;
@@ -238,6 +245,96 @@ public class CommandHelper
 			}
 			list.add(msg1);
 		}
+		if(!list.isEmpty())
+		{
+			MSG.setExtra(list);
+			player.spigot().sendMessage(MSG);
+		}
+	}
+	
+	public void topLastXDays(Player player, String orderByColumn, int page,
+			String headpath, String subcmd, int days)
+	{
+		long now = LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		long beforeXDays = now - (1000L*60*60*24*days);
+		ArrayList<TimeRecord> timerec = ConvertHandler.convertListII(plugin.getMysqlHandler().getFullList(MysqlType.TIMERECORD,
+				"`id` ASC", "`timestamp_unix` > ?", beforeXDays));
+		if(timerec == null || timerec.isEmpty())
+		{
+			player.sendMessage(ChatApi.tl("Arr ist null oder Empty"));
+		}
+		LinkedHashMap<UUID, Long> map = new LinkedHashMap<>();
+		for(TimeRecord tr : timerec)
+		{
+			long l = 0;
+			if(map.containsKey(tr.getUUID()))
+			{
+				l = map.get(tr.getUUID());
+			}
+			switch(orderByColumn)
+			{
+			case "alltime": l += tr.getTotalTime(); break;
+			case "activitytime": l += tr.getActiveTime(); break;
+			case "afktime": l += tr.getActiveTime(); break;
+			}
+			map.put(tr.getUUID(), l);
+		}
+		LinkedHashMap<UUID, Long> sorted = map.entrySet()
+				.stream()
+				.sorted(Map.Entry.comparingByValue(Long::compareTo))
+				.collect(Collectors.toMap(
+						Map.Entry::getKey,
+						Map.Entry::getValue,
+						(a, b) -> a, LinkedHashMap::new));
+		int start = page*10;
+		int quantity = 9;
+		int lastEntry = sorted.size();
+		int lastpage = lastEntry/quantity;
+		ArrayList<String> msg = new ArrayList<>();
+		msg.add(plugin.getYamlHandler().getLang().getString(headpath)
+				.replace("%days%", String.valueOf(days)));
+		int a = 0;
+		for(Entry<UUID, Long> e : sorted.entrySet())
+		{
+			if(a < start || a >= start+quantity)
+			{
+				continue;
+			}
+			PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlType.PLUGINUSER, "`player_uuid` = ?", e.getKey());
+			int place = start+1;
+			long time = e.getValue();
+			if(user != null)
+			{
+				msg.add(plugin.getYamlHandler().getLang().getString("CmdAfkRecord.Top.PlaceAndTime")
+						.replace("%place%", plugin.getUtility().getPlaceColor(place))
+						.replace("%player%", user.getPlayerName())
+						.replace("%time%", plugin.getPlayerTimes().formatTimePeriod(time, true, true)));
+			}
+			a++;
+		}
+		int i = page+1;
+		int j = page == 0 ? lastpage : page-1;
+		TextComponent MSG = ChatApi.tctl("");
+		List<BaseComponent> list = new ArrayList<BaseComponent>();
+		if(page != 0)
+		{
+			TextComponent msg2 = ChatApi.tc(ChatApi.tl(
+					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.BaseInfo.Past")));
+			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, subcmd+" "+j+" "+days));
+			list.add(msg2);
+		}
+		if(page != 0 && lastpage > 0)
+		{
+			TextComponent msg1 = ChatApi.tc(ChatApi.tl(
+					plugin.getYamlHandler().getLang().getString("CmdAfkRecord.BaseInfo.Next")));
+			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, subcmd+" "+i+" "+days));
+			if(list.size()==1)
+			{
+				list.add(ChatApi.tc(" | "));
+			}
+			list.add(msg1);
+		}
+		msg.stream().forEach(x -> player.spigot().sendMessage(ChatApi.tctl(x)));
 		if(!list.isEmpty())
 		{
 			MSG.setExtra(list);

@@ -6,4 +6,5 @@ public class BypassPermission
 	public static String GETTIMEOTHER = "afkrecord.cmd.afkrecord.gettime.other";
 	public static String TIMEOTHER = "afkrecord.cmd.afkrecord.time.other";
 	public static String VACATIONOTHER = "afkrecord.cmd.afkrecord.vacation.other";
+	public static String TOPLASTDAYS = "afkrecord.cmd.afkrecord.top.last.days";
 }

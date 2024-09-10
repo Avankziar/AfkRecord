@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
+import main.java.me.avankziar.afkr.general.database.MysqlType;
+import main.java.me.avankziar.afkr.general.objects.PluginUser;
 import main.java.me.avankziar.afkr.spigot.AfkR;
 import me.avankziar.ifh.general.interfaces.PlayerTimes;
 
@@ -245,5 +247,12 @@ public class PlayerTimesAPI implements PlayerTimes
 	public String formatTimePeriod(long time, boolean useYears, boolean useDays, boolean useHours, boolean useMinutes, boolean useSeconds)
 	{
 		return plugin.getPlayerTimes().formatTimePeriod(time, useYears, useDays, useHours, useMinutes, useSeconds);
-	}	
+	}
+	
+	@Override
+	public String getAfkReason(UUID uuid)
+	{
+		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlType.PLUGINUSER, "`player_uuid` = ?", uuid.toString());
+		return user != null ? user.getAfkReason() : null;
+	}
 }

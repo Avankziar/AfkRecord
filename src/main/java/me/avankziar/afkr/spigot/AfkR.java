@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -257,6 +258,11 @@ public class AfkR extends JavaPlugin
 		playerMapIV.put(4, playerarray);
 		playerMapV.put(5, playerarray);
 		
+		ArgumentConstructor add = new ArgumentConstructor(baseCommandI+"_add", 0, 3, 3, false, 
+						(LinkedHashMap<Integer, ArrayList<String>>) Map.of(
+								1, playerarray,
+								2, (ArrayList<String>) Arrays.asList("alltime", "afktime", "onlinetime"),
+								3, (ArrayList<String>) Arrays.asList("dd:HH:mm:ss")));
 		ArgumentConstructor bypass = new ArgumentConstructor(baseCommandI+"_bypass", 0, 0, 0, false, null);
 		ArgumentConstructor counttime = new ArgumentConstructor(baseCommandI+"_counttime", 0, 1, 2, false, playerMapII);
 		PluginSettings.settings.addCommands(KeyHandler.COUNTTIME, counttime.getCommandString());
@@ -266,17 +272,17 @@ public class AfkR extends JavaPlugin
 		ArgumentConstructor time = new ArgumentConstructor(baseCommandI+"_time", 0, 0, 1, false, playerMapI);
 		PluginSettings.settings.addCommands(KeyHandler.TIME, time.getCommandString());
 		
-		ArgumentConstructor top_onlinetime = new ArgumentConstructor(baseCommandI+"_top_onlinetime", 1, 1, 3, false, null);
+		ArgumentConstructor top_onlinetime = new ArgumentConstructor(baseCommandI+"_top_onlinetime", 1, 1, 4, false, null);
 		PluginSettings.settings.addCommands(KeyHandler.TOP_ACTIVITYTIME, top_onlinetime.getCommandString());
-		ArgumentConstructor top_alltime = new ArgumentConstructor(baseCommandI+"_top_alltime", 1, 1, 3, false, null);
+		ArgumentConstructor top_alltime = new ArgumentConstructor(baseCommandI+"_top_alltime", 1, 1, 4, false, null);
 		PluginSettings.settings.addCommands(KeyHandler.TOP_ALLTIME, top_alltime.getCommandString());
-		ArgumentConstructor top_afktime = new ArgumentConstructor(baseCommandI+"_top_afktime", 1, 1, 3, false, null);
+		ArgumentConstructor top_afktime = new ArgumentConstructor(baseCommandI+"_top_afktime", 1, 1, 4, false, null);
 		PluginSettings.settings.addCommands(KeyHandler.TOP_AFKTIME, top_afktime.getCommandString());
 		ArgumentConstructor top = new ArgumentConstructor(baseCommandI+"_top", 0, 0, 0, false, null,
 				top_onlinetime, top_alltime, top_afktime);
 		ArgumentConstructor vacation = new ArgumentConstructor(baseCommandI+"_vacation", 0, 0, 3, false, playerMapI);	
 		CommandConstructor afkr = new CommandConstructor(baseCommandIName, false,
-				bypass, counttime, permcounttime, getafk, gettime, time, top, vacation);
+				add, bypass, counttime, permcounttime, getafk, gettime, time, top, vacation);
 		
 		registerCommand(afkr.getPath(), afkr.getName());
 		getCommand(afkr.getName()).setExecutor(new AfkRCommandExecutor(plugin, afkr));
@@ -315,6 +321,7 @@ public class AfkR extends JavaPlugin
 		BypassPermission.GETTIMEOTHER = yamlHandler.getCommands().getString(path+"GetTimeOther");
 		BypassPermission.TIMEOTHER = yamlHandler.getCommands().getString(path+"TimeOther");
 		BypassPermission.VACATIONOTHER = yamlHandler.getCommands().getString(path+"VacationOther");
+		BypassPermission.TOPLASTDAYS = yamlHandler.getCommands().getString(path+"TopLastdays");
 	}
 	
 	public ArrayList<BaseConstructor> getHelpList()

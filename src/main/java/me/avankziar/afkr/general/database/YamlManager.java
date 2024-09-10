@@ -603,25 +603,29 @@ public class YamlManager
 				"&c/afkr time [Spieler] &f| Zeigt die Gesamtwerte des Spielers an.",
 				"&c/afkr time [player] &f| Shows the total values of the player.");
 		argumentInput("afkr_top", "top", basePermission,
-				"/afkr top <onlinetime|alltime|afktime> [number]", "/afkr top ",
-				"&c/afkr top <onlinetime|alltime|afktime> [Zahl] &f| Zwischenbefehl.",
-				"&c/afkr top <onlinetime|alltime|afktime> [number] &f| Subcommand");
+				"/afkr top <onlinetime|alltime|afktime> [pagenumber]", "/afkr top ",
+				"&c/afkr top <onlinetime|alltime|afktime> [Seitenzahl] &f| Zwischenbefehl.",
+				"&c/afkr top <onlinetime|alltime|afktime> [pagenumber] &f| Subcommand");
 		argumentInput("afkr_top_onlinetime", "onlinetime", basePermission,
-				"/afkr top onlinetime [number]", "/afkr top onlinetime",
-				"&c/afkr top onlinetime [Zahl] &f| Zeigt die Topliste an, 10 Plätze pro Seite.",
-				"&c/afkr top onlinetime [number] &f| Displays the top list, 10 places per page.");
+				"/afkr top onlinetime [pagenumber] [last x days]", "/afkr top onlinetime",
+				"&c/afkr top onlinetime [Seitenzahl] [letzte x Tage] &f| Zeigt die Topliste an, 10 Plätze pro Seite.",
+				"&c/afkr top onlinetime [pagenumber] [last x days] &f| Displays the top list, 10 places per page.");
 		argumentInput("afkr_top_alltime", "alltime", basePermission,
-				"/afkr top alltime [number]", "/afkr top alltime ",
-				"&c/afkr top alltime [number] &f| Zeigt die Topliste an, 10 Plätze pro Seite.",
-				"&c/afkr top alltime [number] &f| Displays the top list, 10 places per page.");
+				"/afkr top alltime [pagenumber] [last x days]", "/afkr top alltime ",
+				"&c/afkr top alltime [Seitenzahl] [letzte x Tage] &f| Zeigt die Topliste an, 10 Plätze pro Seite.",
+				"&c/afkr top alltime [pagenumber] [last x days] &f| Displays the top list, 10 places per page.");
 		argumentInput("afkr_top_afktime", "afktime", basePermission,
-				"/afkr top afktime [number]", "/afkr top afktime ",
-				"&c/afkr top afktime [number] &f| Zeigt die Topliste an, 10 Plätze pro Seite.",
-				"&c/afkr top afktime [number] &f| Displays the top list, 10 places per page.");
+				"/afkr top afktime [pagenumber] [last x days]", "/afkr top afktime ",
+				"&c/afkr top afktime [Seitenzahl] [letzte x Tage] &f| Zeigt die Topliste an, 10 Plätze pro Seite.",
+				"&c/afkr top afktime [pagenumber] [last x days] &f| Displays the top list, 10 places per page.");
 		argumentInput("afkr_vacation", "vacation", basePermission,
 				"/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>]", "/afkr vacation ",
 				"&c/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>] &f| Zeigt an ob und bis wielange der Spieler in Urlaub ist oder setzt die Zeit, bis wann man in Urlaub ist.",
 				"&c/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>] &f| Shows if and until how long the player is on vacation or sets the time until when you are on vacation.");
+		argumentInput("afkr_add", "add", basePermission,
+				"/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format>", "/afkr add ",
+				"&c/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format> &f| Addiert/Subtrahiert Zeit vom Spielerkonto.",
+				"&c/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format> &f| Addiert/Subtrahiert Zeit vom Spielerkonto.");
 		commandsInput("afk", "afk", "afkrecord.cmd.afk", 
 				"/afk", "/afk ",
 				"&c/afk &f| Toggelt den Afk-Zustand.",
@@ -643,6 +647,9 @@ public class YamlManager
 		commandsKeys.put(path+"VacationOther"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"afkrecord.cmd.afkrecord.vacation.other"}));
+		commandsKeys.put(path+"TopLastdays"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"afkrecord.cmd.afkrecord.top.last.days"}));
 	}
 	
 	private void commandsInput(String path, String name, String basePermission, 
@@ -1060,6 +1067,19 @@ public class YamlManager
 						"&ePlatz &c%place%&f: &6%player% &f| &eZeit: &f%time%",
 						"&ePlace &c%place%&f: &6%player% &f| &eTime: &f%time%"}));
 		
+		languageKeys.put("CmdAfkRecord.Top.HeadlineAcTLastDays",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&e=====&fTopListe Aktive SpielzeitLetzte %days% Tage&e=====",
+						"&e=====&fTopListe Active PlaytimeLast %days% days&e====="}));
+		languageKeys.put("CmdAfkRecord.Top.HeadlineAlTLastDays",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&e=====&fTopListe GesamtzeitLetzte %days% Tage&e=====",
+						"&e=====&fTopListe Total TimeLast %days% days&e====="}));
+		languageKeys.put("CmdAfkRecord.Top.HeadlineAfTLastDays",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&e=====&fTopListe Afkzeit Letzte %days% Tage&e=====",
+						"&e=====&fTopListe Afktime Last %days% days&e====="}));
+		
 		languageKeys.put("CmdAfkRecord.Vacation.NotInVacation",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&eDu bist nicht im Urlaub!",
@@ -1092,6 +1112,22 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&eDu bist nun nicht mehr im Urlaub!",
 						"&6You are now no longer on vacation!"}));
+		languageKeys.put("CmdAfkRecord.Add.TimeFormat",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&cBitte nutzte etweder eine Zahl als Millisekunde oder im Zeitformat dd:HH:mm:ss!",
+						"&cPlease use either a number in milliseconds or in the time format dd:HH:mm:ss!"}));
+		languageKeys.put("CmdAfkRecord.Add.Alltime",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eEs wurden dem Spieler %player% %time% Gesamtzeit hinzugefügt.",
+						"&eAdded %time% alltime to the player %player%."}));
+		languageKeys.put("CmdAfkRecord.Add.Afktime",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eEs wurden dem Spieler %player% %time% Afkzeit hinzugefügt.",
+						"&eAdded %time% afktime to the player %player%."}));
+		languageKeys.put("CmdAfkRecord.Add.Onlinetime",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eEs wurden dem Spieler %player% %time% Aktivezeit hinzugefügt.",
+						"&eAdded %time% activetime to the player %player%."}));
 		
 		languageKeys.put("CmdAfk.SetAfk",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

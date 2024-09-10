@@ -468,7 +468,7 @@ public class PlayerTimesHandler
 	public boolean createAccount(UUID uuid, String playername)
 	{
 		long now = System.currentTimeMillis();
-		PluginUser user = new PluginUser(uuid, playername, now, 0, 0, 0, now, false, false, 0);
+		PluginUser user = new PluginUser(uuid, playername, now, 0, 0, 0, now, false, false, 0, null);
 		plugin.getMysqlHandler().create(MysqlType.PLUGINUSER, user);
 		return true;
 	}
