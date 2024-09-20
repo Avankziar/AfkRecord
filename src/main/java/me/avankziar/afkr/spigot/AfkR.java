@@ -35,6 +35,7 @@ import main.java.me.avankziar.afkr.spigot.cmd.AfkCommandExecutor;
 import main.java.me.avankziar.afkr.spigot.cmd.AfkRCommandExecutor;
 import main.java.me.avankziar.afkr.spigot.cmd.CommandHelper;
 import main.java.me.avankziar.afkr.spigot.cmd.TABCompletion;
+import main.java.me.avankziar.afkr.spigot.cmd.afkrecord.ARGAdd;
 import main.java.me.avankziar.afkr.spigot.cmd.afkrecord.ARGBypass;
 import main.java.me.avankziar.afkr.spigot.cmd.afkrecord.ARGCountTime;
 import main.java.me.avankziar.afkr.spigot.cmd.afkrecord.ARGCountTimePermission;
@@ -298,10 +299,11 @@ public class AfkR extends JavaPlugin
 		getCommand(afk.getName()).setTabCompleter(new TABCompletion(plugin));
 		
 		addingHelps(afkr,
-						bypass, counttime, permcounttime, getafk, gettime, time, top,
+						add, bypass, counttime, permcounttime, getafk, gettime, time, top,
 							top_onlinetime, top_alltime, top_afktime, vacation,
 					afk);
 		
+		new ARGAdd(plugin, add);
 		new ARGBypass(plugin, bypass);
 		new ARGCountTime(plugin, counttime);
 		new ARGCountTimePermission(plugin, permcounttime);

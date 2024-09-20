@@ -582,6 +582,10 @@ public class YamlManager
 				"/afkr bypass", "/afkr bypass ",
 				"&c/afkr bypass &f| Toggelt ob man immer als &enicht afk &fgezählt wird.",
 				"&c/afkr bypass &f| Toggle whether one is always counted as &enot afk&f.");
+		argumentInput("afkr_add", "add", basePermission,
+				"/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format>", "/afkr add ",
+				"&c/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format> &f| Addiert/Subtrahiert Zeit vom Spielerkonto.",
+				"&c/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format> &f| Addiert/Subtrahiert Zeit vom Spielerkonto.");
 		argumentInput("afkr_counttime", "counttime", basePermission,
 				"/afkr counttime <tage> [Spieler]", "/afkr counttime ",
 				"&c/afkr counttime <tage> [Spieler] &f| Zählt alle Zeiten in einem Zeitraum.",
@@ -622,14 +626,10 @@ public class YamlManager
 				"/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>]", "/afkr vacation ",
 				"&c/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>] &f| Zeigt an ob und bis wielange der Spieler in Urlaub ist oder setzt die Zeit, bis wann man in Urlaub ist.",
 				"&c/afkr vacation [<player> || <vacation in days as number> || <<dd.MM.yyyy> <HH:mm>>] &f| Shows if and until how long the player is on vacation or sets the time until when you are on vacation.");
-		argumentInput("afkr_add", "add", basePermission,
-				"/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format>", "/afkr add ",
-				"&c/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format> &f| Addiert/Subtrahiert Zeit vom Spielerkonto.",
-				"&c/afkr add <playername> <onlinetime|alltime|afktime> <dd:HH:mm:ss Format> &f| Addiert/Subtrahiert Zeit vom Spielerkonto.");
 		commandsInput("afk", "afk", "afkrecord.cmd.afk", 
-				"/afk", "/afk ",
-				"&c/afk &f| Toggelt den Afk-Zustand.",
-				"&c/afk &f| Toggles the afk-status.");
+				"/afk [afk reason...]", "/afk ",
+				"&c/afk [Afk Grund...] &f| Toggelt den Afk-Zustand. Setzt optional einen Grund warum man afk ist.",
+				"&c/afk [afk reason...] &f| Toggles the afk-status. Optionally sets a reason why you are afk.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -1112,6 +1112,10 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&eDu bist nun nicht mehr im Urlaub!",
 						"&6You are now no longer on vacation!"}));
+		languageKeys.put("CmdAfkRecord.Add.Format",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&cBitte nutzte etweder alltime oder afktime oder onlinetime!",
+						"&cPlease use either alltime oder afktime oder onlinetime!"}));
 		languageKeys.put("CmdAfkRecord.Add.TimeFormat",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&cBitte nutzte etweder eine Zahl als Millisekunde oder im Zeitformat dd:HH:mm:ss!",

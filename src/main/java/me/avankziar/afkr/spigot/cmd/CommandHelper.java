@@ -300,7 +300,7 @@ public class CommandHelper
 			{
 				continue;
 			}
-			PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlType.PLUGINUSER, "`player_uuid` = ?", e.getKey());
+			PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlType.PLUGINUSER, "`player_uuid` = ?", e.getKey().toString());
 			int place = start+1;
 			long time = e.getValue();
 			if(user != null)

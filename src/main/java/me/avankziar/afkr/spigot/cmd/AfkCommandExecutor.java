@@ -45,9 +45,13 @@ public class AfkCommandExecutor implements CommandExecutor
 			plugin.getPlayerTimes().saveRAM(uuid, !plugin.getPlayerTimes().isActive(uuid), false, false);
 		}
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlType.PLUGINUSER, "`player_uuid` = ?", uuid.toString());
-		if(user != null)
+		if(user != null && afkreason != null)
 		{
 			user.setAfkReason(afkreason);
+			plugin.getMysqlHandler().updateData(MysqlType.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
+		} else if(user != null && afkreason == null)
+		{
+			user.setAfkReason(null);
 			plugin.getMysqlHandler().updateData(MysqlType.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
 		}
 		return true;
