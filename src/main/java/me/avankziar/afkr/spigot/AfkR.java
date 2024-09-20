@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -258,11 +257,15 @@ public class AfkR extends JavaPlugin
 		playerMapIV.put(4, playerarray);
 		playerMapV.put(5, playerarray);
 		
-		ArgumentConstructor add = new ArgumentConstructor(baseCommandI+"_add", 0, 3, 3, false, 
-						(LinkedHashMap<Integer, ArrayList<String>>) Map.of(
-								1, playerarray,
-								2, (ArrayList<String>) Arrays.asList("alltime", "afktime", "onlinetime"),
-								3, (ArrayList<String>) Arrays.asList("dd:HH:mm:ss")));
+		ArrayList<String> times = new ArrayList<>();
+		times.addAll(Arrays.asList("alltime", "afktime", "onlinetime"));
+		ArrayList<String> timeformat = new ArrayList<>();
+		timeformat.addAll(Arrays.asList("dd:HH:mm:ss"));
+		LinkedHashMap<Integer, ArrayList<String>> adds = new LinkedHashMap<>();
+		adds.put(1, playerarray);
+		adds.put(2, times);
+		adds.put(3, timeformat);
+		ArgumentConstructor add = new ArgumentConstructor(baseCommandI+"_add", 0, 3, 3, false, adds);
 		ArgumentConstructor bypass = new ArgumentConstructor(baseCommandI+"_bypass", 0, 0, 0, false, null);
 		ArgumentConstructor counttime = new ArgumentConstructor(baseCommandI+"_counttime", 0, 1, 2, false, playerMapII);
 		PluginSettings.settings.addCommands(KeyHandler.COUNTTIME, counttime.getCommandString());

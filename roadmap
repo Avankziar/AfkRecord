@@ -3,6 +3,7 @@ Future Build
 
 Build 10-8-0
 - Spigot 1.21.1 Support
+- Mysql Änderungen => ALTER TABLE `afkrecordplayerdata` ADD `afkreason` TEXT NULL AFTER `vacationtime`;
 - Proxy BackgroundTask, welcher Periodisch checkt, ob Spieler die noch afk sind nicht schon offline sind.
 - Den Befehlen /afkr top [onlinetime/afktime/alltime] [Seitenzahl], wurde ein neues optionales Argument hinzugefügt.
   /afkr top [onlinetime/afktime/alltime] [Seitenzahl] [letzte x Tage], dieses zeigt nun alle Spieler in Toplisten an, in Bezug auf die letzten x Tage an.
