@@ -32,6 +32,6 @@ public class MysqlSetup extends MysqlBaseSetup
 		boolean isSSLEnabled = adm ? plugin.getAdministration().useSSL(path)
 				: plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false);
 		init(host, port, database, user, password, isAutoConnect, isVerifyServerCertificate, isSSLEnabled);
-		loadMysqlSetup(ServerType.BUNGEE);
+		loadMysqlSetup(ServerType.VELOCITY);
 	}
 }

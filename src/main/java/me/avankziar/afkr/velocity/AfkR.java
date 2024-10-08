@@ -36,7 +36,8 @@ import me.avankziar.ifh.velocity.plugin.ServicePriority;
 		version = "10-7-0",
 		url = "https://www.spigotmc.org/resources/authors/avankziar.332028/",
 		dependencies = {
-				@Dependency(id = "interfacehub", optional = false)
+				@Dependency(id = "interfacehub", optional = false),
+				@Dependency(id = "rootadministration", optional = true)
 		},
 		description = "Afk Tracker Plugin",
 		authors = {"Avankziar"}

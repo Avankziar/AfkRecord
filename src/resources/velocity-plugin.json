@@ -4,5 +4,5 @@
 "description":"Afk Tracker Plugin",
 "authors":["Avankziar"],
 "url":"https://www.spigotmc.org/resources/authors/avankziar.332028/",
-"dependencies":[{id='interfacehub', version='null', optional=false}],
+"dependencies":[{id='interfacehub', version='null', optional=false}, {id='rootadministration', version='null', optional=true}],
 "main":"main.java.me.avankziar.afkr.velocity.AfkR"}
