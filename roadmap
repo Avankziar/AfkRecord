@@ -1,5 +1,10 @@
 Future Build
 
+10-9-0
+- Spigot 1.21.4 support
+- Api muss mindestens 1.21.3 oder höher sein.
+- Velocity 3.4.0 support
+
 Build 10-8-1
 - Velocity RootAdministration Softdepend
 
