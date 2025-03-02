@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.command.PostCommandInvocationEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
@@ -19,6 +20,19 @@ public class EventAfkCheck
 			return;
 		}
 		softsave(event.getPlayer());
+	}
+	
+	@Subscribe
+	public void onCommand(PostCommandInvocationEvent event)
+	{
+		if(event.getCommand().startsWith("/afk"))
+		{
+			return;
+		}
+		if(event.getCommandSource() instanceof Player)
+		{
+			softsave((Player) event.getCommandSource());
+		}
 	}
 	
 	private void softsave(Player player)

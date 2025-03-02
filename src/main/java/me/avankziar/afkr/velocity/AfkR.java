@@ -33,7 +33,7 @@ import me.avankziar.ifh.velocity.plugin.ServicePriority;
 @Plugin(
 		id = "afkrecord", 
 		name = "AfkRecord", 
-		version = "10-7-0",
+		version = "10-9-1",
 		url = "https://www.spigotmc.org/resources/authors/avankziar.332028/",
 		dependencies = {
 				@Dependency(id = "interfacehub", optional = false),

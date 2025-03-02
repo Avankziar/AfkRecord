@@ -1,4 +1,6 @@
 Future Build
+10-9-1
+- Velocity AfkCheck, wenn man Proxy Befehle nutzt (außer /afk) wird nun auch ein Afkcheck vollzogen.
 
 10-9-0
 - Spigot 1.21.4 support
