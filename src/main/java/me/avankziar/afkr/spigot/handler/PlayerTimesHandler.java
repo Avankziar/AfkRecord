@@ -107,8 +107,8 @@ public class PlayerTimesHandler
 		Bukkit.getPluginManager().callEvent(event);
 	}
 	
-	public boolean saveRAM(UUID uuid, Boolean activeOrAfk,
-			boolean join, boolean forcedQuit)
+	public boolean saveRAM(final UUID uuid, final Boolean activeOrAfk,
+			final boolean join, final boolean forcedQuit)
 	{
 		final long now = System.currentTimeMillis();
 		new BukkitRunnable()
