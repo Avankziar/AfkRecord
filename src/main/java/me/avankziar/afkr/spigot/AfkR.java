@@ -21,6 +21,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.afkr.general.commands.tree.ArgumentConstructor;
 import main.java.me.avankziar.afkr.general.commands.tree.BaseConstructor;
@@ -61,6 +62,7 @@ import main.java.me.avankziar.afkr.spigot.metrics.Metrics;
 import main.java.me.avankziar.afkr.spigot.object.PluginSettings;
 import main.java.me.avankziar.afkr.spigot.permission.BypassPermission;
 import main.java.me.avankziar.afkr.spigot.permission.KeyHandler;
+import me.avankziar.ifh.general.statistic.Statistic;
 import me.avankziar.ifh.spigot.administration.Administration;
 import net.milkbowl.vault.permission.Permission;
 
@@ -83,6 +85,7 @@ public class AfkR extends JavaPlugin
 	private static PlayerTimesAPI ptapi;
 	
 	private static Administration administrationConsumer;
+	private static Statistic statisticConsumer;
 	
 	private ArrayList<String> players = new ArrayList<>();
 	public static String baseCommandI = "afkr"; //Pfad angabe + ürspungliches Commandname
@@ -140,6 +143,7 @@ public class AfkR extends JavaPlugin
 		setupPermissions();
 		setupPlayerTimes();
 		setupPlaceholderAPI();
+		setupIFHStatistic();
 		setupBstats();
 	}
 	
@@ -599,5 +603,48 @@ public class AfkR extends JavaPlugin
 	public Utility getUtility()
 	{
 		return utility;
+	}
+	
+	private void setupIFHStatistic() 
+	{
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+				try
+				{
+					if(i == 20)
+				    {
+						cancel();
+				    	return;
+				    }
+				    RegisteredServiceProvider<me.avankziar.ifh.general.statistic.Statistic> rsp = 
+		                             getServer().getServicesManager().getRegistration(
+		                            		 me.avankziar.ifh.general.statistic.Statistic.class);
+				    if(rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    statisticConsumer = rsp.getProvider();
+				    logger.info(pluginName + " detected InterfaceHub >>> Statistic.class is consumed!");
+				    cancel();
+				} catch(NoClassDefFoundError e)
+				{
+					cancel();
+				}			    
+			}
+        }.runTaskTimer(plugin, 0L, 20*2);
+	}
+	
+	public Statistic getStatistic()
+	{
+		return statisticConsumer;
 	}
 }

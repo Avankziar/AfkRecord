@@ -19,6 +19,7 @@ import main.java.me.avankziar.afkr.general.objects.TimeRecord;
 import main.java.me.avankziar.afkr.spigot.AfkR;
 import main.java.me.avankziar.afkr.spigot.assistance.ChatApi;
 import main.java.me.avankziar.afkr.spigot.assistance.TimeHandler;
+import me.avankziar.ifh.general.statistic.StatisticType;
 import me.avankziar.ifh.spigot.event.player.PlayerChangeToAfkEvent;
 import me.avankziar.ifh.spigot.event.player.PlayerChangeToNotAfkEvent;
 
@@ -282,6 +283,13 @@ public class PlayerTimesHandler
 		user.setOnline(isOnline);
 		user.setAFK(isAfk);
 		plugin.getMysqlHandler().updateData(MysqlType.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
+		if(plugin.getStatistic() != null)
+		{
+			double afk = (double) afkTime / (1000.0 * 60.0);
+			double active = (double) activeTime / (1000.0 * 60.0);
+			plugin.getStatistic().addStatisticValue(uuid, StatisticType.AFK_ONE_MINUTE, "null", afk);
+			plugin.getStatistic().addStatisticValue(uuid, StatisticType.PLAY_ONE_MINUTE, "null", active);
+		}
 		return addTimeRecord(uuid, activeTime, afkTime);		
 	}
 	

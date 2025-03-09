@@ -8,10 +8,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.afkr.general.database.MysqlType;
 import main.java.me.avankziar.afkr.general.objects.PluginUser;
 import main.java.me.avankziar.afkr.spigot.AfkR;
+import me.avankziar.ifh.general.statistic.StatisticType;
 
 public class JoinQuitListener implements Listener
 {
@@ -37,9 +39,33 @@ public class JoinQuitListener implements Listener
 		PluginUser user = (PluginUser) plugin.getMysqlHandler().getData(MysqlType.PLUGINUSER,
 				"`player_uuid` = ?", uuid.toString());
 		if(user == null)
-			return;
+		{
+			return;	
+		}
 		user.setPlayerName(playername);
 		plugin.getMysqlHandler().updateData(MysqlType.PLUGINUSER, user, "`player_uuid` = ?", uuid.toString());
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				if(plugin.getStatistic() != null)
+				{
+					Double afk = plugin.getStatistic().getStatistic(uuid, StatisticType.AFK_ONE_MINUTE);
+					if(afk == null)
+					{
+						double d = (double) plugin.getPlayerTimes().getInactiveTime(uuid) / (1000.0 * 60.0);
+						plugin.getStatistic().addStatisticValue(uuid, StatisticType.AFK_ONE_MINUTE, "null", d);
+					}
+					Double play = plugin.getStatistic().getStatistic(uuid, StatisticType.PLAY_ONE_MINUTE);
+					if(play == null)
+					{
+						double d = (double) plugin.getPlayerTimes().getActiveTime(uuid) / (1000.0 * 60.0);
+						plugin.getStatistic().addStatisticValue(uuid, StatisticType.PLAY_ONE_MINUTE, "null", d);
+					}
+				}
+			}
+		}.runTaskAsynchronously(plugin);	
 	}
 	
 	@EventHandler (priority = EventPriority.LOWEST)

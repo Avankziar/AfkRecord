@@ -1,4 +1,12 @@
 Future Build
+11-0-0
+- IFH general.statistic.Statistic wird nun konsumiert.
+- Wenn die Aktive- oder Afkzeit in die Mysql gespeichert wird, wird, sofern vorhanden, diese Zeiten ans IFH Statistic Interface übertragen.
+- Wenn dass Statistic Interface nach AfkR installiert worden ist und noch kein Eintrag vom Spieler in seiner Aktiven- oder Afkzeit vorhanden ist,
+  so wird AfkR einmalig diese beiden Zeiten vollständig nachtragen. Und im nachhinein nur die Additionen der Zeiten hinzutragen.
+- Klarstellung: Wenn /afk time eine andere Zeit als das Statistic Plugin angibt(Differenz in Minuten), liegt das daran, dass AfkR auch die im RAM gespeicherten
+  Zeiten mit anzeigt.
+
 10-9-1
 - Velocity AfkCheck, wenn man Proxy Befehle nutzt (außer /afk) wird nun auch ein Afkcheck vollzogen.
 
