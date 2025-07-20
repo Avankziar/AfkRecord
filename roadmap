@@ -1,4 +1,9 @@
 Future Build
+11-1-0
+- Bitte nutze IFH 2-7-3
+- Spigot 1.21.8 Support
+- Boosted Yaml 1.3.7 Support
+
 11-0-0
 - IFH general.statistic.Statistic wird nun konsumiert.
 - Wenn die Aktive- oder Afkzeit in die Mysql gespeichert wird, wird, sofern vorhanden, diese Zeiten ans IFH Statistic Interface übertragen.
